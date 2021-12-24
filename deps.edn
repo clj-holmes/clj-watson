@@ -1,10 +1,4 @@
-{:deps {org.clojure/tools.cli {:mvn/version "1.0.206"}
-        org.clojure/clojure {:mvn/version "1.10.3"}
-        org.clojure/math.combinatorics {:mvn/version "0.1.6"}
-        clj-http/clj-http {:mvn/version "3.12.3"}
-        cheshire/cheshire {:mvn/version "5.10.1"}
-        version-clj/version-clj {:mvn/version "2.0.2"}
-        ancient-clj/ancient-clj {:mvn/version "1.0.0"}
+{:deps {org.clojure/clojure {:mvn/version "1.10.3"}
         org.owasp/dependency-check-core {:mvn/version "6.5.0"}
         io.github.clojure/tools.build {:git/url "git@github.com:clojure/tools.build.git"
                                        :sha "98c1e8eb3ae2c2477136084be5636b61f38738f7"}}
