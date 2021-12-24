@@ -1,0 +1,4 @@
+{:deps      {clj-http/clj-http           {:mvn/version "3.12.3"}
+             org.clojure/clojure         {:mvn/version "1.11.0-alpha1"}
+             twttr/twttr                 {:mvn/version "3.2.3"}
+             image-resizer/image-resizer {:mvn/version "0.1.10"}}}
