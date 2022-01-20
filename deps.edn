@@ -1,5 +1,5 @@
 {:deps {org.clojure/clojure {:mvn/version "1.10.3"}
-        org.owasp/dependency-check-core {:mvn/version "6.5.0"}
+        org.owasp/dependency-check-core {:mvn/version "6.5.3"}
         io.github.clojure/tools.build {:git/url "git@github.com:clojure/tools.build.git"
                                        :sha "98c1e8eb3ae2c2477136084be5636b61f38738f7"}}
  :aliases {:nREPL

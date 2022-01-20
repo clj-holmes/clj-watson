@@ -4,6 +4,7 @@
             [clj-watson.vulnerabilities :as watson.vulnerabilities]
             [clojure.string :as string])
   (:import (java.io File)
+           (java.util Arrays)
            (org.owasp.dependencycheck Engine)
            (org.owasp.dependencycheck.utils Settings)
            (org.owasp.dependencycheck.dependency Dependency)))
@@ -15,23 +16,21 @@
   {"central" {:url "https://repo1.maven.org/maven2/"}
    "clojars" {:url "https://clojars.org/repo"}})
 
-(defn ^:private scan-dependency [dependency-path ^Engine engine]
-  (->> dependency-path
-       io/file
-       (.scan engine))
-  engine)
+(defn clojure-file? [dependency-path]
+  (string/ends-with? dependency-path ".jar"))
 
 (defn ^:private scan-dependencies [dependencies engine]
-  (reduce-kv (fn [engine _ {:keys [paths]}]
-               (scan-dependency (first paths) engine))
-             engine dependencies)
+  (doseq [{:keys [paths]} (vals dependencies)]
+    (when (clojure-file? (first paths))
+      (->> paths first (.scan engine))))
   (.analyzeDependencies engine)
-  (.getDependencies engine))
+  (Arrays/asList (.getDependencies engine)))
 
 (defn ^:private vulnerabilities-from-scanned-dependency [all-vulnerabilities ^Dependency dependency]
-  (when-some [package-name (some-> dependency .getName (string/replace #":" "/") symbol)]
+  (if-let [dependency-name (some-> (.getName dependency) (string/replace #":" "/") symbol) ]
     (let [vulnerabilities (->> dependency .getVulnerabilities (mapv watson.vulnerabilities/get-details))]
-      (assoc all-vulnerabilities package-name {:vulnerabilities vulnerabilities}))))
+      (assoc all-vulnerabilities dependency-name {:vulnerabilities vulnerabilities}))
+    all-vulnerabilities))
 
 (defn ^:private update-maven-repositories-to-deps [deps-map]
   (update deps-map :mvn/repos merge maven-repositories))
@@ -56,4 +55,10 @@
     (merge-with merge project-dependencies dependencies-with-vulnerabilities)))
 
 (comment
-  (scan "resources/vulnerable-deps.edn"))
+  (def result (scan "resources/vulnerable-deps.edn"))
+
+  (reduce-kv (fn [dependencies dependency-name dependency-map]
+               (if (-> dependency-map :vulnerabilities seq)
+                 (assoc dependencies dependency-name dependency-map)
+                 dependencies))
+             {} result))
