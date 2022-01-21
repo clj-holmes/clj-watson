@@ -14,3 +14,5 @@ pom.xml.asc
 .idea/
 .cpcache/
 *.iml
+.clj-kondo/
+target/
