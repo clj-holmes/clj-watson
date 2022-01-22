@@ -1,16 +1,18 @@
 (ns clj-watson.entrypoint
-  (:gen-class)
   (:require
    [clj-watson.controller.dependency-check :as controller.dependency-check]
-   [clj-watson.controller.output.report :as controller.report]
+   [clj-watson.controller.output :as controller.output]
    [clj-watson.controller.vulnerability :as controller.vulnerability]))
 
-(defn -main [deps-edn-path dependency-check-properties]
+(defn scan [{:keys [deps-edn-path dependency-check-properties fail-on-result output]}]
   (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties)
         vulnerabilities (controller.vulnerability/extract-from-dependencies environment)]
-    (controller.report/generate vulnerabilities))
-  (shutdown-agents))
+    (controller.output/generate vulnerabilities output)
+    (if (and (-> vulnerabilities count (> 0))
+             fail-on-result)
+      (System/exit 1)
+      (System/exit 0))))
 
 (comment
-  (def result (-main "deps.edn" "resources/dependency-check.properties"))
-  (def result (-main "resources/vulnerable-deps.edn" "resources/dependency-check.properties") 0))
+  (scan {:deps-edn-path               "resources/vulnerable-deps.edn"
+         :dependency-check-properties "resources/dependency-check.properties"}))

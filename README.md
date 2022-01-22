@@ -1,6 +1,9 @@
 # clj-watson
 Clojure software composition analysis (SCA).
 
+# nREPL
+`clj -M:nREPL -m nrepl.cmdline`
+
 # Build
 `clj -X:depstar`
 
