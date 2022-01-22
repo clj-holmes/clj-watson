@@ -14,4 +14,6 @@
      :dependencies (-> project-deps (deps/resolve-deps {}))}))
 
 (comment
-  (read-and-resolve "deps.edn"))
+  (read-and-resolve "deps.edn")
+
+  )

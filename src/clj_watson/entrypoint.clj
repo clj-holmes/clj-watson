@@ -4,9 +4,13 @@
    [clj-watson.controller.output :as controller.output]
    [clj-watson.controller.vulnerability :as controller.vulnerability]))
 
-(defn scan [{:keys [deps-edn-path dependency-check-properties fail-on-result output]}]
+(defn scan [{:keys [deps-edn-path dependency-check-properties]}]
   (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties)
         vulnerabilities (controller.vulnerability/extract-from-dependencies environment)]
+    vulnerabilities))
+
+(defn -main [{:keys [fail-on-result output] :as opts}]
+  (let [vulnerabilities (scan opts)]
     (controller.output/generate vulnerabilities output)
     (if (and (-> vulnerabilities count (> 0))
              fail-on-result)

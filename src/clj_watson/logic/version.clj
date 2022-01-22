@@ -36,10 +36,14 @@
     (and (not contains-versions?)
          (compare-cpe-version-with-version cpe-version current-version)) false))
 
-(defn vulnerable? [current-version cpe-version versions]
+(defn vulnerable? [cpe-version versions current-version ]
   (let [contains-versions? (->> versions vals (some string?) boolean)]
     (or (check-if-matches-cpe-version contains-versions? current-version cpe-version)
         (reduce-kv (partial check-if-matches-versions contains-versions? current-version) false versions))))
+
+(defn newer-and-not-vulnerable-version? [cpe-version versions current-version version-to-check]
+  (if (>= (.compareTo (DependencyVersion. version-to-check) (DependencyVersion. current-version)) 1)
+    (not (vulnerable? cpe-version versions version-to-check))))
 
 (comment
   (vulnerable? "1.2.0" "*" {:version-start-excluding nil
