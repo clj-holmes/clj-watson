@@ -1,5 +1,6 @@
 (ns clj-watson.logic.report
-  (:require [clojure.edn :as edn]))
+  (:require
+   [clojure.edn :as edn]))
 
 (defn ^:private dependencies-hierarchy-to-tree* [tree]
   (loop [text ""

@@ -7,9 +7,8 @@ Clojure software composition analysis (SCA).
 # Executing
 `java -jar target/clj-watson.jar path/project/deps.edn path/dependency-check.properties` 
 
-# Lint fix
+# Lint
 ```
-clj -M:clojure-lsp format
-clj -M:clojure-lsp clean-ns
-clj -M:clojure-lsp diagnostics
+clj -M:lint
+clj -M:lint-fix
 ```

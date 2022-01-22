@@ -4,11 +4,15 @@
            io.github.clojure/tools.build                           {:git/tag "v0.7.5" :git/sha "34727f7"}
            org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.7.3"}}
  :paths   ["src" "resources"]
- :aliases {:depstar     {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
-                         :exec-fn      hf.depstar/uberjar
-                         :exec-args    {:jar        "target/clj-watson.jar"
-                                        :main-class clj-watson.entrypoint
-                                        :aot        true}}
-           :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp {:mvn/version "2022.01.20-03.13.10"}}
-                         :main-opts    ["-m" "clojure-lsp.main"]}
-           :nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}}}
+ :aliases {:depstar  {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+                      :exec-fn      hf.depstar/uberjar
+                      :exec-args    {:jar        "target/clj-watson.jar"
+                                     :main-class clj-watson.entrypoint
+                                     :aot        true}}
+           :nrep     {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
+           :lint     {:extra-paths ["test"]
+                      :extra-deps  {clj-kondo/clj-kondo {:mvn/version "2022.01.15"}}
+                      :main-opts   ["-m" "clj-kondo.main" "--lint" "src" "--lint" "test"]}
+           :lint-fix {:extra-paths ["test"]
+                      :extra-deps  {com.github.clojure-lsp/clojure-lsp {:mvn/version "2022.01.03-19.46.10"}}
+                      :main-opts   ["-e" "(require 'clojure-lsp.api) {:file-formats (count (:edits (clojure-lsp.api/format! {}))) :ns-cleaned (count (:edits (clojure-lsp.api/clean-ns! {})))}"]}}}

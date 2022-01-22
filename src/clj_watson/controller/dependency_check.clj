@@ -1,11 +1,13 @@
 (ns clj-watson.controller.dependency-check
-  (:require [clj-watson.logic.utils :as logic.utils]
-            [clj-watson.diplomat.dependency-check :as diplomat.dependency-check]
-            [clj-watson.diplomat.deps :as diplomat.deps])
-  (:import (java.util Arrays)
-           (org.owasp.dependencycheck Engine)
-           (org.owasp.dependencycheck.utils Settings)
-           (java.io File)))
+  (:require
+   [clj-watson.diplomat.dependency-check :as diplomat.dependency-check]
+   [clj-watson.diplomat.deps :as diplomat.deps]
+   [clj-watson.logic.utils :as logic.utils])
+  (:import
+   (java.io File)
+   (java.util Arrays)
+   (org.owasp.dependencycheck Engine)
+   (org.owasp.dependencycheck.utils Settings)))
 
 (defn ^:private scan-jars [{:dependency-check/keys [engine]
                             :project/keys [dependencies]}]
