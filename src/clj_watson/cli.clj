@@ -26,7 +26,7 @@
                               :type    :with-flag
                               :default false
                               :as      "Enable or disable fail if results were found (useful for CI/CD)"}]
-               :runs        entrypoint/scan}]})
+               :runs        entrypoint/-main}]})
 
 (defn -main [& args]
   (cli/run-cmd args CONFIGURATION))
