@@ -1,6 +1,6 @@
 (ns clj-watson.diplomat.dependency
   (:require
-    [clojure.tools.deps.alpha.extensions :as ext]))
+   [clojure.tools.deps.alpha.extensions :as ext]))
 
 (def ^:private default-repositories
   {:mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}

@@ -2,8 +2,8 @@
   (:require
    [clj-watson.controller.dependency-check :as controller.dependency-check]
    [clj-watson.controller.output :as controller.output]
-   [clj-watson.diplomat.remediate :as diplomat.remediate]
-   [clj-watson.controller.vulnerability :as controller.vulnerability]))
+   [clj-watson.controller.vulnerability :as controller.vulnerability]
+   [clj-watson.diplomat.remediate :as diplomat.remediate]))
 
 (defn scan [{:keys [deps-edn-path dependency-check-properties]}]
   (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties)

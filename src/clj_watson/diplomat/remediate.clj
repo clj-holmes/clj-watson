@@ -1,7 +1,8 @@
 (ns clj-watson.diplomat.remediate
-  (:require [version-clj.core :as version]
-            [clj-watson.diplomat.dependency :as diplomat.dependency]
-            [clojure.tools.deps.alpha :as deps]))
+  (:require
+   [clj-watson.diplomat.dependency :as diplomat.dependency]
+   [clojure.tools.deps.alpha :as deps]
+   [version-clj.core :as version]))
 
 (defn ^:private dependency-safe-versions [{:keys [vulnerabilities]}]
   (let [safe-versions (map (comp set :safe-versions) vulnerabilities)
