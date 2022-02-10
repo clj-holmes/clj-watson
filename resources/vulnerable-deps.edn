@@ -1,4 +1,4 @@
 {:deps {clj-http/clj-http           {:mvn/version "3.9.1"}
-          org.clojure/clojure         {:mvn/version "1.11.0-alpha1"}
-          com.auth0/java-jwt          {:mvn/version "3.5.0"}
-          image-resizer/image-resizer {:mvn/version "0.1.10"}}}
+        org.clojure/clojure         {:mvn/version "1.11.0-alpha1"}
+        com.auth0/java-jwt          {:mvn/version "3.5.0"}
+        image-resizer/image-resizer {:mvn/version "0.1.10"}}}
