@@ -13,15 +13,15 @@
                :opts        [{:option  "deps-edn-path" :short "p"
                               :type    :string
                               :default :present
-                              :as      "path of deps.edn to scan"}
+                              :as      "path of deps.edn to scan."}
                              {:option  "dependency-check-properties" :short "d"
                               :type    :string
                               :default nil
-                              :as      "path of deps.edn to scan"}
+                              :as      "path of a dependency-check properties file."}
                              {:option  "output" :short "o"
                               :type    #{"stdout" "json" "edn"}
                               :default "stdout"
-                              :as      "Output type"}
+                              :as      "Output type."}
                              {:option "suggest-fix" :short "s"
                               :type    :with-flag
                               :default false
