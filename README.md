@@ -62,6 +62,7 @@ Given the following dependnecy tree,
   [dependency-b "v1"]
     [dependency-c "v1"]
 ```
+
 where the `dependency-c` is vulnerable and to fix it's necessary to bump it to `v2` clj-watson will try to find a version of `dependency-a` that uses `dependency-b` in a version that uses `dependency-c` on version `v2` and then propose a bump to `dependency-a`.
 
 ```clojure
@@ -69,19 +70,24 @@ where the `dependency-c` is vulnerable and to fix it's necessary to bump it to `
 ```
 
 If clj-watson does not find a version of dependency-b or dependency-a that satifies this statement it'll propose an exclusion.
+
 ```clojure
-{dependency-a {:exclusions [dependency-b]
-  dependency-b {:mvn/version "v3"}}
+{dependency-a {:exclusions [dependency-b]}
+ dependency-b {:mvn/version "v3"}}
 ````
 
 In order to get the auto remediate suggestion it's just necessary to provide a `--suggest-fix` on the clj-watson execution.
 
 # Development
 ## nREPL
-`clj -M:nREPL -m nrepl.cmdline`
+``` 
+clj -M:nREPL -m nrepl.cmdline
+```
 
 ## Build
-`clj -X:depstar`
+```
+clj -X:depstar
+```
 
 ## Lint
 ```
