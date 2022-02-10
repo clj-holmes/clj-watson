@@ -22,10 +22,14 @@
                               :type    #{"stdout" "json" "edn"}
                               :default "stdout"
                               :as      "Output type"}
+                             {:option "suggest-fix" :short "s"
+                              :type    :with-flag
+                              :default false
+                              :as "Suggest a new deps.edn file fixing all vulnerabilities found."}
                              {:option  "fail-on-result" :short "f"
                               :type    :with-flag
                               :default false
-                              :as      "Enable or disable fail if results were found (useful for CI/CD)"}]
+                              :as      "Enable or disable fail if results were found (useful for CI/CD)."}]
                :runs        entrypoint/-main}]})
 
 (defn -main [& args]

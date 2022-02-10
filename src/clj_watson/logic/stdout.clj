@@ -25,5 +25,4 @@
            (reduce #(str %1 "\n" %2))))))
 
 (defn generate [dependencies template]
-  (render template {:dependencies dependencies
-                    :build-tree   dependencies-hierarchy-to-tree}))
+  (render template (assoc dependencies :build-tree dependencies-hierarchy-to-tree)))
