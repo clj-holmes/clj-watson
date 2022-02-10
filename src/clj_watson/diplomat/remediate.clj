@@ -1,8 +1,13 @@
 (ns clj-watson.diplomat.remediate
   (:require
    [clj-watson.diplomat.dependency :as diplomat.dependency]
+   [clojure.edn :as edn]
    [clojure.tools.deps.alpha :as deps]
    [version-clj.core :as version]))
+
+(def ^:private default-repositories
+  {"central" {:url "https://repo1.maven.org/maven2/"}
+   "clojars" {:url "https://repo.clojars.org/"}})
 
 (defn ^:private dependency-safe-versions [{:keys [vulnerabilities]}]
   (let [safe-versions (map (comp set :safe-versions) vulnerabilities)
@@ -38,6 +43,11 @@
              child-dependency       {:mvn/version child-safe-version}}))
         {child-dependency {:mvn/version child-safe-version}}))))
 
-(defn vulnerabilities-fix-suggestions [{:keys [vulnerable-dependencies deps]}]
-  (let [repositories (:mvn/repos deps)]
-    (map #(find-bump-version-using-latest % repositories) vulnerable-dependencies)))
+(defn vulnerabilities-fix-suggestions [{:keys [vulnerable-dependencies] :as dependencies} deps-edn-path]
+  (let [deps (-> deps-edn-path slurp edn/read-string)
+        repositories (or (:mvn/repos deps) default-repositories)
+        vulnerable-dependencies-with-suggestions (map (fn [vulnerability]
+                                                        (let [suggestion (find-bump-version-using-latest vulnerability repositories)]
+                                                          (assoc vulnerability :fix-suggestion suggestion)))
+                                                      vulnerable-dependencies)]
+    (assoc dependencies :vulnerable-dependencies vulnerable-dependencies-with-suggestions)))

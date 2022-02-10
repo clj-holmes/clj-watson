@@ -21,7 +21,7 @@ OPTIONS:
 clj-watson scans a clojure deps project using [dependency-check](https://github.com/jeremylong/DependencyCheck) seeking for vulnerable direct/transitive dependencies and add all the dependency tree information to help understading how the vulnerability manifest.
 
 ```bash
-$ java -jar target/clj-watson.jar scan -p path/to/deps.edn -d path/to/dependency-check.properties
+$ java -jar target/clj-watson.jar scan -p path/to/deps.edn -d path/to/dependency-check.properties -s
 Downloading/Updating database.
 Download/Update completed.
 Dependency Information
@@ -38,6 +38,7 @@ DEPENDENCY FOUND IN:
         [dependency-c]
                 [dependency-d]
 
+FIX SUGGESTION: {dependency-a {:mvn/version "3"}}
 
 Vulnerabilities
 -----------------------------------------------------
