@@ -15,7 +15,7 @@
 (defn -main [{:keys [fail-on-result output] :as opts}]
   (let [vulnerabilities (scan opts)]
     (controller.output/generate vulnerabilities output)
-    (if (and (-> vulnerabilities count (> 0))
+    (if (and (-> vulnerabilities :vulnerable-dependencies count (> 0))
              fail-on-result)
       (System/exit 1)
       (System/exit 0))))
