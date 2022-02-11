@@ -33,7 +33,6 @@
       (loop [parents parents
              child-dependency dependency-name
              child-safe-version safe-version]
-        (println parents)
         (if (seq parents)
           (let [parent-dependency-name (first parents)
                 latest-version (->> parent-dependency-name
