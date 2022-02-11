@@ -1,19 +1,27 @@
 # clj-watson
 Clojure's software composition analysis (SCA).
 
-# Usage
-It's possible to install clj-watson as clojure tool and invoke it. 
+# Install
+It's possible to install clj-watson as clojure tool and invoke it.
 ```bash
-$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.0.1"}'
+$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.1.0" :git/sha "468f6fe"}'
 $ clojure -Tclj-watson clj-watson.entrypoint/-main '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"]}'
 ```
-or it can be called directly.
+It can be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.0.1"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.0" :git/sha "468f6fe"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
+Or you can just add it to your project `deps.edn`
+```clojure
+{:deps {}
+ :aliases
+ {:clj-watson {:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.0" :git/sha "468f6fe"}}
+               :main-opts ["-m" "clj-watson.cli"]}}}
+```
+
 # Usage
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.0.1"}}}' -M -m clj-watson.cli scan -\? 
+$ clojure -M:clj-watson scan -\? 
 NAME:
  clj-watson scan - Performs a scan on a deps.edn file
 
@@ -34,7 +42,7 @@ OPTIONS:
 clj-watson scans a clojure deps project using [dependency-check](https://github.com/jeremylong/DependencyCheck) seeking for vulnerable direct/transitive dependencies and add all the dependency tree information to help understading how the vulnerability manifest.
 
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag"v2.0.1"}}}' -M -m clj-watson.cli scan -p deps.edn -s
+$ clojure -M:clj-watson scan scan -p deps.edn -s
 Downloading/Updating database.
 Download/Update completed.
 Dependency Information
