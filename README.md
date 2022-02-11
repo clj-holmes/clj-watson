@@ -1,27 +1,40 @@
 # clj-watson
 Clojure's software composition analysis (SCA).
 
-# Available options
+# Usage
+It's possible to install clj-watson as clojure tool and invoke it. 
+```bash
+$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.0.1"}'
+$ clojure -Tclj-watson clj-watson.entrypoint/-main '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"]}'
 ```
+or it can be called directly.
+```bash
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.0.1"}}}' -M -m clj-watson.cli scan -p deps.edn
+```
+# Usage
+```bash
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.0.1"}}}' -M -m clj-watson.cli scan -\? 
 NAME:
-clj-watson scan - Performs a scan on a deps.edn file
+ clj-watson scan - Performs a scan on a deps.edn file
 
 USAGE:
-clj-watson scan [command options] [arguments...]
+ clj-watson scan [command options] [arguments...]
 
 OPTIONS:
--p, --deps-edn-path S*                       path of deps.edn to scan.
--d, --dependency-check-properties S          path of a dependency-check properties file.
--o, --output edn|json|stdout         stdout  Output type.
--s, --[no-]suggest-fix                       Suggest a new deps.edn file fixing all vulnerabilities found.
--f, --[no-]fail-on-result                    Enable or disable fail if results were found (useful for CI/CD).
--?, --help
+   -p, --deps-edn-path S*                       path of deps.edn to scan.
+   -d, --dependency-check-properties S          path of a dependency-check properties file. If not provided uses resources/dependency-check.properties.
+   -o, --output edn|json|stdout         stdout  Output type.
+   -a, --aliases S                              Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed.
+   -s, --[no-]suggest-fix                       Suggest a new deps.edn file fixing all vulnerabilities found.
+   -f, --[no-]fail-on-result                    Enable or disable fail if results were found (useful for CI/CD).
+   -?, --help
 ```
+
 # Execution
 clj-watson scans a clojure deps project using [dependency-check](https://github.com/jeremylong/DependencyCheck) seeking for vulnerable direct/transitive dependencies and add all the dependency tree information to help understading how the vulnerability manifest.
 
 ```bash
-$ java -jar target/clj-watson.jar scan -p path/to/deps.edn -d path/to/dependency-check.properties -s
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag"v2.0.1"}}}' -M -m clj-watson.cli scan -p deps.edn -s
 Downloading/Updating database.
 Download/Update completed.
 Dependency Information

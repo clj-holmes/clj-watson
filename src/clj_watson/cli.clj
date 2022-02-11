@@ -17,11 +17,15 @@
                              {:option  "dependency-check-properties" :short "d"
                               :type    :string
                               :default nil
-                              :as      "path of a dependency-check properties file."}
+                              :as      "path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
                              {:option  "output" :short "o"
                               :type    #{"stdout" "json" "edn"}
                               :default "stdout"
                               :as      "Output type."}
+                             {:option "aliases" :short "a"
+                              :type :string
+                              :multiple true
+                              :as "Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed."}
                              {:option "suggest-fix" :short "s"
                               :type    :with-flag
                               :default false
