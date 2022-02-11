@@ -23,5 +23,4 @@
      :dependencies (-> project-deps (deps/calc-basis aliases-resolver) :libs)}))
 
 (comment
-  (deps/resolve-deps {:deps         {'org.clojure/clojure {:mvn/version "1.9.0"}}
-                      :repositories default-repositories} {}))
+  (read-and-resolve "deps.edn" nil))
