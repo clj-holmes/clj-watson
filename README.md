@@ -4,18 +4,18 @@ Clojure's software composition analysis (SCA).
 # Install
 It's possible to install clj-watson as clojure tool and invoke it.
 ```bash
-$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.1.0" :git/sha "468f6fe"}'
+$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.1.1" :git/sha "3081aca"}'
 $ clojure -Tclj-watson clj-watson.entrypoint/-main '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"]}'
 ```
 It can be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.0" :git/sha "468f6fe"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.1" :git/sha "3081aca"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your project `deps.edn`
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.0" :git/sha "468f6fe"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.1" :git/sha "3081aca"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
