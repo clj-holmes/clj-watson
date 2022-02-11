@@ -8,9 +8,15 @@
   {"central" {:url "https://repo1.maven.org/maven2/"}
    "clojars" {:url "https://repo.clojars.org/"}})
 
-(defn read-and-resolve [^String deps-path]
+(defn build-aliases [deps aliases]
+  (cond
+    (-> aliases set (contains? "*")) (-> deps :aliases keys)
+    (coll? aliases) (map keyword aliases)
+    :else []))
+
+(defn read-and-resolve [^String deps-path aliases]
   (let [project-deps (-> deps-path File. deps/slurp-deps (update :mvn/repos merge default-repositories))
-        aliases (-> project-deps :aliases keys)
+        aliases (build-aliases project-deps aliases)
         aliases-resolver {:resolve-args (deps/combine-aliases project-deps aliases)
                           :classpath-args (deps/combine-aliases project-deps aliases)}]
     {:project-deps project-deps

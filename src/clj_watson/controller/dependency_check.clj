@@ -30,14 +30,14 @@
   (let [settings (create-settings properties-file-path)]
     (Engine. settings)))
 
-(defn ^:private prepare-environment [deps-edn-path dependency-check-properties]
-  (let [{:keys [dependencies project-deps]} (diplomat.deps/read-and-resolve deps-edn-path)
+(defn ^:private prepare-environment [deps-edn-path dependency-check-properties aliases]
+  (let [{:keys [dependencies project-deps]} (diplomat.deps/read-and-resolve deps-edn-path aliases)
         engine (build-engine dependency-check-properties)]
     (diplomat.dependency-check/update-download-database engine)
     {:project/dependencies dependencies :project/deps project-deps :dependency-check/engine engine}))
 
-(defn scan-dependencies [deps-edn-path properties-file-path]
-  (let [environment (prepare-environment deps-edn-path properties-file-path)
+(defn scan-dependencies [deps-edn-path properties-file-path aliases]
+  (let [environment (prepare-environment deps-edn-path properties-file-path aliases)
         engine (scan-jars environment)
         dependency-check-dependencies (->> engine .getDependencies Arrays/asList)]
     (-> environment

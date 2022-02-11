@@ -5,8 +5,8 @@
    [clj-watson.controller.vulnerability :as controller.vulnerability]
    [clj-watson.diplomat.remediate :as diplomat.remediate]))
 
-(defn scan [{:keys [deps-edn-path dependency-check-properties suggest-fix]}]
-  (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties)
+(defn scan [{:keys [deps-edn-path dependency-check-properties suggest-fix aliases]}]
+  (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties aliases)
         vulnerabilities (controller.vulnerability/extract-from-dependencies environment)]
     (if suggest-fix
       (diplomat.remediate/vulnerabilities-fix-suggestions vulnerabilities deps-edn-path)
