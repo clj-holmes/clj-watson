@@ -16,7 +16,7 @@ Or you can just add it to your project `deps.edn`
 {:deps {}
  :aliases
  {:clj-watson {:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.0" :git/sha "468f6fe"}}
-               :main-opts ["-m" "clj-watson.cli"]}}}
+               :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
 # Usage
