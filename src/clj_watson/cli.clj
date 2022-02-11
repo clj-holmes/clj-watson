@@ -17,7 +17,7 @@
                              {:option  "dependency-check-properties" :short "d"
                               :type    :string
                               :default nil
-                              :as      "path of a dependency-check properties file."}
+                              :as      "path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
                              {:option  "output" :short "o"
                               :type    #{"stdout" "json" "edn"}
                               :default "stdout"
