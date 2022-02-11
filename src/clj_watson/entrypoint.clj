@@ -22,4 +22,5 @@
 
 (comment
   (scan {:deps-edn-path               "resources/vulnerable-deps.edn"
+         :suggest-fix                 true
          :dependency-check-properties "resources/dependency-check.properties"}))

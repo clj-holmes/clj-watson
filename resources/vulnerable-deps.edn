@@ -1,4 +1,9 @@
-{:deps {org.clojure/clojure         {:mvn/version "1.11.0-alpha1"}
+#_{:deps {org.clojure/clojure         {:mvn/version "1.11.0-alpha1"}
         com.auth0/java-jwt          {:mvn/version "3.5.0"}
         image-resizer/image-resizer {:mvn/version "0.1.10"}}
  :aliases {:banana {:extra-deps {clj-http/clj-http {:mvn/version "3.9.1"}}}}}
+{
+ :deps {io.replikativ/datahike                  {:mvn/version "0.4.1480"}}
+ #_:aliases #_{:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.0" :git/sha "468f6fe"}}
+                        :main-opts ["-m" "clj-watson.cli" "scan"]}}
+ }
