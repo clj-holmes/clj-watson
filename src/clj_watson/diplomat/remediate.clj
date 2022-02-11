@@ -29,19 +29,22 @@
   (let [parents (-> parents first reverse)
         root-dependency (last parents)
         safe-version (-> vulnerability dependency-safe-versions first)]
-    (loop [parents parents
-           child-dependency dependency-name
-           child-safe-version safe-version]
-      (if (seq parents)
-        (let [parent-dependency-name (first parents)
-              latest-version (->> parent-dependency-name
-                                  diplomat.dependency/get-all-versions
-                                  last)]
-          (if (parent-dependency-contains-child-version? parent-dependency-name latest-version child-dependency child-safe-version repositories)
-            (recur (next parents) parent-dependency-name latest-version)
-            {root-dependency {:exclusions [child-dependency]}
-             child-dependency       {:mvn/version child-safe-version}}))
-        {child-dependency {:mvn/version child-safe-version}}))))
+    (if safe-version
+      (loop [parents parents
+             child-dependency dependency-name
+             child-safe-version safe-version]
+        (println parents)
+        (if (seq parents)
+          (let [parent-dependency-name (first parents)
+                latest-version (->> parent-dependency-name
+                                    diplomat.dependency/get-all-versions
+                                    last)]
+            (if (parent-dependency-contains-child-version? parent-dependency-name latest-version child-dependency child-safe-version repositories)
+              (recur (next parents) parent-dependency-name latest-version)
+              {root-dependency  {:exclusions [child-dependency]}
+               child-dependency {:mvn/version child-safe-version}}))
+          {child-dependency {:mvn/version child-safe-version}}))
+      "vulnerability without patch.")))
 
 (defn vulnerabilities-fix-suggestions [{:keys [vulnerable-dependencies] :as dependencies} deps-edn-path]
   (let [deps (-> deps-edn-path slurp edn/read-string)
