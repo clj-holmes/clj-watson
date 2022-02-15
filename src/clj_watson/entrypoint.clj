@@ -1,9 +1,9 @@
 (ns clj-watson.entrypoint
   (:require
-   [clj-watson.controller.dependency-check :as controller.dependency-check]
-   [clj-watson.controller.output :as controller.output]
-   [clj-watson.controller.vulnerability :as controller.vulnerability]
-   [clj-watson.diplomat.remediate :as diplomat.remediate]))
+    [clj-watson.controller.dependency-check :as controller.dependency-check]
+    [clj-watson.controller.output :as controller.output]
+    [clj-watson.controller.vulnerability :as controller.vulnerability]
+    [clj-watson.diplomat.remediate :as diplomat.remediate]))
 
 (defn scan [{:keys [deps-edn-path dependency-check-properties suggest-fix aliases]}]
   (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties aliases)
