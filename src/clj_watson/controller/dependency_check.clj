@@ -12,10 +12,13 @@
 
 (defn ^:private scan-jars [{:dependency-check/keys [engine]
                             :project/keys [dependencies]}]
-  (doseq [{:keys [paths]} (vals dependencies)]
-    (let [path (first paths)]
-      (when (-> path logic.utils/clojure-file?)
-        (.scan engine path))))
+  (->> dependencies
+       vals
+       (map :paths)
+       (apply concat)
+       (filter logic.utils/clojure-file?)
+       (map io/file)
+       (.scan engine))
   (.analyzeDependencies engine)
   engine)
 

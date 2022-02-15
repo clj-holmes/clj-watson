@@ -13,7 +13,7 @@
          (map :mvn/version versions))))))
 
 (comment
-  (def dependency 'io.netty/netty-codec-dns)
+  (def dependency 'com.datomic/dev-local)
   (def project-deps {:mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
                                  "clojars" {:url "https://repo.clojars.org/"}}})
   (get-all-versions dependency project-deps)
