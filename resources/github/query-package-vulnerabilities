@@ -1,0 +1,32 @@
+query Vulnerabilities {
+  securityVulnerabilities(
+    package: "%s"
+    first: 100
+    orderBy: {field: UPDATED_AT, direction: ASC}
+  ) {
+    nodes {
+      package {
+        name
+        ecosystem
+      }
+      vulnerableVersionRange
+      advisory {
+        severity
+        ghsaId
+        cvss {
+          score
+        }
+        description
+        identifiers {
+          value
+        }
+        publishedAt
+        origin
+      }
+      firstPatchedVersion {
+        identifier
+      }
+    }
+    totalCount
+  }
+}

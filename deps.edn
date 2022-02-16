@@ -1,31 +1,33 @@
-{:deps      {org.clojure/clojure                                     {:mvn/version "1.11.0-beta1"}
-             org.owasp/dependency-check-core                         {:mvn/version "6.5.3"}
-             cljstache/cljstache                                     {:mvn/version "2.0.6"}
-             org.clojure/data.json                                   {:mvn/version "2.4.0"}
-             cli-matic/cli-matic                                     {:mvn/version "0.4.3"}
-             version-clj/version-clj                                 {:mvn/version "2.0.2"}
-             org.slf4j/slf4j-nop                                     {:mvn/version "2.0.0-alpha6"}
-             io.github.clojure/tools.build                           {:git/tag    "v0.7.5"
-                                                                      :git/sha    "34727f7"
-                                                                      :exclusions [org.apache.maven.resolver/maven-resolver-transport-http]}
-             org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.7.3"}}
+{:deps        {org.clojure/clojure                                     {:mvn/version "1.11.0-beta1"}
+               org.owasp/dependency-check-core                         {:mvn/version "6.5.3"}
+               cljstache/cljstache                                     {:mvn/version "2.0.6"}
+               org.clojure/data.json                                   {:mvn/version "2.4.0"}
+               cli-matic/cli-matic                                     {:mvn/version "0.4.3"}
+               version-clj/version-clj                                 {:mvn/version "2.0.2"}
+               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.0-alpha6"}
+               clj-http/clj-http                                       {:mvn/version "3.12.3"}
+               cheshire/cheshire                                       {:mvn/version "5.10.2"}
+               io.github.clojure/tools.build                           {:git/tag    "v0.7.5"
+                                                                        :git/sha    "34727f7"
+                                                                        :exclusions [org.apache.maven.resolver/maven-resolver-transport-http]}
+               org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.7.3"}}
 
- :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
-             "clojars" {:url "https://repo.clojars.org/"}}
+ :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
+               "clojars" {:url "https://repo.clojars.org/"}}
 
- :paths     ["src" "resources"]
+ :paths       ["src" "resources"]
 
  :tools/usage {:ns-default clj-watson.entrypoint}
 
- :aliases   {:depstar  {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
-                        :exec-fn      hf.depstar/uberjar
-                        :exec-args    {:jar        "target/clj-watson.jar"
-                                       :main-class clj-watson.cli
-                                       :aot        true}}
-             :nREPL    {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
-             :lint     {:extra-paths ["test"]
-                        :extra-deps  {clj-kondo/clj-kondo {:mvn/version "2022.01.15"}}
-                        :main-opts   ["-m" "clj-kondo.main" "--lint" "src" "--lint" "test"]}
-             :lint-fix {:extra-paths ["test"]
-                        :extra-deps  {com.github.clojure-lsp/clojure-lsp {:mvn/version "2022.01.03-19.46.10"}}
-                        :main-opts   ["-e" "(require 'clojure-lsp.api) {:file-formats (count (:edits (clojure-lsp.api/format! {}))) :ns-cleaned (count (:edits (clojure-lsp.api/clean-ns! {})))}"]}}}
+ :aliases     {:depstar  {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
+                          :exec-fn      hf.depstar/uberjar
+                          :exec-args    {:jar        "target/clj-watson.jar"
+                                         :main-class clj-watson.cli
+                                         :aot        true}}
+               :nREPL    {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
+               :lint     {:extra-paths ["test"]
+                          :extra-deps  {clj-kondo/clj-kondo {:mvn/version "2022.01.15"}}
+                          :main-opts   ["-m" "clj-kondo.main" "--lint" "src" "--lint" "test"]}
+               :lint-fix {:extra-paths ["test"]
+                          :extra-deps  {com.github.clojure-lsp/clojure-lsp {:mvn/version "2022.01.03-19.46.10"}}
+                          :main-opts   ["-e" "(require 'clojure-lsp.api) {:file-formats (count (:edits (clojure-lsp.api/format! {}))) :ns-cleaned (count (:edits (clojure-lsp.api/clean-ns! {})))}"]}}}
