@@ -5,8 +5,7 @@ NAME: {{dependency-name}}
 VERSION: {{mvn/version}}
 
 DEPENDENCY FOUND IN:
-{{#parents}}{{#build-tree}}{{parents}}{{/build-tree}} {{/parents}}
-{{^parents}}[{{dependency-name}}]{{/parents}}
+{{#build-tree}}{{parents}}{{dependency-name}}{{/build-tree}}
 
 FIX SUGGESTION: {{{fix-suggestion}}}
 
