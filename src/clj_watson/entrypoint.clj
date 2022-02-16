@@ -5,15 +5,15 @@
    [clj-watson.controller.vulnerability :as controller.vulnerability]
    [clj-watson.diplomat.remediate :as diplomat.remediate]))
 
-(defn scan [{:keys [deps-edn-path dependency-check-properties suggest-fix aliases]}]
+(defn scan* [{:keys [deps-edn-path dependency-check-properties suggest-fix aliases]}]
   (let [environment (controller.dependency-check/scan-dependencies deps-edn-path dependency-check-properties aliases)
         vulnerabilities (controller.vulnerability/extract-from-dependencies environment)]
     (if suggest-fix
       (diplomat.remediate/vulnerabilities-fix-suggestions vulnerabilities deps-edn-path)
       vulnerabilities)))
 
-(defn -main [{:keys [fail-on-result output] :as opts}]
-  (let [vulnerabilities (scan opts)]
+(defn scan [{:keys [fail-on-result output] :as opts}]
+  (let [vulnerabilities (scan* opts)]
     (controller.output/generate vulnerabilities output)
     (if (and (-> vulnerabilities :vulnerable-dependencies count (> 0))
              fail-on-result)
@@ -21,6 +21,6 @@
       (System/exit 0))))
 
 (comment
-  (scan {:deps-edn-path               "resources/vulnerable-deps.edn"
-         :suggest-fix                 true
-         :dependency-check-properties "resources/dependency-check.properties"}))
+  (scan* {:deps-edn-path               "resources/vulnerable-deps.edn"
+          :suggest-fix                 true
+          :dependency-check-properties "resources/dependency-check.properties"}))

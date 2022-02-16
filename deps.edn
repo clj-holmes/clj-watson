@@ -14,6 +14,9 @@
              "clojars" {:url "https://repo.clojars.org/"}}
 
  :paths     ["src" "resources"]
+
+ :tools/usage {:ns-default clj-watson.entrypoint}
+
  :aliases   {:depstar  {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
                         :exec-fn      hf.depstar/uberjar
                         :exec-args    {:jar        "target/clj-watson.jar"

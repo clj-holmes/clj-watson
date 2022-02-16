@@ -4,7 +4,7 @@ Clojure's software composition analysis (SCA).
 # Install
 It's possible to install clj-watson as clojure tool and invoke it.
 ```bash
-$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.1.2" :git/sha "5e43eae"}'
+$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.1.2" :git/sha "5e43eae"}' :as clj-watson
 $ clojure -Tclj-watson clj-watson.entrypoint/-main '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"]}'
 ```
 It can be called directly.
