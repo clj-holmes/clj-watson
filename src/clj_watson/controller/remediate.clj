@@ -12,8 +12,6 @@
             (get child-dependency) :mvn/version
             (version/newer-or-equal? child-version))))
 
-(defn tap [x] (println x) x)
-
 (defn ^:private secure-dependency-tree-suggestion [{:keys [parents dependency secure-version]} repositories]
   (let [parents (-> parents first reverse)
         root-dependency (or (last parents) dependency)]
@@ -23,8 +21,7 @@
              child-version secure-version]
         (if (seq parents)
           (let [parent-dependency (first parents)
-                parent-version (tap (last (tap (diplomat.dependency/get-all-versions! (tap parent-dependency) (tap repositories)))))]
-            (println parent-dependency parent-version)
+                parent-version (last (diplomat.dependency/get-all-versions! parent-dependency repositories))]
             (if (parent-contains-child-version? parent-dependency parent-version child-dependency child-version repositories)
               (recur (next parents) parent-dependency parent-version)
               {root-dependency  {:exclusions [child-dependency]}

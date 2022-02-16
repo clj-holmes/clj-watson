@@ -20,7 +20,6 @@
     (deps/calc-basis deps {})
     (catch Exception e
       (binding [*out* *err*]
-        (println deps)
         (println (ex-message e))))))
 
 (comment
