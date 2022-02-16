@@ -1,10 +1,10 @@
 (ns clj-watson.diplomat.remediate
   (:require
-    [clj-watson.diplomat.dependency :as diplomat.dependency]
-    [clojure.edn :as edn]
-    [clojure.tools.deps.alpha :as deps]
-    [version-clj.core :as version]
-    [clojure.tools.deps.alpha.util.maven :as maven]))
+   [clj-watson.diplomat.dependency :as diplomat.dependency]
+   [clojure.edn :as edn]
+   [clojure.tools.deps.alpha :as deps]
+   [clojure.tools.deps.alpha.util.maven :as maven]
+   [version-clj.core :as version]))
 
 (defn ^:private dependency-safe-versions [{:keys [vulnerabilities]}]
   (let [safe-versions (map (comp set :safe-versions) vulnerabilities)

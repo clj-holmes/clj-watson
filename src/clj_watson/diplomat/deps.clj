@@ -1,7 +1,7 @@
 (ns clj-watson.diplomat.deps
   (:require
-    [clojure.tools.deps.alpha :as deps]
-    [clojure.tools.deps.alpha.util.maven :as maven])
+   [clojure.tools.deps.alpha :as deps]
+   [clojure.tools.deps.alpha.util.maven :as maven])
   (:import
    (java.io File)))
 

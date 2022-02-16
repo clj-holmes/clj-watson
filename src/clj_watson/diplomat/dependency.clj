@@ -1,7 +1,7 @@
 (ns clj-watson.diplomat.dependency
   (:require
-    [clojure.tools.deps.alpha.util.maven :as maven]
-    [clojure.tools.deps.alpha.extensions :as ext]))
+   [clojure.tools.deps.alpha.extensions :as ext]
+   [clojure.tools.deps.alpha.util.maven :as maven]))
 
 (defn get-all-versions
   ([dependency]
@@ -9,7 +9,7 @@
   ([dependency repositories]
    (binding [*out* *err*]
      (when dependency
-       (let [versions (ext/find-all-versions dependency nil repositories )]
+       (let [versions (ext/find-all-versions dependency nil repositories)]
          (map :mvn/version versions))))))
 
 (comment
