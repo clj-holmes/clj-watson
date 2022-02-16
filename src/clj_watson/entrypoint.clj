@@ -21,6 +21,8 @@
       (System/exit 0))))
 
 (comment
-  (scan* {:deps-edn-path               "resources/vulnerable-deps.edn"
-          :suggest-fix                 true
-          :dependency-check-properties "resources/dependency-check.properties"}))
+  (def vulnerabilities (scan* {:deps-edn-path               "resources/vulnerable-deps.edn"
+                               :suggest-fix                 true
+                               :dependency-check-properties "resources/dependency-check.properties"}))
+
+  (controller.output/generate vulnerabilities "stdout"))
