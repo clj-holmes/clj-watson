@@ -12,13 +12,15 @@
         package-name (string/replace package-name #"/" ":")]
     (format query package-name)))
 
-(defn vulnerabilities-by-package [package-name]
+(defn vulnerabilities-by-package* [package-name]
   (let [request-body {:form-params  {:query (build-query package-name)}
                       :headers      {"Authorization" (format "Bearer %s" token)}
                       :as           :json
                       :content-type :json}]
     (-> (http/post endpoint request-body)
         (get-in [:body :data :securityVulnerabilities :nodes]))))
+
+(def vulnerabilities-by-package (memoize vulnerabilities-by-package*))
 
 (comment
   (vulnerabilities-by-package 'org.postgresql/postgresql))
