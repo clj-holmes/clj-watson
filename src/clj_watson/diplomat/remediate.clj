@@ -3,11 +3,8 @@
    [clj-watson.diplomat.dependency :as diplomat.dependency]
    [clojure.edn :as edn]
    [clojure.tools.deps.alpha :as deps]
+   [clojure.tools.deps.alpha.util.maven :as maven]
    [version-clj.core :as version]))
-
-(def ^:private default-repositories
-  {"central" {:url "https://repo1.maven.org/maven2/"}
-   "clojars" {:url "https://repo.clojars.org/"}})
 
 (defn ^:private dependency-safe-versions [{:keys [vulnerabilities]}]
   (let [safe-versions (map (comp set :safe-versions) vulnerabilities)
@@ -16,14 +13,17 @@
 
 (defn ^:private parent-dependency-contains-child-version?
   [parent-dependency-name parent-dependency-version child-dependency-name child-dependency-version repositories]
-  (let [deps {:mvn/repos repositories
-              :deps      {parent-dependency-name {:mvn/version parent-dependency-version}}}]
-    (some-> deps
-            (deps/calc-basis {})
-            :libs
-            (get child-dependency-name)
-            :mvn/version
-            (version/newer-or-equal? child-dependency-version))))
+  (let [deps (assoc repositories :deps {parent-dependency-name {:mvn/version parent-dependency-version}})]
+    (try
+      (some-> deps
+              (deps/calc-basis {})
+              :libs
+              (get child-dependency-name)
+              :mvn/version
+              (version/newer-or-equal? child-dependency-version))
+      (catch Exception e
+        (binding [*out* *err*]
+          (println (ex-message e)))))))
 
 (defn ^:private find-bump-version-using-latest [{:keys [parents dependency-name] :as vulnerability} repositories]
   (let [parents (-> parents first reverse)
@@ -35,9 +35,9 @@
              child-safe-version safe-version]
         (if (seq parents)
           (let [parent-dependency-name (first parents)
-                latest-version (->> parent-dependency-name
-                                    diplomat.dependency/get-all-versions
-                                    last)]
+                latest-version (-> parent-dependency-name
+                                   (diplomat.dependency/get-all-versions repositories)
+                                   last)]
             (if (parent-dependency-contains-child-version? parent-dependency-name latest-version child-dependency child-safe-version repositories)
               (recur (next parents) parent-dependency-name latest-version)
               {root-dependency  {:exclusions [child-dependency]}
@@ -47,7 +47,7 @@
 
 (defn vulnerabilities-fix-suggestions [{:keys [vulnerable-dependencies] :as dependencies} deps-edn-path]
   (let [deps (-> deps-edn-path slurp edn/read-string)
-        repositories (or (:mvn/repos deps) default-repositories)
+        repositories (or (some->> deps :mvn/repos (assoc {} :mvn/repos)) maven/standard-repos)
         vulnerable-dependencies-with-suggestions (map (fn [vulnerability]
                                                         (let [suggestion (find-bump-version-using-latest vulnerability repositories)]
                                                           (assoc vulnerability :fix-suggestion suggestion)))

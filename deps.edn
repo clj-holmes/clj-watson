@@ -1,4 +1,4 @@
-{:deps      {org.clojure/clojure                                     {:mvn/version "1.10.3"}
+{:deps      {org.clojure/clojure                                     {:mvn/version "1.11.0-beta1"}
              org.owasp/dependency-check-core                         {:mvn/version "6.5.3"}
              cljstache/cljstache                                     {:mvn/version "2.0.6"}
              org.clojure/data.json                                   {:mvn/version "2.4.0"}
@@ -14,6 +14,9 @@
              "clojars" {:url "https://repo.clojars.org/"}}
 
  :paths     ["src" "resources"]
+
+ :tools/usage {:ns-default clj-watson.entrypoint}
+
  :aliases   {:depstar  {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
                         :exec-fn      hf.depstar/uberjar
                         :exec-args    {:jar        "target/clj-watson.jar"

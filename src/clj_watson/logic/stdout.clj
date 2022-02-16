@@ -16,13 +16,15 @@
             new-text (format "%s%s[%s]\n" text tabs dependency)]
         (recur new-text (inc count) (next dependencies))))))
 
-(defn ^:private dependencies-hierarchy-to-tree [text]
+(defn ^:private dependencies-hierarchy-to-tree [tree-text]
   (fn [render-fn]
-    (when-let [trees (some-> text render-fn edn/read-string)]
-      (->> trees
-           reverse
-           (map dependencies-hierarchy-to-tree*)
-           (reduce #(str %1 "\n" %2))))))
+    (if-let [trees (some-> tree-text render-fn edn/read-string)]
+      (if (and (= 1 (count trees)) (every? empty? trees))
+        "Direct dependency."
+        (->> trees
+             reverse
+             (map dependencies-hierarchy-to-tree*)
+             (reduce #(str %1 "\n" %2)))))))
 
 (defn generate [dependencies template]
   (render template (assoc dependencies :build-tree dependencies-hierarchy-to-tree)))
