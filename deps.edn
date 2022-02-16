@@ -2,6 +2,8 @@
                version-clj/version-clj                                 {:mvn/version "2.0.2"}
                clj-http/clj-http                                       {:mvn/version "3.12.3"}
                cheshire/cheshire                                       {:mvn/version "5.10.2"}
+               cli-matic/cli-matic                                     {:mvn/version "0.4.3"}
+               selmer/selmer                                           {:mvn/version "1.12.50"}
                io.github.clojure/tools.build                           {:git/tag    "v0.7.5"
                                                                         :git/sha    "34727f7"
                                                                         :exclusions [org.apache.maven.resolver/maven-resolver-transport-http

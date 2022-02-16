@@ -20,6 +20,7 @@
     (deps/calc-basis deps {})
     (catch Exception e
       (binding [*out* *err*]
+        (println deps)
         (println (ex-message e))))))
 
 (comment
@@ -28,4 +29,5 @@
   (def project-deps {:mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
                                  "clojars" {:url "https://repo.clojars.org/"}}})
 
+  (get-all-versions!* 'com.auth0/java-jwt project-deps)
   (get-all-versions! dependency project-deps))

@@ -1,22 +1,19 @@
-{{#vulnerable-dependencies}}
+{% for vulnerable-dependency in vulnerable-dependencies %}
 Dependency Information
 -----------------------------------------------------
-NAME: {{dependency-name}}
-VERSION: {{mvn/version}}
+NAME: {{vulnerable-dependency.dependency}}
+VERSION: {{vulnerable-dependency.mvn/version}}
 
 DEPENDENCY FOUND IN:
-{{#build-tree}}{{parents}}{{/build-tree}}
-
-FIX SUGGESTION: {{{fix-suggestion}}}
-
+{{vulnerable-dependency.parents|build-tree}}
+FIX SUGGESTION: {{vulnerable-dependency.remediate-suggestion|safe}}
 Vulnerabilities
 -----------------------------------------------------
-{{#vulnerabilities}}
-CVE: {{name}}
-CVSSV3: {{cvssv3}}
-CVSSV2: {{cvssv2}}
-SUGGESTED BUMP: {{version-end-including}} {{version-end-excluding}}
-
-{{/vulnerabilities}}
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-{{/vulnerable-dependencies}}
+{% for vulnerability in vulnerable-dependency.vulnerabilities %}
+SEVERITY: {{vulnerability.advisory.severity}}
+IDENTIFIERS: {% for identifier in vulnerability.advisory.identifiers %}{{identifier.value}} {% endfor %}
+CVSS: {{vulnerability.advisory.cvss.score}}
+PATCHED VERSION: {{vulnerability.firstPatchedVersion.identifier}}
+{% endfor %}
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+{% endfor %}
