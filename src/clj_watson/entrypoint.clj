@@ -21,10 +21,6 @@
 
 (comment
   (def vulnerabilities (scan* {:deps-edn-path               "resources/vulnerable-deps.edn"
-                               :suggest-fix                 true
-                               :dependency-check-properties "resources/dependency-check.properties"}))
+                               :suggest-fix                 true}))
 
-  (scan* {:deps-edn-path               "/Users/dpr/dev/180seg/golfinho/deps.edn"
-          :suggest-fix                 true
-          :dependency-check-properties "resources/dependency-check.properties"})
   (controller.output/generate vulnerabilities "stdout"))
