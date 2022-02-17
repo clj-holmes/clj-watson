@@ -2,35 +2,40 @@
   (:require
     [clojure.tools.deps.alpha.extensions :as ext]
     [clojure.tools.deps.alpha.util.maven :as maven]
+    [clojure.tools.deps.alpha.extensions.git :as git]
+    [clojure.tools.gitlibs :as gitlibs]
     [clojure.tools.deps.alpha :as deps]))
 
-(defn ^:private get-all-versions!*
+(defn ^:private append-sha-when-is-git-version [dependency version]
+  (if (:git/tag version)
+    (let [git-url (git/auto-git-url dependency)
+          sha (gitlibs/resolve git-url (:git/tag version))]
+      (assoc version :git/sha sha))
+    version))
+
+(defn ^:private get-latest-version!*
   ([dependency]
-   (get-all-versions!* dependency maven/standard-repos))
+   (get-latest-version!* dependency maven/standard-repos))
   ([dependency repositories]
    (binding [*out* *err*]
      (when dependency
-       (let [versions (ext/find-all-versions dependency nil repositories)]
-         (pmap :mvn/version versions))))))
+       (->> (ext/find-all-versions dependency nil repositories)
+           last
+           (append-sha-when-is-git-version dependency))))))
 
-(def get-all-versions! (memoize get-all-versions!*))
+(def get-latest-version! (memoize get-latest-version!*))
 
 (defn resolve-dependency! [deps]
   (try
     (deps/calc-basis deps {})
     (catch Exception e
       (binding [*out* *err*]
+        (clojure.pprint/pprint deps)
         (println (ex-message e))))))
 
 (comment
   (require '[clojure.tools.deps.alpha.util.maven :as maven])
-
-  (def dependency 'com.datomic/dev-local)
-
-  (get-all-versions!* 'com.google.javascript/closure-compiler-unshaded {:mvn/repos maven/standard-repos})
-
-  (resolve-dependency! {:deps      {'com.google.javascript/closure-compiler-unshaded {:mvn/version "v20220202"}}
-                        :mvn/repos maven/standard-repos})
-
-  (ext/find-all-versions 'com.google.javascript/closure-compiler-unshaded nil {:mvn/repos maven/standard-repos})
-  )
+  (get-latest-version! 'org.clojure/clojure {:mvn/repos maven/standard-repos})
+  (get-latest-version! 'io.github.clj-holmes/clj-watson {:mvn/repos maven/standard-repos})
+  (resolve-dependency! {:deps      {'io.github.clj-holmes/clj-watson {:git/tag "v2.1.3" :git/sha "19636f2"}}
+                        :mvn/repos maven/standard-repos}))
