@@ -26,16 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: clj-watson (Clojure)
-        uses: clj-holmes/clj-watson-action@main
-        with:
-          deps-edn-path: 'deps.edn'
-          output-type: 'stdout'
-          suggest-fix: 'true'
-          fail-on-result: 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: clj-holmes (Clojure)
         uses: clj-holmes/clj-holmes-action@main
         with:
