@@ -7,8 +7,12 @@
 
 (defmulti ^:private generate* (fn [_ kind] (keyword kind)))
 
-(defmethod ^:private generate* :stdout [dependencies _]
-  (let [template (-> "report.mustache" io/resource slurp)]
+(defmethod ^:private generate* :report [dependencies _]
+  (let [template (-> "simple-report.mustache" io/resource slurp)]
+    (println (logic.stdout/generate dependencies template))))
+
+(defmethod ^:private generate* :full-report [dependencies _]
+  (let [template (-> "full-report.mustache" io/resource slurp)]
     (println (logic.stdout/generate dependencies template))))
 
 (defmethod ^:private generate* :json [dependencies _]

@@ -1,0 +1,12 @@
+{% for vulnerable-dependency in vulnerable-dependencies %}
+Dependency Information
+-----------------------------------------------------
+NAME: {{vulnerable-dependency.dependency}}
+VERSION: {{vulnerable-dependency.mvn/version}}
+
+DEPENDENCY FOUND IN:
+{{vulnerable-dependency.parents|build-tree}}
+FIX SUGGESTION: {{vulnerable-dependency.remediate-suggestion|safe}}
+VULNERABILITIES: {{vulnerable-dependency.vulnerabilities|count}}
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+{% endfor %}

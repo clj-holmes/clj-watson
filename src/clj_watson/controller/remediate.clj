@@ -24,18 +24,21 @@
                 parent-version (last (diplomat.dependency/get-all-versions! parent-dependency repositories))]
             (if (parent-contains-child-version? parent-dependency parent-version child-dependency child-version repositories)
               (recur (next parents) parent-dependency parent-version)
+              ; secure version not found in dependency chain
               {root-dependency  {:exclusions [child-dependency]}
                child-dependency {:mvn/version child-version}}))
+          ; secure version find in all dependency chain
           {child-dependency {:mvn/version child-version}}))
       (do
+        ; since it is a direct dependency just bump it to the previously secure-version find.
         {dependency {:mvn/version secure-version}}))))
 
-(defn scan [vulnerable-dependencies deps]
-  (map (fn [vulnerable-dependency]
-         (let [repositories (select-keys deps [:mvn/repos])
-               suggestion (secure-dependency-tree-suggestion vulnerable-dependency repositories)]
-           (assoc vulnerable-dependency :remediate-suggestion suggestion)))
-       vulnerable-dependencies))
+(defn ^:private scan* [vulnerable-dependency repositories]
+  (let [suggestion (secure-dependency-tree-suggestion vulnerable-dependency repositories)]
+    (assoc vulnerable-dependency :remediate-suggestion suggestion)))
+
+(defn scan [vulnerable-dependencies repositories]
+  (pmap #(scan* % repositories) vulnerable-dependencies))
 
 (comment
   (def vulnerable-dependencies
@@ -50,7 +53,6 @@
                           :advisory               {:severity    "HIGH",
                                                    :ghsaId      "GHSA-p5gm-fgfx-hr7h",
                                                    :cvss        {:score 7.8},
-                                                   :description "A deserialization flaw is present in Taoensso Nippy before 2.14.2. In some circumstances, it is possible for an attacker to create a malicious payload that, when deserialized, will allow arbitrary code to be executed. This occurs because there is automatic use of the Java Serializable interface.",
                                                    :identifiers [{:value "GHSA-p5gm-fgfx-hr7h"} {:value "CVE-2020-24164"}],
                                                    :publishedAt "2022-02-10T20:55:10Z",
                                                    :origin      "UNSPECIFIED"},

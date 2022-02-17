@@ -6,9 +6,10 @@
 
 (defn scan* [{:keys [deps-edn-path suggest-fix aliases]}]
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
-        vulnerable-dependencies (controller.vulnerability/scan-dependencies dependencies deps)]
+        repositories (select-keys deps [:mvn/repos])
+        vulnerable-dependencies (controller.vulnerability/scan-dependencies dependencies repositories)]
     (if suggest-fix
-      (controller.remediate/scan vulnerable-dependencies deps)
+      (controller.remediate/scan vulnerable-dependencies repositories)
       vulnerable-dependencies)))
 
 (defn scan [{:keys [fail-on-result output] :as opts}]
@@ -23,4 +24,5 @@
   (def vulnerabilities (scan* {:deps-edn-path               "resources/vulnerable-deps.edn"
                                :suggest-fix                 true}))
 
-  (controller.output/generate vulnerabilities "stdout"))
+  (controller.output/generate vulnerabilities "report")
+  (controller.output/generate vulnerabilities "full-report"))

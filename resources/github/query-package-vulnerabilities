@@ -16,7 +16,6 @@ query Vulnerabilities {
         cvss {
           score
         }
-        description
         identifiers {
           value
         }

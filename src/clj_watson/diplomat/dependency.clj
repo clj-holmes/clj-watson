@@ -11,7 +11,7 @@
    (binding [*out* *err*]
      (when dependency
        (let [versions (ext/find-all-versions dependency nil repositories)]
-         (map :mvn/version versions))))))
+         (pmap :mvn/version versions))))))
 
 (def get-all-versions! (memoize get-all-versions!*))
 
@@ -28,5 +28,5 @@
   (def project-deps {:mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
                                  "clojars" {:url "https://repo.clojars.org/"}}})
 
-  (get-all-versions!* 'com.auth0/java-jwt project-deps)
+  (get-all-versions!* 'io.github.seancorfield/next-jdbc project-deps)
   (get-all-versions! dependency project-deps))
