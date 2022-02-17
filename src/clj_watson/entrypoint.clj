@@ -21,7 +21,7 @@
       (System/exit 0))))
 
 (comment
-  (def vulnerabilities (scan* {:deps-edn-path "/Users/dpr/dev/180seg/policies-management/github/deps.edn"
+  (def vulnerabilities (scan* {:deps-edn-path "resources/vulnerable-deps.edn"
                                :suggest-fix   true}))
 
   (controller.output/generate vulnerabilities "report")
