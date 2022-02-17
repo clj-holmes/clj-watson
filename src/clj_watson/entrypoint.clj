@@ -9,7 +9,7 @@
         repositories (select-keys deps [:mvn/repos])
         vulnerable-dependencies (controller.vulnerability/scan-dependencies dependencies repositories)]
     (if suggest-fix
-      (controller.remediate/scan vulnerable-dependencies repositories)
+      (controller.remediate/scan vulnerable-dependencies deps)
       vulnerable-dependencies)))
 
 (defn scan [{:keys [fail-on-result output] :as opts}]
@@ -21,7 +21,7 @@
       (System/exit 0))))
 
 (comment
-  (def vulnerabilities (scan* {:deps-edn-path               "resources/vulnerable-deps.edn"
+  (def vulnerabilities (scan* {:deps-edn-path               "/Users/dpr/dev/180seg/pavao/i80-ui/deps.edn"
                                :suggest-fix                 true}))
 
   (controller.output/generate vulnerabilities "report")

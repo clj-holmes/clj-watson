@@ -4,16 +4,17 @@
             [clojure.tools.deps.alpha.util.maven :as maven]))
 
 (defn ^:private parent-contains-child-version?
-  [parent-dependency parent-version child-dependency child-version repositories]
-  (let [deps (assoc repositories :deps {parent-dependency {:mvn/version parent-version}})]
+  [parent-dependency parent-version child-dependency child-version deps]
+  (let [deps (assoc deps :deps {parent-dependency {:mvn/version parent-version}})]
     (some-> deps
             diplomat.dependency/resolve-dependency!
             :libs
             (get child-dependency) :mvn/version
             (version/newer-or-equal? child-version))))
 
-(defn ^:private secure-dependency-tree-suggestion [{:keys [parents dependency secure-version]} repositories]
+(defn ^:private secure-dependency-tree-suggestion [{:keys [parents dependency secure-version]} deps]
   (let [parents (-> parents first reverse)
+        repositories (select-keys deps [:mvn/repos])
         root-dependency (or (last parents) dependency)]
     (if (seq parents)
       (loop [parents parents
@@ -22,7 +23,7 @@
         (if (seq parents)
           (let [parent-dependency (first parents)
                 parent-version (last (diplomat.dependency/get-all-versions! parent-dependency repositories))]
-            (if (parent-contains-child-version? parent-dependency parent-version child-dependency child-version repositories)
+            (if (parent-contains-child-version? parent-dependency parent-version child-dependency child-version deps)
               (recur (next parents) parent-dependency parent-version)
               ; secure version not found in dependency chain
               {root-dependency  {:exclusions [child-dependency]}
@@ -33,12 +34,12 @@
         ; since it is a direct dependency just bump it to the previously secure-version find.
         {dependency {:mvn/version secure-version}}))))
 
-(defn ^:private scan* [vulnerable-dependency repositories]
-  (let [suggestion (secure-dependency-tree-suggestion vulnerable-dependency repositories)]
+(defn ^:private scan* [vulnerable-dependency deps]
+  (let [suggestion (secure-dependency-tree-suggestion vulnerable-dependency deps)]
     (assoc vulnerable-dependency :remediate-suggestion suggestion)))
 
-(defn scan [vulnerable-dependencies repositories]
-  (pmap #(scan* % repositories) vulnerable-dependencies))
+(defn scan [vulnerable-dependencies deps]
+  (map #(scan* % deps) vulnerable-dependencies))
 
 (comment
   (def vulnerable-dependencies

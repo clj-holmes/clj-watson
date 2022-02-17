@@ -23,10 +23,14 @@
         (println (ex-message e))))))
 
 (comment
+  (require '[clojure.tools.deps.alpha.util.maven :as maven])
+
   (def dependency 'com.datomic/dev-local)
 
-  (def project-deps {:mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"}
-                                 "clojars" {:url "https://repo.clojars.org/"}}})
+  (get-all-versions!* 'com.google.javascript/closure-compiler-unshaded {:mvn/repos maven/standard-repos})
 
-  (get-all-versions!* 'io.github.seancorfield/next-jdbc project-deps)
-  (get-all-versions! dependency project-deps))
+  (resolve-dependency! {:deps      {'com.google.javascript/closure-compiler-unshaded {:mvn/version "v20220202"}}
+                        :mvn/repos maven/standard-repos})
+
+  (ext/find-all-versions 'com.google.javascript/closure-compiler-unshaded nil {:mvn/repos maven/standard-repos})
+  )
