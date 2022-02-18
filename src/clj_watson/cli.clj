@@ -15,13 +15,21 @@
                               :default :present
                               :as      "path of deps.edn to scan."}
                              {:option  "output" :short "o"
-                              :type    #{"report" "full-report" "json" "edn"}
+                              :type    #{"json" "edn" "stdout" "stdout-simple"} ; keep stdout type to avoid break current automations
                               :default "report"
                               :as      "Output type."}
                              {:option "aliases" :short "a"
                               :type :string
                               :multiple true
                               :as "Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed."}
+                             {:option  "dependency-check-properties" :short "d"
+                              :type    :string
+                              :default nil
+                              :as      "path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
+                             {:option "database-strategy" :short "d"
+                              :type    #{"dependency-check" "github-advisory"}
+                              :default "dependency-check"
+                              :as      "Vulnerability database strategy."}
                              {:option "suggest-fix" :short "s"
                               :type    :with-flag
                               :default false

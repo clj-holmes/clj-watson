@@ -5,22 +5,15 @@ query Vulnerabilities {
     orderBy: {field: UPDATED_AT, direction: ASC}
   ) {
     nodes {
-      package {
-        name
-        ecosystem
-      }
       vulnerableVersionRange
       advisory {
         severity
-        ghsaId
         cvss {
           score
         }
         identifiers {
           value
         }
-        publishedAt
-        origin
       }
       firstPatchedVersion {
         identifier

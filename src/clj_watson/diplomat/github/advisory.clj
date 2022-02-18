@@ -1,4 +1,4 @@
-(ns clj-watson.diplomat.github
+(ns clj-watson.diplomat.github.advisory
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
             [clj-http.client :as http]))
@@ -6,6 +6,7 @@
 (def ^:private token (System/getenv "GITHUB_TOKEN"))
 
 (def ^:private query-template (-> "github/query-package-vulnerabilities" io/resource slurp))
+
 (def ^:private endpoint "https://api.github.com/graphql")
 
 (defn ^:private build-query [package-name]
