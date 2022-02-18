@@ -1,25 +1,58 @@
 # clj-watson
 Clojure's software composition analysis (SCA).
+clj-watson scans dependencies in a clojure `deps.edn` seeking for vulnerable direct/transitive dependencies and build a report with all the information needed to help you understand how the vulnerability manifest in your software.
 
-# Install
-It's possible to install clj-watson as clojure tool and invoke it.
+# How it works
+## Vulnerability database strategies
+clj-watson supports two methods for vulnerabilities scan.
+
+### dependency-check
+[dependency-check](https://github.com/jeremylong/DependencyCheck) is the most used method around the clojure/java sca tools, it downloads all vulnerabilities from nvd and stores it in a database, compose a [cpe](https://nvd.nist.gov/products/cpe) based on the dependencies, scans all jars in the classpath and matches vulnerabilities using it.
+
+### Github advisory database [experimental]
+It doesn't need to download a database since it uses the [github advisory database](https://github.com/advisories) via the [graphql api](https://docs.github.com/en/graphql/reference/objects#securityvulnerability), matches are made via package name.
+But there's a requirements to use it, it's necessary to generate a [Github PAT (Personal Access Token)](https://docs.github.com/en/graphql/guides/forming-calls-with-graphql#authenticating-with-graphql) to access graphql api or if you use Github actions it's possible to use their Github token.
+Another important thing is that the api has a limit of 5K requests per hour/per PAT.
+
+## Remediation suggestion
+#### The big difference from clj-watson to other tools.
+Since fixing the found vulnerabilities manually could be truly frustrating `clj-watson` provides a way to suggest a remediation. 
+It basically lookups the whole dependency tree finding if the latest version of a parent dependency uses the secure version of the child dependency until it reaches the direct dependency.
+Given the following dependency tree,
+```
+[dependency-a "v1"]
+  [dependency-b "v1"]
+    [dependency-c "v1"]
+```
+where the `dependency-c` is vulnerable and to fix it is necessary to bump from `v1` to `v2` clj-watson will try to find a version of `dependency-a` that uses `dependency-b` in a version that uses `dependency-c` on version `v2` and then propose a bump to `dependency-a`.
+```clojure
+{dependency-a {:mvn/version "v4"}}
+```
+If clj-watson does not find a version of dependency-b or dependency-a that satisfies this statement it'll propose an exclusion.
+```clojure
+{dependency-a {:exclusions [dependency-b]}
+ dependency-b {:mvn/version "v3"}}
+````
+In order to get the auto remediate suggestion it's necessary to provide a `--suggest-fix|-s` on the clj-watson execution.
+# Installation
+It's possible to install clj-watson as a clojure tool and invoke it.
 ```bash
-$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v2.1.3" :git/sha "19636f2"}' :as clj-watson
+$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v3.0.0" :git/sha "19636f2"}' :as clj-watson
 $ clojure -Tclj-watson scan '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"]}'
 ```
 It can be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.3" :git/sha "19636f2"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v3.0.0" :git/sha "19636f2"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your project `deps.edn`
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v2.1.3" :git/sha "19636f2"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v3.0.0" :git/sha "19636f2"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
-# Usage
+# CLI Options
 ```bash
 $ clojure -M:clj-watson scan -\? 
 NAME:
@@ -29,20 +62,21 @@ USAGE:
  clj-watson scan [command options] [arguments...]
 
 OPTIONS:
-   -p, --deps-edn-path S*                       path of deps.edn to scan.
-   -d, --dependency-check-properties S          path of a dependency-check properties file. If not provided uses resources/dependency-check.properties.
-   -o, --output edn|json|stdout         stdout  Output type.
-   -a, --aliases S                              Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed.
-   -s, --[no-]suggest-fix                       Suggest a new deps.edn file fixing all vulnerabilities found.
-   -f, --[no-]fail-on-result                    Enable or disable fail if results were found (useful for CI/CD).
+   -p, --deps-edn-path S*                                                      path of deps.edn to scan.
+   -o, --output edn|json|stdout|stdout-simple                report            Output type.
+   -a, --aliases S                                                             Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed.
+   -d, --dependency-check-properties S                                         [ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of a dependency-check properties file. If not provided uses resources/dependency-check.properties.
+   -t, --database-strategy dependency-check|github-advisory  dependency-check  Vulnerability database strategy.
+   -s, --[no-]suggest-fix                                                      Suggest a new deps.edn file fixing all vulnerabilities found.
+   -f, --[no-]fail-on-result                                                   Enable or disable fail if results were found (useful for CI/CD).
    -?, --help
 ```
 
 # Execution
-clj-watson scans a clojure deps project using [dependency-check](https://github.com/jeremylong/DependencyCheck) seeking for vulnerable direct/transitive dependencies and add all the dependency tree information to help understading how the vulnerability manifest.
+The minimum necessary to execute clj-watson is to provide the path to a `deps.edn` file, but it's recommended that you all provide the `-s` option so `clj-watson` will try to provide a remediation suggestion to the vulnerabilities.
 
 ```bash
-$ clojure -M:clj-watson scan scan -p deps.edn -s
+$ clojure -M:clj-watson scan scan -p deps.edn
 Downloading/Updating database.
 Download/Update completed.
 Dependency Information
@@ -74,43 +108,19 @@ CVSSV2: 5.0
 SUGGESTED BUMP: 1.55 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
-
-# Auto remediation
-Since fixing the found vulnerabilities manually could be truly frustrating clj-watson provides a way to find all possible solutions. It basically lookup the role dependency tree finding if the latest version of dependency contains the safe version of the child dependency until reachs the direct dependency. e.g:
-Given the following dependnecy tree,
-
-```
-[dependency-a "v1"]
-  [dependency-b "v1"]
-    [dependency-c "v1"]
-```
-
-where the `dependency-c` is vulnerable and to fix it's necessary to bump it to `v2` clj-watson will try to find a version of `dependency-a` that uses `dependency-b` in a version that uses `dependency-c` on version `v2` and then propose a bump to `dependency-a`.
-
-```clojure
-{dependency-a {:mvn/version "v4"}
-```
-
-If clj-watson does not find a version of dependency-b or dependency-a that satifies this statement it'll propose an exclusion.
-
-```clojure
-{dependency-a {:exclusions [dependency-b]}
- dependency-b {:mvn/version "v3"}}
-````
-
-In order to get the auto remediate suggestion it's just necessary to provide a `--suggest-fix` on the clj-watson execution.
-
+# Who uses it
+- [180 Seguros](https://180s.com.br)
+- [World Singles Networks](https://worldsinglesnetworks.com/)
+ 
 # Development
 ## nREPL
 ``` 
 clj -M:nREPL -m nrepl.cmdline
 ```
-
 ## Build
 ```
 clj -X:depstar
 ```
-
 ## Lint
 ```
 clj -M:lint
