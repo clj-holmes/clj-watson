@@ -6,8 +6,7 @@
 
 (def CONFIGURATION
   {:app      {:command     "clj-watson"
-              :description "run clj-holmes"
-              :version     (System/getProperty "clj-watson.version")}
+              :description "run clj-holmes" :version     (System/getProperty "clj-watson.version")}
    :commands [{:command     "scan"
                :description "Performs a scan on a deps.edn file"
                :opts        [{:option  "deps-edn-path" :short "p"
@@ -25,7 +24,7 @@
                              {:option  "dependency-check-properties" :short "d"
                               :type    :string
                               :default nil
-                              :as      "path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
+                              :as      "[ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
                              {:option "database-strategy" :short "t"
                               :type    #{"dependency-check" "github-advisory"}
                               :default "dependency-check"
