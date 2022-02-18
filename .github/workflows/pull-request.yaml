@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'src/**'
+      - 'test/**'
       - 'deps.edn'
 
   # Allows you to run this workflow manually from the Actions tab
