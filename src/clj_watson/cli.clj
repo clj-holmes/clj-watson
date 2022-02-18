@@ -26,7 +26,7 @@
                               :type    :string
                               :default nil
                               :as      "path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
-                             {:option "database-strategy" :short "d"
+                             {:option "database-strategy" :short "s"
                               :type    #{"dependency-check" "github-advisory"}
                               :default "dependency-check"
                               :as      "Vulnerability database strategy."}
