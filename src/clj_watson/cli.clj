@@ -15,7 +15,7 @@
                               :as      "path of deps.edn to scan."}
                              {:option  "output" :short "o"
                               :type    #{"json" "edn" "stdout" "stdout-simple"} ; keep stdout type to avoid break current automations
-                              :default "report"
+                              :default "stdout"
                               :as      "Output type."}
                              {:option "aliases" :short "a"
                               :type :string
