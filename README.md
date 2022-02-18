@@ -123,6 +123,6 @@ clj -X:depstar
 ```
 ## Lint
 ```
-clj -M:lint
-clj -M:lint-fix
+clj -M:clojure-lsp format
+clj -M:clojure-lsp clean-ns
 ```
