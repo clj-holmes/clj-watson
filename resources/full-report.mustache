@@ -1,0 +1,25 @@
+{% for vulnerable-dependency in vulnerable-dependencies %}
+Dependency Information
+-----------------------------------------------------
+NAME: {{vulnerable-dependency.dependency}}
+VERSION: {{vulnerable-dependency.mvn/version}}
+
+DEPENDENCY FOUND IN:
+{% if vulnerable-dependency.parents|empty? %}
+Impossible to find dependency in tree.
+It could be a jar inside some project.
+
+{% else %}
+{{vulnerable-dependency.parents|build-tree}}
+{% endif %}
+FIX SUGGESTION: {{vulnerable-dependency.remediate-suggestion|safe}}
+Vulnerabilities
+-----------------------------------------------------
+{% for vulnerability in vulnerable-dependency.vulnerabilities %}
+SEVERITY: {{vulnerability.advisory.severity}}
+IDENTIFIERS: {% for identifier in vulnerability.advisory.identifiers %}{{identifier.value}} {% endfor %}
+CVSS: {{vulnerability.advisory.cvss.score}}
+PATCHED VERSION: {{vulnerability.firstPatchedVersion.identifier}}
+{% endfor %}
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+{% endfor %}

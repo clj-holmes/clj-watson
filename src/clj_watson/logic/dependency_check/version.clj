@@ -1,4 +1,6 @@
-(ns clj-watson.logic.version
+(ns clj-watson.logic.dependency-check.version
+  (:require
+   [clj-watson.logic.dependency :as logic.dependency])
   (:import
    (org.owasp.dependencycheck.utils DependencyVersion)))
 
@@ -14,7 +16,7 @@
     (cond
       (= version current-version) true
       (= version "-") false
-      :default false)))
+      :else false)))
 
 (defn ^:private compare-version-with-current-version [version current-version operator]
   (let [version (DependencyVersion. version)
@@ -43,8 +45,9 @@
         (reduce-kv (partial check-if-matches-versions contains-versions? current-version) false versions))))
 
 (defn newer-and-not-vulnerable-version? [cpe-version versions current-version version-to-check]
-  (if (>= (.compareTo (DependencyVersion. version-to-check) (DependencyVersion. current-version)) 1)
-    (not (vulnerable? cpe-version versions version-to-check))))
+  (let [version-to-check (logic.dependency/get-dependency-version version-to-check)]
+    (when (>= (.compareTo (DependencyVersion. version-to-check) (DependencyVersion. current-version)) 1)
+      (not (vulnerable? cpe-version versions version-to-check)))))
 
 (comment
   (vulnerable? "1.2.0" "*" {:version-start-excluding nil
