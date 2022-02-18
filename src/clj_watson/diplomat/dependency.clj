@@ -41,11 +41,9 @@
     (deps/calc-basis deps {})
     (catch Exception e
       (binding [*out* *err*]
-        (clojure.pprint/pprint deps)
         (println (ex-message e))))))
 
 (comment
-  (require '[clojure.tools.deps.alpha.util.maven :as maven])
   (get-latest-version! 'org.clojure/clojure {:mvn/repos maven/standard-repos})
   (get-latest-version! 'io.github.clj-holmes/clj-watson {:mvn/repos maven/standard-repos})
   (resolve-dependency! {:deps      {'io.github.clj-holmes/clj-watson {:git/tag "v2.1.3" :git/sha "19636f2"}}

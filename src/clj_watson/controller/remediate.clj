@@ -36,9 +36,8 @@
                  child-dependency child-version}))
             ; secure version find in all dependency chain
             {child-dependency child-version}))
-        (do
-          ; since it is a direct dependency just bump it to the previously secure-version find.
-          {dependency secure-version})))))
+        ; since it is a direct dependency just bump it to the previously secure-version find.
+        {dependency secure-version}))))
 
 (defn ^:private scan* [vulnerable-dependency deps]
   (let [suggestion (secure-dependency-tree-suggestion vulnerable-dependency deps)]

@@ -16,7 +16,7 @@
     (cond
       (= version current-version) true
       (= version "-") false
-      :default false)))
+      :else false)))
 
 (defn ^:private compare-version-with-current-version [version current-version operator]
   (let [version (DependencyVersion. version)
@@ -46,7 +46,7 @@
 
 (defn newer-and-not-vulnerable-version? [cpe-version versions current-version version-to-check]
   (let [version-to-check (logic.dependency/get-dependency-version version-to-check)]
-    (if (>= (.compareTo (DependencyVersion. version-to-check) (DependencyVersion. current-version)) 1)
+    (when (>= (.compareTo (DependencyVersion. version-to-check) (DependencyVersion. current-version)) 1)
       (not (vulnerable? cpe-version versions version-to-check)))))
 
 (comment
