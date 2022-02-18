@@ -66,5 +66,3 @@ jobs:
         with:
           output-type: 'stdout'
           fail-on-result: 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
