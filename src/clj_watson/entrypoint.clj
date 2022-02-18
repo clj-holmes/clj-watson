@@ -30,6 +30,7 @@
   (scan* (assoc opts :database-strategy "dependency-check")))
 
 (defn scan [{:keys [fail-on-result output] :as opts}]
+  (println opts)
   (let [vulnerabilities (scan* opts)]
     (controller.output/generate vulnerabilities output)
     (if (and (-> vulnerabilities count (> 0)) fail-on-result)

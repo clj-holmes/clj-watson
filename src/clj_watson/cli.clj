@@ -40,4 +40,5 @@
                :runs        entrypoint/scan}]})
 
 (defn -main [& args]
+  (println args)
   (cli/run-cmd args CONFIGURATION))
