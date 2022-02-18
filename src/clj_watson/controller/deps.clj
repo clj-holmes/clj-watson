@@ -1,9 +1,9 @@
 (ns clj-watson.controller.deps
   (:require
-    [clojure.tools.deps.alpha :as deps]
-    [clojure.tools.deps.alpha.util.maven :as maven])
+   [clojure.tools.deps.alpha :as deps]
+   [clojure.tools.deps.alpha.util.maven :as maven])
   (:import
-    (java.io File)))
+   (java.io File)))
 
 (defn ^:private build-aliases [deps aliases]
   (cond
@@ -13,7 +13,7 @@
 
 (defn ^:private dependencies-map->dependencies-vector [dependencies]
   (reduce (fn [dependency-vector [dependency-name dependency-info]]
-            (conj dependency-vector(assoc dependency-info :dependency dependency-name)))
+            (conj dependency-vector (assoc dependency-info :dependency dependency-name)))
           [] dependencies))
 
 (defn parse [^String deps-path aliases]

@@ -1,8 +1,8 @@
 (ns clj-watson.cli
   (:gen-class)
   (:require
-    [cli-matic.core :as cli]
-    [clj-watson.entrypoint :as entrypoint]))
+   [cli-matic.core :as cli]
+   [clj-watson.entrypoint :as entrypoint]))
 
 (def CONFIGURATION
   {:app      {:command     "clj-watson"

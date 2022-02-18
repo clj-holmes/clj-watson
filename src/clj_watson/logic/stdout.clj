@@ -1,7 +1,7 @@
 (ns clj-watson.logic.stdout
   (:require
-    [selmer.parser :refer [render]]
-    [selmer.filters :refer [add-filter!]]))
+   [selmer.filters :refer [add-filter!]]
+   [selmer.parser :refer [render]]))
 
 (defn ^:private dependencies-hierarchy-to-tree* [tree]
   (loop [text ""

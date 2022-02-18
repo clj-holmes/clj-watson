@@ -1,9 +1,9 @@
 (ns clj-watson.controller.output
   (:require
-    [clj-watson.logic.stdout :as logic.stdout]
-    [clojure.java.io :as io]
-    [cheshire.core :as json]
-    [clojure.pprint :as pprint]))
+   [cheshire.core :as json]
+   [clj-watson.logic.stdout :as logic.stdout]
+   [clojure.java.io :as io]
+   [clojure.pprint :as pprint]))
 
 (defmulti ^:private generate* (fn [_ kind] (keyword kind)))
 

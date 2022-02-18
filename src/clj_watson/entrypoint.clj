@@ -1,10 +1,11 @@
 (ns clj-watson.entrypoint
-  (:require [clj-watson.controller.deps :as controller.deps]
-            [clj-watson.controller.remediate :as controller.remediate]
-            [clj-watson.controller.output :as controller.output]
-            [clj-watson.controller.dependency-check.scanner :as controller.dc.scanner]
-            [clj-watson.controller.dependency-check.vulnerability :as controller.dc.vulnerability]
-            [clj-watson.controller.github.vulnerability :as controller.gh.vulnerability]))
+  (:require
+   [clj-watson.controller.dependency-check.scanner :as controller.dc.scanner]
+   [clj-watson.controller.dependency-check.vulnerability :as controller.dc.vulnerability]
+   [clj-watson.controller.deps :as controller.deps]
+   [clj-watson.controller.github.vulnerability :as controller.gh.vulnerability]
+   [clj-watson.controller.output :as controller.output]
+   [clj-watson.controller.remediate :as controller.remediate]))
 
 (defmulti scan* (fn [{:keys [database-strategy]}] (keyword database-strategy)))
 

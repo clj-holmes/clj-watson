@@ -1,7 +1,8 @@
 (ns clj-watson.diplomat.github.advisory
-  (:require [clojure.string :as string]
-            [clojure.java.io :as io]
-            [clj-http.client :as http]))
+  (:require
+   [clj-http.client :as http]
+   [clojure.java.io :as io]
+   [clojure.string :as string]))
 
 (def ^:private token (System/getenv "GITHUB_TOKEN"))
 

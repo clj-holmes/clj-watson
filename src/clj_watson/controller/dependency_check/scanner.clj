@@ -1,10 +1,12 @@
 (ns clj-watson.controller.dependency-check.scanner
-  (:require [clojure.java.io :as io]
-            [clojure.string :as string])
-  (:import (org.owasp.dependencycheck.utils Settings)
-           (java.io File ByteArrayInputStream)
-           (org.owasp.dependencycheck Engine)
-           (java.util Arrays)))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.string :as string])
+  (:import
+   (java.io File ByteArrayInputStream)
+   (java.util Arrays)
+   (org.owasp.dependencycheck Engine)
+   (org.owasp.dependencycheck.utils Settings)))
 
 (defn ^:private update-download-database [engine]
   (binding [*out* *err*]

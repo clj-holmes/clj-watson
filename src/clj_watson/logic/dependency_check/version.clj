@@ -1,6 +1,8 @@
 (ns clj-watson.logic.dependency-check.version
-  (:require [clj-watson.logic.dependency :as logic.dependency])
-  (:import (org.owasp.dependencycheck.utils DependencyVersion)))
+  (:require
+   [clj-watson.logic.dependency :as logic.dependency])
+  (:import
+   (org.owasp.dependencycheck.utils DependencyVersion)))
 
 (def ^:private version-operators
   {:version-end-excluding   >

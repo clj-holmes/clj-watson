@@ -1,8 +1,9 @@
 (ns clj-watson.controller.remediate
-  (:require [clj-watson.diplomat.dependency :as diplomat.dependency]
-            [version-clj.core :as version]
-            [clj-watson.logic.dependency :as logic.dependency]
-            [clojure.tools.deps.alpha.util.maven :as maven]))
+  (:require
+   [clj-watson.diplomat.dependency :as diplomat.dependency]
+   [clj-watson.logic.dependency :as logic.dependency]
+   [clojure.tools.deps.alpha.util.maven :as maven]
+   [version-clj.core :as version]))
 
 (defn ^:private parent-contains-child-version?
   [parent-dependency parent-version child-dependency child-version deps]
