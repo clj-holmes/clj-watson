@@ -13,6 +13,7 @@ clj-watson supports two methods for vulnerabilities scan.
 It doesn't need to download a database since it uses the [github advisory database](https://github.com/advisories) via the [graphql api](https://docs.github.com/en/graphql/reference/objects#securityvulnerability), matches are made via package name.
 But there's a requirements to use it, it's necessary to generate a [Github PAT (Personal Access Token)](https://docs.github.com/en/graphql/guides/forming-calls-with-graphql#authenticating-with-graphql) to access graphql api or if you use Github actions it's possible to use their Github token.
 Another important thing is that the api has a limit of 5K requests per hour/per PAT.
+If you create a PAT or uses the github action token just set it in as an environment variabe named `GITHUB_TOKEN` to clj-watson be able to use it.
 
 ## Remediation suggestion
 #### The big difference from clj-watson to other tools.
