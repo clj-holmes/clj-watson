@@ -45,5 +45,5 @@
                                :database-strategy "github-advisory"
                                :suggest-fix   true}))
 
-  (controller.output/generate vulnerabilities "report")
-  (controller.output/generate vulnerabilities "full-report"))
+  (controller.output/generate vulnerabilities "stdout")
+  (controller.output/generate vulnerabilities "stdout-simple"))
