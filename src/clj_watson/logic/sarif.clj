@@ -34,18 +34,18 @@
        (reduce concat)))
 
 (defn ^:private advisory->sarif-result
-  [filename physical-location remediate-suggestion dependency {{:keys [identifiers]} :advisory}]
+  [filename physical-location dependency {{:keys [identifiers]} :advisory}]
   {:ruleId    (-> identifiers first :value)
-   :message   {:text (format "Vulnerability found in direct dependency %s" dependency remediate-suggestion)}
+   :message   {:text (format "Vulnerability found in direct dependency %s" dependency)}
    :locations [{:physicalLocation
                 {:artifactLocation {:uri filename}
                  :region           physical-location}}]})
 
 (defn ^:private dependencies->sarif-results [dependencies deps-edn-path]
   (->> dependencies
-       (map (fn [{:keys [dependency vulnerabilities physical-location remediate-suggestion]}]
+       (map (fn [{:keys [dependency vulnerabilities physical-location]}]
               (->> vulnerabilities
-                   (map #(advisory->sarif-result deps-edn-path physical-location remediate-suggestion dependency %)))))
+                   (map #(advisory->sarif-result deps-edn-path physical-location dependency %)))))
        (reduce concat)))
 
 (defn generate [dependencies deps-edn-path]
