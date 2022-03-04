@@ -1,8 +1,8 @@
 (ns clj-watson.controller.deps
   (:require
+   [clojure.set :refer [rename-keys]]
    [clojure.tools.deps.alpha :as deps]
    [clojure.tools.deps.alpha.util.maven :as maven]
-   [clojure.set :refer [rename-keys]]
    [edamame.core :refer [parse-string]])
   (:import
    (java.io File)))

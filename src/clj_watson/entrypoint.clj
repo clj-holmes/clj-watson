@@ -46,4 +46,4 @@
                                :suggest-fix   true}))
 
   (controller.output/generate vulnerabilities "deps.edn" "sarif")
-  (controller.output/generate vulnerabilities "stdout-simple"))
+  (controller.output/generate vulnerabilities "deps.edn" "stdout-simple"))

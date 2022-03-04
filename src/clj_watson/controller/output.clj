@@ -1,8 +1,8 @@
 (ns clj-watson.controller.output
   (:require
    [cheshire.core :as json]
-   [clj-watson.logic.stdout :as logic.stdout]
    [clj-watson.logic.sarif :as logic.sarif]
+   [clj-watson.logic.stdout :as logic.stdout]
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]))
 
