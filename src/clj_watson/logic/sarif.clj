@@ -4,7 +4,7 @@
 
 (def ^:private sarif-boilerplate
   {:$schema "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json"
-   :version "3.0.2"
+   :version "2.1.0"
    :runs    [{:tool
               {:driver {:name           "clj-watson"
                         :informationUri "https://github.com/clj-holmes/clj-watson"
