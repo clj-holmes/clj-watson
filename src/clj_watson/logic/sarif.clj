@@ -46,6 +46,3 @@
     (-> sarif-boilerplate
         (assoc-in [:runs 0 :tool :driver :rules] rules)
         (assoc-in [:runs 0 :results] results))))
-
-
-
