@@ -2,7 +2,7 @@
   (:require
    [cheshire.core :as json]
    [clj-watson.logic.sarif :as logic.sarif]
-   [clj-watson.logic.stdout :as logic.stdout]
+   [clj-watson.logic.template :as logic.template]
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]))
 
@@ -10,11 +10,11 @@
 
 (defmethod ^:private generate* :stdout-simple [dependencies & _]
   (let [template (-> "simple-report.mustache" io/resource slurp)]
-    (println (logic.stdout/generate dependencies template))))
+    (println (logic.template/generate {:vulnerable-dependencies dependencies} template))))
 
 (defmethod ^:private generate* :stdout [dependencies & _]
   (let [template (-> "full-report.mustache" io/resource slurp)]
-    (println (logic.stdout/generate dependencies template))))
+    (println (logic.template/generate {:vulnerable-dependencies dependencies} template))))
 
 (defmethod ^:private generate* :json [dependencies & _]
   (-> dependencies json/generate-string pprint/pprint))

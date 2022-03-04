@@ -1,6 +1,8 @@
 (ns clj-watson.logic.sarif
   (:require
-   [clojure.string :as string]))
+    [clj-watson.logic.template :as logic.template]
+    [clojure.string :as string]
+    [clojure.java.io :as io]))
 
 (def ^:private sarif-boilerplate
   {:$schema "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json"
@@ -10,29 +12,31 @@
                         :informationUri "https://github.com/clj-holmes/clj-watson"
                         :version        "3.0.2"}}}]})
 
-(defn ^:private advisory->sarif-rule [dependency {{:keys [description summary identifiers cvss]} :advisory}]
-  (let [identifier (-> identifiers first :value)]
+(defn ^:private advisory->sarif-rule [dependency dependency-info {{:keys [description summary identifiers cvss]} :advisory}]
+  (let [identifier (-> identifiers first :value)
+        ; needs to remove it from here
+        template (-> "sarif-help.mustache" io/resource slurp)]
     [{:id                   identifier
       :name                 (format "VulnerableDependency%s" (-> dependency name string/capitalize))
       :shortDescription     {:text summary}
       :fullDescription      {:text description}
-      :help                 {:text (format "Vulnerability found in package %s." dependency)}
+      :help                 {:markdown (logic.template/generate {:vulnerable-dependency dependency-info} template)}
       :helpUri              (format "https://github.com/advisories/%s" identifier)
       :properties           {:security-severity (-> cvss :score str)}
       :defaultConfiguration {:level "error"}}]))
 
 (defn ^:private dependencies->sarif-rules [dependencies]
   (->> dependencies
-       (map (fn [{:keys [dependency vulnerabilities]}]
+       (map (fn [{:keys [dependency vulnerabilities] :as dependency-info}]
               (->> vulnerabilities
-                   (map #(advisory->sarif-rule dependency %))
+                   (map #(advisory->sarif-rule dependency dependency-info %))
                    (reduce concat))))
        (reduce concat)))
 
 (defn ^:private advisory->sarif-result
   [filename physical-location remediate-suggestion dependency {{:keys [identifiers]} :advisory}]
   {:ruleId    (-> identifiers first :value)
-   :message   {:text (format "Vulnerability found in package %s. Remediate suggestion: %s" dependency remediate-suggestion)}
+   :message   {:text (format "Vulnerability found in direct dependency %s" dependency remediate-suggestion)}
    :locations [{:physicalLocation
                 {:artifactLocation {:uri filename}
                  :region           physical-location}}]})
