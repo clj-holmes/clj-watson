@@ -23,7 +23,7 @@
   (pprint/pprint dependencies))
 
 (defmethod ^:private generate* :sarif [dependencies deps-edn-path & _]
-  (-> dependencies (logic.sarif/generate deps-edn-path) json/generate-string pprint/pprint))
+  (-> dependencies (logic.sarif/generate deps-edn-path) json/generate-string println))
 
 (defn generate [dependencies deps-edn-path kind]
   (generate* dependencies deps-edn-path kind))
