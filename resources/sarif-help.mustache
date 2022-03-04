@@ -3,6 +3,11 @@
 Name: {{vulnerable-dependency.dependency}}
 Version: {{vulnerable-dependency.mvn/version}}
 
+## Vulnerabilities
+{% for identifier in identifiers %}
+- {{identifier.value}}
+{% endfor %}
+
 ## Location
 {% if vulnerable-dependency.parents|empty? %}
 Impossible to find dependency in tree.

@@ -16,7 +16,7 @@
   (let [identifier (-> identifiers first :value)
         ; needs to remove it from here
         template (-> "sarif-help.mustache" io/resource slurp)
-        help-text (logic.template/generate {:vulnerable-dependency dependency-info} template)]
+        help-text (logic.template/generate {:vulnerable-dependency dependency-info :identifiers identifiers} template)]
     [{:id                   identifier
       :name                 (format "VulnerableDependency%s" (-> dependency name string/capitalize))
       :shortDescription     {:text summary}
