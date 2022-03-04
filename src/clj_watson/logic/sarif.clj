@@ -25,19 +25,18 @@
                    (reduce concat))))
        (reduce concat)))
 
-(defn ^:private advisory->sarif-result [filename dependency {{:keys [identifiers]} :advisory}]
+(defn ^:private advisory->sarif-result [filename physical-location dependency {{:keys [identifiers]} :advisory}]
   {:ruleId    (-> identifiers first :value)
    :message   {:text (format "Vulnerability found in package %s" dependency)}
    :locations [{:physicalLocation
                 {:artifactLocation {:uri filename}
-                 :region           (:physical-location dependency)}}]})
+                 :region           physical-location}}]})
 
 (defn ^:private dependencies->sarif-results [dependencies deps-edn-path]
   (->> dependencies
-       (map (fn [{:keys [dependency vulnerabilities]}]
+       (map (fn [{:keys [dependency vulnerabilities physical-location]}]
               (->> vulnerabilities
-                   (map #(advisory->sarif-result deps-edn-path dependency %))
-                   (reduce concat))))
+                   (map #(advisory->sarif-result deps-edn-path physical-location dependency %)))))
        (reduce concat)))
 
 (defn generate [dependencies deps-edn-path]
