@@ -15,7 +15,7 @@
     :fullDescription      {:text description}
     :help                 {:text (format "Vulnerability found in package %s" dependency)}
     :properties           {:security-severity (:score cvss)}
-    :defaultConfiguration {:level severity}}])
+    :defaultConfiguration {:level "error"}}])
 
 (defn ^:private dependencies->sarif-rules [dependencies]
   (->> dependencies
