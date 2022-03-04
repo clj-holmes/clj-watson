@@ -15,12 +15,14 @@
 (defn ^:private advisory->sarif-rule [dependency dependency-info {{:keys [description summary identifiers cvss]} :advisory}]
   (let [identifier (-> identifiers first :value)
         ; needs to remove it from here
-        template (-> "sarif-help.mustache" io/resource slurp)]
+        template (-> "sarif-help.mustache" io/resource slurp)
+        help-text (logic.template/generate {:vulnerable-dependency dependency-info} template)]
     [{:id                   identifier
       :name                 (format "VulnerableDependency%s" (-> dependency name string/capitalize))
       :shortDescription     {:text summary}
       :fullDescription      {:text description}
-      :help                 {:markdown (logic.template/generate {:vulnerable-dependency dependency-info} template)}
+      :help                 {:text help-text
+                             :markdown help-text}
       :helpUri              (format "https://github.com/advisories/%s" identifier)
       :properties           {:security-severity (-> cvss :score str)}
       :defaultConfiguration {:level "error"}}]))
