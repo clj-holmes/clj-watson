@@ -11,13 +11,15 @@
                         :version        "3.0.1"}}}]})
 
 (defn ^:private advisory->sarif-rule [dependency {{:keys [description summary identifiers cvss]} :advisory}]
-  [{:id                   (-> identifiers first :value)
-    :name                 (format "VulnerableDependency%s" (-> dependency name string/capitalize))
-    :shortDescription     {:text summary}
-    :fullDescription      {:text description}
-    :help                 {:text (format "Vulnerability found in package %s" dependency)}
-    :properties           {:security-severity (:score cvss)}
-    :defaultConfiguration {:level "error"}}])
+  (let [identifier (-> identifiers first :value)]
+    [{:id                   identifier
+      :name                 (format "VulnerableDependency%s" (-> dependency name string/capitalize))
+      :shortDescription     {:text summary}
+      :fullDescription      {:text description}
+      :help                 {:text (format "Vulnerability found in package %s" dependency)}
+      :helpUri              (format "https://github.com/advisories/%s" identifier)
+      :properties           {:security-severity (:score cvss)}
+      :defaultConfiguration {:level "error"}}]))
 
 (defn ^:private dependencies->sarif-rules [dependencies]
   (->> dependencies
