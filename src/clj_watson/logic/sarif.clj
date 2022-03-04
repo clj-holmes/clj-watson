@@ -1,8 +1,8 @@
 (ns clj-watson.logic.sarif
   (:require
-    [clj-watson.logic.template :as logic.template]
-    [clojure.string :as string]
-    [clojure.java.io :as io]))
+   [clj-watson.logic.template :as logic.template]
+   [clojure.java.io :as io]
+   [clojure.string :as string]))
 
 (def ^:private sarif-boilerplate
   {:$schema "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json"
