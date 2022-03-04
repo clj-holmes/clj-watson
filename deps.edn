@@ -5,6 +5,7 @@
                cli-matic/cli-matic                                     {:mvn/version "0.4.3"}
                selmer/selmer                                           {:mvn/version "1.12.50"}
                org.slf4j/slf4j-nop                                     {:mvn/version "2.0.0-alpha6"}
+               borkdude/edamame                                        {:mvn/version "0.0.19"}
                org.clojure/tools.deps.alpha                            {:mvn/version "0.12.1148"}
                org.owasp/dependency-check-core                         {:mvn/version "6.5.3"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.7.3"}}
