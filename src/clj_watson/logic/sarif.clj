@@ -9,8 +9,7 @@
                         :version        "3.0.1"}}}]})
 
 (defn ^:private advisory->sarif-rule [dependency {{:keys [description summary identifiers severity cvss]} :advisory}]
-  [{:name                 (-> identifiers first :value)
-    :id                   (-> identifiers first :value)
+  [{:id                   (-> identifiers first :value)
     :shortDescription     {:text summary}
     :fullDescription      {:text description}
     :help                 {:text (format "Vulnerability found in package %s" dependency)}
