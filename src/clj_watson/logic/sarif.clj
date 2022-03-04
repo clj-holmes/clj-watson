@@ -1,5 +1,6 @@
 (ns clj-watson.logic.sarif
-  (:require [clojure.string :as string]))
+  (:require
+   [clojure.string :as string]))
 
 (def ^:private sarif-boilerplate
   {:$schema "https://www.schemastore.org/schemas/json/sarif-2.1.0-rtm.5.json"
@@ -9,7 +10,7 @@
                         :informationUri "https://github.com/clj-holmes/clj-watson"
                         :version        "3.0.1"}}}]})
 
-(defn ^:private advisory->sarif-rule [dependency {{:keys [description summary identifiers severity cvss]} :advisory}]
+(defn ^:private advisory->sarif-rule [dependency {{:keys [description summary identifiers cvss]} :advisory}]
   [{:id                   (-> identifiers first :value)
     :name                 (format "VulnerableDependency%s" (-> dependency name string/capitalize))
     :shortDescription     {:text summary}
