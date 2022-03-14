@@ -1,0 +1,22 @@
+# Dependency
+## Information
+Name: {{vulnerable-dependency.dependency}}
+Version: {{vulnerable-dependency.mvn/version}}
+
+## Vulnerabilities
+{% for identifier in identifiers %}
+- {{identifier.value}}
+{% endfor %}
+
+## Location
+{% if vulnerable-dependency.parents|empty? %}
+Impossible to find dependency in tree.
+It could be a jar inside some project.
+
+{% else %}
+{{vulnerable-dependency.parents|build-tree}}
+{% endif %}
+# Fix suggestion
+```clojure
+{{vulnerable-dependency.remediate-suggestion|safe}}
+```

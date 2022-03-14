@@ -29,9 +29,9 @@
 (defmethod scan* :default [opts]
   (scan* (assoc opts :database-strategy "dependency-check")))
 
-(defn scan [{:keys [fail-on-result output] :as opts}]
+(defn scan [{:keys [fail-on-result output deps-edn-path] :as opts}]
   (let [vulnerabilities (scan* opts)]
-    (controller.output/generate vulnerabilities output)
+    (controller.output/generate vulnerabilities deps-edn-path output)
     (if (and (-> vulnerabilities count (> 0)) fail-on-result)
       (System/exit 1)
       (System/exit 0))))
@@ -45,5 +45,5 @@
                                :database-strategy "github-advisory"
                                :suggest-fix   true}))
 
-  (controller.output/generate vulnerabilities "stdout")
-  (controller.output/generate vulnerabilities "stdout-simple"))
+  (controller.output/generate vulnerabilities "deps.edn" "sarif")
+  (controller.output/generate vulnerabilities "deps.edn" "stdout-simple"))
