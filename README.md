@@ -7,7 +7,7 @@ clj-watson scans dependencies in a clojure `deps.edn` seeking for vulnerable dir
 clj-watson supports two methods for vulnerabilities scan.
 
 ### dependency-check
-[dependency-check](https://github.com/jeremylong/DependencyCheck) is the most used method around the clojure/java sca tools, it downloads all vulnerabilities from nvd and stores it in a database, compose a [cpe](https://nvd.nist.gov/products/cpe) based on the dependencies, scans all jars in the classpath and matches vulnerabilities using it.
+[dependency-check](https://github.com/jeremylong/DependencyCheck) is the most used method around the clojure/java sca tools, it downloads all vulnerabilities from nvd and stores it in a database (located in `/tmp/db`), compose a [cpe](https://nvd.nist.gov/products/cpe) based on the dependencies, scans all jars in the classpath and matches vulnerabilities using it.
 
 ### Github advisory database [experimental]
 It doesn't need to download a database since it uses the [github advisory database](https://github.com/advisories) via the [graphql api](https://docs.github.com/en/graphql/reference/objects#securityvulnerability), matches are made via package name.
