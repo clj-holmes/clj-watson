@@ -38,18 +38,18 @@ In order to get the auto remediate suggestion it's necessary to provide a `--sug
 # Installation
 It's possible to install clj-watson as a clojure tool and invoke it.
 ```bash
-$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v4.0.0" :git/sha "9972a33"}' :as clj-watson
+$ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v4.0.1" :git/sha "65d928c"}' :as clj-watson
 $ clojure -Tclj-watson scan '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
 ```
 It can also be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v4.0.0" :git/sha "9972a33"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v4.0.1" :git/sha "65d928c"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your project `deps.edn`
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.0.0" :git/sha "9972a33"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.0.1" :git/sha "65d928c"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
