@@ -30,9 +30,12 @@
   (scan* (assoc opts :database-strategy "dependency-check")))
 
 (defn scan [{:keys [fail-on-result output deps-edn-path] :as opts}]
-  (let [vulnerabilities (scan* opts)]
+  (let [vulnerabilities (scan* opts)
+        contains-vulnerabilities? (->> vulnerabilities
+                                       (map (comp empty? :vulnerabilities))
+                                       (some false?))]
     (controller.output/generate vulnerabilities deps-edn-path output)
-    (if (and (-> vulnerabilities count (> 0)) fail-on-result)
+    (if (and contains-vulnerabilities? fail-on-result)
       (System/exit 1)
       (System/exit 0))))
 
