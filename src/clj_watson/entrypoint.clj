@@ -45,8 +45,7 @@
                                :suggest-fix   true}))
 
   (def vulnerabilities (scan* {:deps-edn-path "resources/vulnerable-deps.edn"
-                               :database-strategy "github-advisory"
-                               :suggest-fix   true}))
-
+                               :database-strategy "github-advisory"}))
+  controller.gh.vulnerability/dependency-bkp
   (controller.output/generate vulnerabilities "deps.edn" "sarif")
   (controller.output/generate vulnerabilities "deps.edn" "stdout-simple"))
