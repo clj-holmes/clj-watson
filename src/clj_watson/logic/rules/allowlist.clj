@@ -1,5 +1,6 @@
 (ns clj-watson.logic.rules.allowlist
-  (:require [clj-time.core :as time]))
+  (:require
+   [clj-time.core :as time]))
 
 (defn by-pass?
   [config-map as-of vulnerability]

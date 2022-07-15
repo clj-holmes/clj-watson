@@ -1,7 +1,8 @@
 (ns clj-watson.unit.logic.allowlist-test
-  (:require [clojure.test :refer :all]
-            [clj-watson.logic.rules.allowlist :as logic.rules.allowlist]
-            [clj-time.core :as time]))
+  (:require
+   [clj-time.core :as time]
+   [clj-watson.logic.rules.allowlist :as logic.rules.allowlist]
+   [clojure.test :refer :all]))
 
 (deftest by-pass?
   (let [expired-date (time/local-date 2020 2 1)

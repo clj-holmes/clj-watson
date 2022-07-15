@@ -1,15 +1,20 @@
 (ns clj-watson.unit.adapter.config-test
-  (:require [clojure.test :refer :all]
-            [clj-watson.adapter.config :as adapter.config]
-            [clj-time.core :as time]
-            [matcher-combinators.test]))
+  (:require
+   [clj-time.core :as time]
+   [clj-watson.adapter.config :as adapter.config]
+   [clojure.test :refer :all]
+   [matcher-combinators.test]))
 
 (deftest ->allow-config
-  (testing "Config Parsing"
+  (testing "Allow Parsing"
     (is (match? {"CVE-1234" (time/date-time 2021 5 12)}
                 (adapter.config/->allow-config {:cve-label "CVE-1234" :expires "2021-05-12"})))
-    (is (thrown-match? IllegalArgumentException
-                (adapter.config/->allow-config {:cve-label "CVE-1234" :expires "wrong date"})))
-    ))
+    (is (thrown? IllegalArgumentException
+                 (adapter.config/->allow-config {:cve-label "CVE-1234" :expires "wrong date"})))))
 
-(->allow-config)
+(deftest config->allow-list
+  (testing "Configs Parsing"
+    (is (match? {"CVE-1234" (time/date-time 2021 5 12)
+                 "CVE-5678" (time/date-time 2025 5 12)}
+                (adapter.config/config->allow-config-map [{:cve-label "CVE-1234" :expires "2021-05-12"}
+                                                          {:cve-label "CVE-5678" :expires "2025-05-12"}])))))
