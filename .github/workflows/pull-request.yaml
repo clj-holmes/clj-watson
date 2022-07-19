@@ -12,6 +12,38 @@ on:
   workflow_dispatch:
 
 jobs:
+  tests:
+    strategy:
+      matrix:
+        namespace: [ unit ]
+        operating-system: [ubuntu-latest]
+
+    runs-on: ${{ matrix.operating-system }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Install clojure tools-deps
+        uses: DeLaGuardo/setup-clojure@master
+        with:
+          tools-deps: 1.11.1.1113
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3.0.2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-tests-${{ hashFiles('**/deps.edn') }}
+          restore-keys: ${{ runner.os }}-m2-pr
+
+      - name: Execute ${{ matrix.namespace }} Test
+        run: clojure -M:test ${{ matrix.namespace }}
 
   check-lint:
 
