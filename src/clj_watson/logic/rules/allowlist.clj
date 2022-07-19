@@ -1,6 +1,6 @@
 (ns clj-watson.logic.rules.allowlist
   (:require
-    [clj-time.core :as time]))
+   [clj-time.core :as time]))
 
 (defn match-cve?
   ([allowed-cves as-of]
