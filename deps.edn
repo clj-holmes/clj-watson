@@ -3,6 +3,7 @@
                clj-http/clj-http                                       {:mvn/version "3.12.3"}
                cheshire/cheshire                                       {:mvn/version "5.10.2"}
                cli-matic/cli-matic                                     {:mvn/version "0.4.3"}
+               clj-time/clj-time                                       {:mvn/version "0.15.2"}
                selmer/selmer                                           {:mvn/version "1.12.50"}
                org.slf4j/slf4j-nop                                     {:mvn/version "2.0.0-alpha6"}
                borkdude/edamame                                        {:mvn/version "0.0.19"}
@@ -24,4 +25,10 @@
                                             :aot        true}}
                :nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
                :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2022.02.01-20.02.32"}}
-                             :main-opts    ["-m" "clojure-lsp.main"]}}}
+                             :main-opts    ["-m" "clojure-lsp.main"]}
+               :test        {:extra-paths ["test"]
+                             :extra-deps  {org.clojure/test.check                                         {:mvn/version "1.1.1"}
+                                           lambdaisland/kaocha                                            {:mvn/version "1.67.1055"}
+                                           nubank/mockfn                                                  {:mvn/version "0.7.0"}
+                                           nubank/state-flow                                              {:mvn/version "5.14.1"}}
+                             :main-opts   ["-m" "kaocha.runner"]}}}

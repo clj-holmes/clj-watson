@@ -1,0 +1,3 @@
+{:linters {:unresolved-symbol {:exclude []}
+           :refer-all {:exclude [clojure.test]}}
+ :output  {:show-rule-name-in-message true}}

@@ -15,6 +15,18 @@ But there's a requirements to use it, it's necessary to generate a [Github PAT (
 Another important thing is that the api has a limit of 5K requests per hour/per PAT.
 If you create a PAT or uses the github action token just set it in as an environment variabe named `GITHUB_TOKEN` to clj-watson be able to use it.
 
+#### Allow Listing Known CVE's
+
+Sometimes the dependency tree is not under your control and overrides are not possible,
+but you can allways allow a CVE for a limited period by adding a config file at `resources/clj-watson-config.edn`:
+
+```clojure
+{:allow-list {:cves [{:cve-label "CVE-0000"
+                      :expires "2000-01-01"}
+                     {:cve-label "CVE-00000"
+                      :expires "2000-01-01"}]}}
+```
+
 ## Remediation suggestion
 #### The big difference from clj-watson to other tools.
 Since fixing the found vulnerabilities manually could be truly frustrating `clj-watson` provides a way to suggest a remediation. 
