@@ -9,7 +9,7 @@
                org.clojure/tools.deps.alpha                            {:mvn/version "0.15.1254"}
                org.owasp/dependency-check-core                         {:mvn/version "7.4.1"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.2"}}
-
+               
  :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
                "clojars" {:url "https://repo.clojars.org/"}}
 
@@ -26,4 +26,10 @@
                :outdated    {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
                              :main-opts ["-m" "depot.outdated.main"]}
                :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2022.02.01-20.02.32"}}
-                             :main-opts    ["-m" "clojure-lsp.main"]}}}
+                             :main-opts    ["-m" "clojure-lsp.main"]}
+               :test        {:extra-paths ["test"]
+                             :extra-deps  {org.clojure/test.check                                         {:mvn/version "1.1.1"}
+                                           lambdaisland/kaocha                                            {:mvn/version "1.67.1055"}
+                                           nubank/mockfn                                                  {:mvn/version "0.7.0"}
+                                           nubank/state-flow                                              {:mvn/version "5.14.1"}}
+                             :main-opts   ["-m" "kaocha.runner"]}}}
