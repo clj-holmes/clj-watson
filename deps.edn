@@ -1,14 +1,14 @@
-{:deps        {org.clojure/clojure                                     {:mvn/version "1.11.0-beta1"}
+{:deps        {org.clojure/clojure                                     {:mvn/version "1.11.1"}
                version-clj/version-clj                                 {:mvn/version "2.0.2"}
                clj-http/clj-http                                       {:mvn/version "3.12.3"}
-               cheshire/cheshire                                       {:mvn/version "5.10.2"}
-               cli-matic/cli-matic                                     {:mvn/version "0.4.3"}
-               selmer/selmer                                           {:mvn/version "1.12.50"}
-               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.0-alpha6"}
-               borkdude/edamame                                        {:mvn/version "0.0.19"}
-               org.clojure/tools.deps.alpha                            {:mvn/version "0.12.1148"}
-               org.owasp/dependency-check-core                         {:mvn/version "7.0.0"}
-               org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.7.3"}}
+               cheshire/cheshire                                       {:mvn/version "5.11.0"}
+               cli-matic/cli-matic                                     {:mvn/version "0.5.4"}
+               selmer/selmer                                           {:mvn/version "1.12.55"}
+               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.6"}
+               borkdude/edamame                                        {:mvn/version "1.0.16"}
+               org.clojure/tools.deps.alpha                            {:mvn/version "0.15.1254"}
+               org.owasp/dependency-check-core                         {:mvn/version "7.4.1"}
+               org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.2"}}
 
  :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
                "clojars" {:url "https://repo.clojars.org/"}}
