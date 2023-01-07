@@ -8,7 +8,7 @@
                org.slf4j/slf4j-nop                                     {:mvn/version "2.0.6"}
                borkdude/edamame                                        {:mvn/version "1.0.16"}
                org.clojure/tools.deps.alpha                            {:mvn/version "0.15.1254"}
-               org.owasp/dependency-check-core                         {:mvn/version "7.4.1"}
+               org.owasp/dependency-check-core                         {:mvn/version "7.4.4"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.2"}}
                
  :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
