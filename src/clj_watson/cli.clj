@@ -25,6 +25,10 @@
                               :type    :string
                               :default nil
                               :as      "[ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
+                             {:option  "clj-watson-properties" :short "w"
+                              :type    :string
+                              :default nil
+                              :as      "[ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of an additional, optional properties file."}
                              {:option "database-strategy" :short "t"
                               :type    #{"dependency-check" "github-advisory"}
                               :default "dependency-check"

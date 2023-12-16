@@ -29,7 +29,7 @@ but you can allways allow a CVE for a limited period by adding a config file at 
 
 ## Remediation suggestion
 #### The big difference from clj-watson to other tools.
-Since fixing the found vulnerabilities manually could be truly frustrating `clj-watson` provides a way to suggest a remediation. 
+Since fixing the found vulnerabilities manually could be truly frustrating `clj-watson` provides a way to suggest a remediation.
 It basically lookups the whole dependency tree finding if the latest version of a parent dependency uses the secure version of the child dependency until it reaches the direct dependency.
 Given the following dependency tree,
 ```
@@ -51,7 +51,7 @@ In order to get the auto remediate suggestion it's necessary to provide a `--sug
 It's possible to install clj-watson as a clojure tool and invoke it.
 ```bash
 $ clojure -Ttools install io.github.clj-holmes/clj-watson '{:git/tag "v4.1.2" :git/sha "eb15492"}' :as clj-watson
-$ clojure -Tclj-watson scan '{:output "stdout" :dependency-check-properties nil :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
+$ clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
 ```
 It can also be called directly.
 ```bash
@@ -67,7 +67,7 @@ Or you can just add it to your project `deps.edn`
 
 # CLI Options
 ```bash
-$ clojure -M:clj-watson scan -\? 
+$ clojure -M:clj-watson scan -\?
 NAME:
  clj-watson scan - Performs a scan on a deps.edn file
 
@@ -79,11 +79,27 @@ OPTIONS:
    -o, --output edn|json|stdout|stdout-simple|sarif                report      Output type.
    -a, --aliases S                                                             Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed.
    -d, --dependency-check-properties S                                         [ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of a dependency-check properties file. If not provided uses resources/dependency-check.properties.
+   -w, --clj-watson-properties S                                               [ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of an additional, optional properties file.
    -t, --database-strategy dependency-check|github-advisory  dependency-check  Vulnerability database strategy.
    -s, --[no-]suggest-fix                                                      Suggest a new deps.edn file fixing all vulnerabilities found.
    -f, --[no-]fail-on-result                                                   Enable or disable fail if results were found (useful for CI/CD).
    -?, --help
 ```
+
+By default, when using the DEPENDENCY-CHECK strategy, clj-watson will load
+its own `dependency-check.properties` file, and then look for a
+`clj-watson.properties` file on the classpath and load that if found, for
+additional properties to apply to the dependency-check scan.
+
+If you provide `-d` (or `--dependency-check-properties`) then clj-watson will
+load that file instead of its own `dependency-check.properties` file so it
+needs to be a complete properties file, not just the properties you want to
+override.
+
+If you provide `-w` (or `--clj-watson-properties`) then clj-watson will load
+that file and apply those properties to the dependency-check scan. This is
+in addition to the properties loaded from the `dependency-check.properties`
+or the `-d` file. This can be useful to override just a few properties.
 
 # Execution
 The minimum necessary to execute clj-watson is to provide the path to a `deps.edn` file, but it's recommended that you all provide the `-s` option so `clj-watson` will try to provide a remediation suggestion to the vulnerabilities.
@@ -113,21 +129,21 @@ Vulnerabilities
 CVE: CVE-2022-1000000
 CVSSV3: 7.5
 CVSSV2: 5.0
-SUGGESTED BUMP: 1.55 
+SUGGESTED BUMP: 1.55
 
 CVE: CVE-2022-2000000
 CVSSV3: 5.3
 CVSSV2: 5.0
-SUGGESTED BUMP: 1.55 
+SUGGESTED BUMP: 1.55
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
 # Who uses it
 - [180 Seguros](https://180s.com.br)
 - [World Singles Networks](https://worldsinglesnetworks.com/)
- 
+
 # Development
 ## nREPL
-``` 
+```
 clj -M:nREPL -m nrepl.cmdline
 ```
 ## Build

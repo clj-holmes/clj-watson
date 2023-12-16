@@ -14,15 +14,18 @@
     (.doUpdates engine)
     (println "Download/Update completed.")))
 
-(defn ^:private create-settings [^String properties-file-path]
+(defn ^:private create-settings [^String properties-file-path ^String additional-properties-file-path]
   (let [settings (Settings.)]
     (if properties-file-path
       (->> properties-file-path File. (.mergeProperties settings))
       (->> "dependency-check.properties" io/resource slurp .getBytes ByteArrayInputStream. (.mergeProperties settings)))
+    (when additional-properties-file-path
+      (->> additional-properties-file-path File. (.mergeProperties settings))
+      (some->> "clj-watson.properties" io/resource slurp .getBytes ByteArrayInputStream. (.mergeProperties settings)))
     settings))
 
-(defn ^:private build-engine [dependency-check-properties]
-  (let [settings (create-settings dependency-check-properties)
+(defn ^:private build-engine [dependency-check-properties clj-watson-properties]
+  (let [settings (create-settings dependency-check-properties clj-watson-properties)
         engine (Engine. settings)]
     (update-download-database engine)
     engine))
@@ -30,8 +33,8 @@
 (defn ^:private clojure-file? [dependency-path]
   (string/ends-with? dependency-path ".jar"))
 
-(defn ^:private scan-jars [dependencies dependency-check-properties]
-  (let [engine (build-engine dependency-check-properties)]
+(defn ^:private scan-jars [dependencies dependency-check-properties clj-watson-properties]
+  (let [engine (build-engine dependency-check-properties clj-watson-properties)]
     (->> dependencies
          (map :paths)
          (apply concat)
@@ -41,7 +44,7 @@
     (.analyzeDependencies engine)
     engine))
 
-(defn start! [dependencies dependency-check-properties]
-  (let [engine (scan-jars dependencies dependency-check-properties)
+(defn start! [dependencies dependency-check-properties clj-watson-properties]
+  (let [engine (scan-jars dependencies dependency-check-properties clj-watson-properties)
         scanned-dependencies (->> engine .getDependencies Arrays/asList)]
     scanned-dependencies))
