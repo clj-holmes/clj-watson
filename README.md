@@ -29,7 +29,7 @@ but you can allways allow a CVE for a limited period by adding a config file at 
 
 ## Remediation suggestion
 #### The big difference from clj-watson to other tools.
-Since fixing the found vulnerabilities manually could be truly frustrating `clj-watson` provides a way to suggest a remediation. 
+Since fixing the found vulnerabilities manually could be truly frustrating `clj-watson` provides a way to suggest a remediation.
 It basically lookups the whole dependency tree finding if the latest version of a parent dependency uses the secure version of the child dependency until it reaches the direct dependency.
 Given the following dependency tree,
 ```
@@ -67,7 +67,7 @@ Or you can just add it to your project `deps.edn`
 
 # CLI Options
 ```bash
-$ clojure -M:clj-watson scan -\? 
+$ clojure -M:clj-watson scan -\?
 NAME:
  clj-watson scan - Performs a scan on a deps.edn file
 
@@ -113,26 +113,22 @@ Vulnerabilities
 CVE: CVE-2022-1000000
 CVSSV3: 7.5
 CVSSV2: 5.0
-SUGGESTED BUMP: 1.55 
+SUGGESTED BUMP: 1.55
 
 CVE: CVE-2022-2000000
 CVSSV3: 5.3
 CVSSV2: 5.0
-SUGGESTED BUMP: 1.55 
+SUGGESTED BUMP: 1.55
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
 # Who uses it
 - [180 Seguros](https://180s.com.br)
 - [World Singles Networks](https://worldsinglesnetworks.com/)
- 
+
 # Development
 ## nREPL
-``` 
+```
 clj -M:nREPL -m nrepl.cmdline
-```
-## Build
-```
-clj -X:depstar
 ```
 ## Lint
 ```

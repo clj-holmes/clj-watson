@@ -10,7 +10,7 @@
                org.clojure/tools.deps.alpha                            {:mvn/version "0.15.1254"}
                org.owasp/dependency-check-core                         {:mvn/version "7.4.4"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.2"}}
-               
+
  :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
                "clojars" {:url "https://repo.clojars.org/"}}
 
@@ -18,12 +18,7 @@
 
  :tools/usage {:ns-default clj-watson.entrypoint}
 
- :aliases     {:depstar     {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.303"}}
-                             :exec-fn      hf.depstar/uberjar
-                             :exec-args    {:jar        "target/clj-watson.jar"
-                                            :main-class clj-watson.cli
-                                            :aot        true}}
-               :nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
+ :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
                :outdated    {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
                              :main-opts ["-m" "depot.outdated.main"]}
                :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2022.02.01-20.02.32"}}
