@@ -1,15 +1,15 @@
 {:deps        {org.clojure/clojure                                     {:mvn/version "1.11.1"}
-               version-clj/version-clj                                 {:mvn/version "2.0.2"}
-               clj-http/clj-http                                       {:mvn/version "3.12.3"}
+               borkdude/edamame                                        {:mvn/version "1.3.23"}
                cheshire/cheshire                                       {:mvn/version "5.12.0"}
                cli-matic/cli-matic                                     {:mvn/version "0.5.4"}
+               clj-http/clj-http                                       {:mvn/version "3.12.3"}
                clj-time/clj-time                                       {:mvn/version "0.15.2"}
-               selmer/selmer                                           {:mvn/version "1.12.59"}
-               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.9"}
-               borkdude/edamame                                        {:mvn/version "1.3.23"}
+               org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.18"}
                org.clojure/tools.deps                                  {:mvn/version "0.18.1374"}
-               org.owasp/dependency-check-core                         {:mvn/version "9.0.4"}
-               org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.18"}}
+               org.owasp/dependency-check-core                         {:mvn/version "9.0.6"}
+               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.9"}
+               selmer/selmer                                           {:mvn/version "1.12.59"}
+               version-clj/version-clj                                 {:mvn/version "2.0.2"}}
 
  :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
                "clojars" {:url "https://repo.clojars.org/"}}
