@@ -2,6 +2,40 @@
 Clojure's software composition analysis (SCA).
 clj-watson scans dependencies in a clojure `deps.edn` seeking for vulnerable direct/transitive dependencies and build a report with all the information needed to help you understand how the vulnerability manifest in your software.
 
+## Quick Start
+
+clj-watson can be added as an alias on a per-project basis in the project `deps.edn` file:
+
+```clojure
+;; in :aliases
+  :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}
+               :main-opts ["-m" "clj-watson.cli" "scan"]}
+```
+
+Then run it with:
+
+```bash
+clojure -M:clj-watson -p deps.edn
+```
+
+The first time it runs, it will download the vulnerability database, which can take a few minutes. Subsequent runs will be much faster.
+
+It can also be installed as a Clojure CLI tool:
+
+```bash
+clojure -Ttools install-latest :lib io.github.clj-holmes/clj-watson :as clj-watson
+```
+
+Then run it with:
+
+```bash
+clojure -Tclj-watson scan :deps-edn-path '"deps.edn"' :output '"stdout"'
+#or:
+clojure -Tclj-watson scan '{:deps-edn-path "deps.edn" :output "stdout"}'
+```
+
+(this is somewhat verbose now but it will be improved over the next few releases)
+
 # How it works
 ## Vulnerability database strategies
 clj-watson supports two methods for vulnerabilities scan.
@@ -77,13 +111,13 @@ $ clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-pa
 ```
 It can also be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.2" :git/sha "eb15492"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your project `deps.edn`
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.2" :git/sha "eb15492"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
@@ -127,7 +161,7 @@ or the `-d` file. This can be useful to override just a few properties.
 The minimum necessary to execute clj-watson is to provide the path to a `deps.edn` file, but it's recommended that you all provide the `-s` option so `clj-watson` will try to provide a remediation suggestion to the vulnerabilities.
 
 ```bash
-$ clojure -M:clj-watson scan scan -p deps.edn
+$ clojure -M:clj-watson -p deps.edn
 Downloading/Updating database.
 Download/Update completed.
 Dependency Information
@@ -167,10 +201,6 @@ SUGGESTED BUMP: 1.55
 ## nREPL
 ```
 clj -M:nREPL -m nrepl.cmdline
-```
-## Build
-```
-clj -X:depstar
 ```
 ## Lint
 ```
