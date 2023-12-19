@@ -22,10 +22,13 @@
       (controller.remediate/scan vulnerable-dependencies deps)
       vulnerable-dependencies)))
 
-(defmethod scan* :dependency-check [{:keys [deps-edn-path suggest-fix aliases dependency-check-properties]}]
+(defmethod scan* :dependency-check [{:keys [deps-edn-path suggest-fix aliases
+                                            dependency-check-properties clj-watson-properties]}]
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
         repositories (select-keys deps [:mvn/repos])
-        scanned-dependencies (controller.dc.scanner/start! dependencies dependency-check-properties)
+        scanned-dependencies (controller.dc.scanner/start! dependencies
+                                                           dependency-check-properties
+                                                           clj-watson-properties)
         vulnerable-dependencies (controller.dc.vulnerability/extract scanned-dependencies dependencies repositories)]
     (if suggest-fix
       (controller.remediate/scan vulnerable-dependencies deps)
