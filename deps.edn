@@ -10,7 +10,7 @@
                org.clojure/tools.deps.alpha                            {:mvn/version "0.15.1254"}
                org.owasp/dependency-check-core                         {:mvn/version "7.4.4"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.2"}}
-               
+
  :mvn/repos   {"central" {:url "https://repo1.maven.org/maven2/"}
                "clojars" {:url "https://repo.clojars.org/"}}
 
@@ -33,4 +33,7 @@
                                            lambdaisland/kaocha                                            {:mvn/version "1.67.1055"}
                                            nubank/mockfn                                                  {:mvn/version "0.7.0"}
                                            nubank/state-flow                                              {:mvn/version "5.14.1"}}
-                             :main-opts   ["-m" "kaocha.runner"]}}}
+                             :main-opts   ["-m" "kaocha.runner"]}
+               ;; so we can run the recommended command from the README:
+               :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}
+                             :main-opts ["-m" "clj-watson.cli" "scan"]}}}
