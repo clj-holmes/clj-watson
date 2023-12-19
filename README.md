@@ -164,10 +164,6 @@ SUGGESTED BUMP: 1.55
 ```
 clj -M:nREPL -m nrepl.cmdline
 ```
-## Build
-```
-clj -X:depstar
-```
 ## Lint
 ```
 clj -M:clojure-lsp format
