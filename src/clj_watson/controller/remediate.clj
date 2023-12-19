@@ -2,7 +2,7 @@
   (:require
    [clj-watson.diplomat.dependency :as diplomat.dependency]
    [clj-watson.logic.dependency :as logic.dependency]
-   [clojure.tools.deps.alpha.util.maven :as maven]
+   [clojure.tools.deps.util.maven :as maven]
    [version-clj.core :as version]))
 
 (defn ^:private parent-contains-child-version?

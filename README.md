@@ -43,6 +43,28 @@ clj-watson supports two methods for vulnerabilities scan.
 ### dependency-check
 [dependency-check](https://github.com/jeremylong/DependencyCheck) is the most used method around the clojure/java sca tools, it downloads all vulnerabilities from nvd and stores it in a database (located in `/tmp/db`), compose a [cpe](https://nvd.nist.gov/products/cpe) based on the dependencies, scans all jars in the classpath and matches vulnerabilities using it.
 
+#### NIST NVD API
+
+As of version v5.0.0, `clj-watson` uses
+[`DependencyCheck` 9.0.x](https://github.com/jeremylong/DependencyCheck/tree/main?tab=readme-ov-file#900-upgrade-notice)
+which switches from the earlier NVD data feeds to the new NIST NVD API.
+
+This new API heavily throttles anonymous requests, so it is
+[highly recommended to get an API key](https://github.com/jeremylong/DependencyCheck/tree/main?tab=readme-ov-file#nvd-api-key-highly-recommended)
+in order to use the API efficiently.
+
+Read the [NIST NVD announcement](https://nvd.nist.gov/general/news/API-Key-Announcement) for more information.
+
+Once you have an API key, you can provide it to `clj-watson` via the `nvd.api.key`
+property in the optional `clj-watson.properties` file, either on the classpath
+you use to run `clj-watson` or via the `-w` / `--clj-watson-properties`
+command-line option:
+
+```
+# clj-watson.properties file
+nvd.api.key=...your key here...
+```
+
 ### Github advisory database [experimental]
 It doesn't need to download a database since it uses the [github advisory database](https://github.com/advisories) via the [graphql api](https://docs.github.com/en/graphql/reference/objects#securityvulnerability), matches are made via package name.
 But there's a requirements to use it, it's necessary to generate a [Github PAT (Personal Access Token)](https://docs.github.com/en/graphql/guides/forming-calls-with-graphql#authenticating-with-graphql) to access graphql api or if you use Github actions it's possible to use their Github token.

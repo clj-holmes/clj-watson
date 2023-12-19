@@ -1,9 +1,9 @@
 (ns clj-watson.diplomat.dependency
   (:require
-   [clojure.tools.deps.alpha :as deps]
-   [clojure.tools.deps.alpha.extensions :as ext]
-   [clojure.tools.deps.alpha.extensions.git :as git]
-   [clojure.tools.deps.alpha.util.maven :as maven]
+   [clojure.tools.deps :as deps]
+   [clojure.tools.deps.extensions :as ext]
+   [clojure.tools.deps.extensions.git :as git]
+   [clojure.tools.deps.util.maven :as maven]
    [clojure.tools.gitlibs :as gitlibs]))
 
 (defn ^:private append-sha-when-is-git-version [dependency version]

@@ -18,3 +18,5 @@ pom.xml
 pom.xml.asc
 profiles.clj
 target/
+.lsp/
+.portal/
