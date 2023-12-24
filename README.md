@@ -2,13 +2,16 @@
 Clojure's software composition analysis (SCA).
 clj-watson scans dependencies in a clojure `deps.edn` seeking for vulnerable direct/transitive dependencies and build a report with all the information needed to help you understand how the vulnerability manifest in your software.
 
+* v5.x.x -- uses DependencyCheck 9.0.x and the new NIST NVD API.
+* v4.x.x -- uses an earlier version of DependencyCheck and the old NVD data feeds, which have been deprecated.
+
 ## Quick Start
 
 clj-watson can be added as an alias on a per-project basis in the project `deps.edn` file:
 
 ```clojure
 ;; in :aliases
-  :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}
+  :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}
 ```
 
@@ -111,13 +114,13 @@ $ clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-pa
 ```
 It can also be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your project `deps.edn`
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v4.1.3" :git/sha "56dfd3e"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
