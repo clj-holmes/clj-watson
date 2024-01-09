@@ -30,5 +30,5 @@
                                            nubank/state-flow                                              {:mvn/version "5.14.1"}}
                              :main-opts   ["-m" "kaocha.runner"]}
                ;; so we can run the recommended command from the README:
-               :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}
+               :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}
                              :main-opts ["-m" "clj-watson.cli" "scan"]}}}

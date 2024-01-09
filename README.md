@@ -11,7 +11,7 @@ clj-watson can be added as an alias on a per-project basis in the project `deps.
 
 ```clojure
 ;; in :aliases
-  :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}
+  :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}
 ```
 
@@ -114,13 +114,13 @@ $ clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-pa
 ```
 It can also be called directly.
 ```bash
-$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}}' -M -m clj-watson.cli scan -p deps.edn
+$ clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your project `deps.edn`
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.0" :git/sha "c2349f5"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
