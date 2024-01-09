@@ -19,7 +19,7 @@
     (if properties-file-path
       (->> properties-file-path File. (.mergeProperties settings))
       (->> "dependency-check.properties" io/resource slurp .getBytes ByteArrayInputStream. (.mergeProperties settings)))
-    (when additional-properties-file-path
+    (if additional-properties-file-path
       (->> additional-properties-file-path File. (.mergeProperties settings))
       (some->> "clj-watson.properties" io/resource slurp .getBytes ByteArrayInputStream. (.mergeProperties settings)))
     settings))
