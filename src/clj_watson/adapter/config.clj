@@ -15,7 +15,3 @@
        :cves
        (map ->allow-config)
        (into {})))
-
-(comment
-  (config->allow-config-map nil)
-  )
