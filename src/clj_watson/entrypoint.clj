@@ -15,7 +15,8 @@
 (defmethod scan* :github-advisory [{:keys [deps-edn-path suggest-fix aliases]}]
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
         repositories (select-keys deps [:mvn/repos])
-        config (edn/read-string (slurp (io/resource "clj-watson-config.edn")))
+        config (when-let [config-file (io/resource "clj-watson-config.edn")]
+                 (edn/read-string (slurp config-file)))
         allow-list (adapter.config/config->allow-config-map config)
         vulnerable-dependencies (controller.gh.vulnerability/scan-dependencies dependencies repositories allow-list)]
     (if suggest-fix
