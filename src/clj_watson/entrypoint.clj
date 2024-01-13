@@ -1,6 +1,7 @@
 (ns clj-watson.entrypoint
   (:require
    [clj-watson.adapter.config :as adapter.config]
+   [clj-watson.cli-spec :as cli-spec]
    [clj-watson.controller.dependency-check.scanner :as controller.dc.scanner]
    [clj-watson.controller.dependency-check.vulnerability :as controller.dc.vulnerability]
    [clj-watson.controller.deps :as controller.deps]
@@ -38,8 +39,10 @@
 (defmethod scan* :default [opts]
   (scan* (assoc opts :database-strategy "dependency-check")))
 
-(defn scan [{:keys [fail-on-result output deps-edn-path] :as opts}]
-  (let [vulnerabilities (scan* opts)
+(defn scan [opts]
+  (let [opts (cli-spec/clean-options opts)
+        {:keys [fail-on-result output deps-edn-path]} opts
+        vulnerabilities (scan* opts)
         contains-vulnerabilities? (->> vulnerabilities
                                        (map (comp empty? :vulnerabilities))
                                        (some false?))]
