@@ -5,9 +5,9 @@
                clj-http/clj-http                                       {:mvn/version "3.12.3"}
                clj-time/clj-time                                       {:mvn/version "0.15.2"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.18"}
-               org.clojure/tools.deps                                  {:mvn/version "0.18.1374"}
-               org.owasp/dependency-check-core                         {:mvn/version "9.0.6"}
-               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.9"}
+               org.clojure/tools.deps                                  {:mvn/version "0.18.1398"}
+               org.owasp/dependency-check-core                         {:mvn/version "9.0.8"}
+               org.slf4j/slf4j-nop                                     {:mvn/version "2.0.11"}
                selmer/selmer                                           {:mvn/version "1.12.59"}
                version-clj/version-clj                                 {:mvn/version "2.0.2"}}
 
@@ -18,17 +18,20 @@
 
  :tools/usage {:ns-default clj-watson.entrypoint}
 
- :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}}
+ :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "1.1.0"}}}
                :outdated    {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
                              :main-opts ["-m" "depot.outdated.main"]}
-               :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone {:mvn/version "2022.02.01-20.02.32"}}
+               :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone
+                                            {:mvn/version "2023.12.29-12.09.27"}}
                              :main-opts    ["-m" "clojure-lsp.main"]}
                :test        {:extra-paths ["test"]
-                             :extra-deps  {org.clojure/test.check                                         {:mvn/version "1.1.1"}
-                                           lambdaisland/kaocha                                            {:mvn/version "1.67.1055"}
-                                           nubank/mockfn                                                  {:mvn/version "0.7.0"}
-                                           nubank/state-flow                                              {:mvn/version "5.14.1"}}
+                             :extra-deps
+                             {org.clojure/test.check {:mvn/version "1.1.1"}
+                              lambdaisland/kaocha    {:mvn/version "1.87.1366"}
+                              nubank/mockfn          {:mvn/version "0.7.0"}
+                              nubank/state-flow      {:mvn/version "5.14.5"}}
                              :main-opts   ["-m" "kaocha.runner"]}
                ;; so we can run the recommended command from the README:
-               :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}
+               :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson
+                                            {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}
                              :main-opts ["-m" "clj-watson.cli" "scan"]}}}

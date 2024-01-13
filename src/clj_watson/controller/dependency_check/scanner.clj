@@ -3,7 +3,7 @@
    [clojure.java.io :as io]
    [clojure.string :as string])
   (:import
-   (java.io File ByteArrayInputStream)
+   (java.io ByteArrayInputStream File)
    (java.util Arrays)
    (org.owasp.dependencycheck Engine)
    (org.owasp.dependencycheck.utils Settings)))
