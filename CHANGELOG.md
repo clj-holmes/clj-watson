@@ -1,6 +1,7 @@
 # CHANGELOG
 
 * v5.0.2 in progress
+  * Address [#47](https://github.com/clj-holmes/clj-watson/issues/47) by printing out the optional properties read from the `clj-watson.properties` file.
   * Documentation improvements.
 
 * v5.0.1 d1ec6e5 -- 2024-01-09
