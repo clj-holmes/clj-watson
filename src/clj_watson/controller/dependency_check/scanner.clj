@@ -53,7 +53,7 @@
         (if additional-properties-file-path
           (->> add-props (.mergeProperties settings))
           (some->> add-props slurp .getBytes ByteArrayInputStream. (.mergeProperties settings))))
-      (println "No additional properties found."))
+      (println "No additional properties found.\n"))
     settings))
 
 (defn ^:private build-engine [dependency-check-properties clj-watson-properties]

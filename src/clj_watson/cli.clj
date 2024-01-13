@@ -2,46 +2,11 @@
   (:gen-class)
   (:require
    [cli-matic.core :as cli]
+   [clj-watson.cli-spec :refer [CONFIGURATION]]
    [clj-watson.entrypoint :as entrypoint]))
 
-(def CONFIGURATION
-  {:app      {:command     "clj-watson"
-              :description "run clj-holmes" :version     (System/getProperty "clj-watson.version")}
-   :commands [{:command     "scan"
-               :description "Performs a scan on a deps.edn file"
-               :opts        [{:option  "deps-edn-path" :short "p"
-                              :type    :string
-                              :default :present
-                              :as      "path of deps.edn to scan."}
-                             {:option  "output" :short "o"
-                              :type    #{"json" "edn" "stdout" "stdout-simple" "sarif"} ; keep stdout type to avoid break current automations
-                              :default "stdout"
-                              :as      "Output type."}
-                             {:option "aliases" :short "a"
-                              :type :string
-                              :multiple true
-                              :as "Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed."}
-                             {:option  "dependency-check-properties" :short "d"
-                              :type    :string
-                              :default nil
-                              :as      "[ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of a dependency-check properties file. If not provided uses resources/dependency-check.properties."}
-                             {:option  "clj-watson-properties" :short "w"
-                              :type    :string
-                              :default nil
-                              :as      "[ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of an additional, optional properties file."}
-                             {:option "database-strategy" :short "t"
-                              :type    #{"dependency-check" "github-advisory"}
-                              :default "dependency-check"
-                              :as      "Vulnerability database strategy."}
-                             {:option "suggest-fix" :short "s"
-                              :type    :with-flag
-                              :default false
-                              :as "Suggest a new deps.edn file fixing all vulnerabilities found."}
-                             {:option  "fail-on-result" :short "f"
-                              :type    :with-flag
-                              :default false
-                              :as      "Enable or disable fail if results were found (useful for CI/CD)."}]
-               :runs        entrypoint/scan}]})
-
 (defn -main [& args]
-  (cli/run-cmd args CONFIGURATION))
+  (cli/run-cmd args
+               (update-in CONFIGURATION
+                          [:commands 0]
+                          (assoc :runs entrypoint/scan))))

@@ -53,7 +53,19 @@ clojure -Tclj-watson scan :deps-edn-path '"deps.edn"' :output '"stdout"'
 clojure -Tclj-watson scan '{:deps-edn-path "deps.edn" :output "stdout"}'
 ```
 
-(this is somewhat verbose now but it will be improved over the next few releases)
+The tool option keywords match the long-form CLI option names (see below)
+but the abbreviations are also supported. In addition, any string option may
+be specified as a bare Clojure symbol (if it is legally representable as such),
+which means the above command-line can be simplified to just:
+
+```bash
+clojure -Tclj-watson scan :p deps.edn
+```
+
+`:output` can be omitted because it defaults to `stdout`, and `:deps-edn-path`
+can be shortened to `:p` (matching the `-p` short form of `--deps-edn-path`).
+
+> Note: `:aliases` (or `:a`) should be specified as a vector of keywords (or symbols), e.g., `:a '[:foo :bar]`, whereas it would be specified multiple times (as strings) in the regular CLI, `-a foo -a bar`.
 
 # How it works
 
@@ -178,7 +190,12 @@ EDN-style options for the CLI tool which can be a bit unwieldy as present:
 
 ```bash
 clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
+# or:
+clojure -Tclj-watson scan :f true :p deps.edn :s true :a '[*]'
 ```
+
+Both `:output` (`:o`) and `:database-strategy` (`:t`) can be omitted because
+they default to `"stdout"` and `"dependency-check"` respectively.
 
 In addition to the CLI tool install, shown above, it can also be invoked
 directly via the Clojure CLI, by specifying `clj-watson` as a dependency
