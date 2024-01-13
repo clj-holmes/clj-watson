@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* v5.0.2 in progress
+* v5.1.0 151ca1d -- 2024-01-13
   * Address [#49](https://github.com/clj-holmes/clj-watson/issues/49) by improving the `-T` invocation to support short names, symbols for strings, and all the defaults.
   * Address [#48](https://github.com/clj-holmes/clj-watson/issues/48) by updating all of the project dependencies, including DependencyCheck to 9.0.8.
   * Address [#47](https://github.com/clj-holmes/clj-watson/issues/47) by printing out the optional properties read from the `clj-watson.properties` file.

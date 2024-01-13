@@ -33,5 +33,5 @@
                              :main-opts   ["-m" "kaocha.runner"]}
                ;; so we can run the recommended command from the README:
                :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson
-                                            {:git/tag "v5.0.1" :git/sha "d1ec6e5"}}
+                                            {:git/tag "v5.1.0" :git/sha "151ca1d"}}
                              :main-opts ["-m" "clj-watson.cli" "scan"]}}}
