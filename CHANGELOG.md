@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* v5.0.2 in progress
+  * Documentation improvements.
+
 * v5.0.1 d1ec6e5 -- 2024-01-09
   * Fix [#44](https://github.com/clj-holmes/clj-watson/issues/44) -- locating `clj-watson.properties` file.
 

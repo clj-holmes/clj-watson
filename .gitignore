@@ -1,15 +1,14 @@
-.clj-kondo/*/
-.cpcache/
-.hg/
-.hgignore
-.idea/
-.lsp/
-.portal/vs-code.edn
 *.class
 *.iml
 *.jar
+/.calva/output-window/
+/.clj-kondo/.cache/
+/.cpcache/
+/.idea/
 /.lein-*
+/.lsp/.cache/
 /.nrepl-port
+/.portal/vs-code.edn
 /.prepl-port
 /checkouts
 /classes
@@ -18,5 +17,3 @@ pom.xml
 pom.xml.asc
 profiles.clj
 target/
-.lsp/
-.portal/
