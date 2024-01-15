@@ -9,4 +9,4 @@
   (cli/run-cmd args
                (update-in CONFIGURATION
                           [:commands 0]
-                          (assoc :runs entrypoint/scan))))
+                          assoc :runs entrypoint/scan)))
