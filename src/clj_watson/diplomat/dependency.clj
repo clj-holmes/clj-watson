@@ -46,5 +46,5 @@
 (comment
   (get-latest-version! 'org.clojure/clojure {:mvn/repos maven/standard-repos})
   (get-latest-version! 'io.github.clj-holmes/clj-watson {:mvn/repos maven/standard-repos})
-  (resolve-dependency! {:deps      {'io.github.clj-holmes/clj-watson {:git/tag "v5.1.0" :git/sha "151ca1d"}}
+  (resolve-dependency! {:deps      {'io.github.clj-holmes/clj-watson {:git/tag "v5.1.1" :git/sha "ad5fe07"}}
                         :mvn/repos maven/standard-repos}))
