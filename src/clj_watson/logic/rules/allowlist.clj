@@ -2,9 +2,9 @@
   (:require
    [clj-time.core :as time]))
 
-(defn match-cve?
+(defn not-expired-bypass?
   ([allowed-cves as-of]
-   (partial match-cve? allowed-cves as-of))
+   (partial not-expired-bypass? allowed-cves as-of))
   ([allowed-cves as-of {identifier :value}]
    (when-let [expire-date (get allowed-cves identifier)]
      (time/after? expire-date as-of))))
@@ -13,8 +13,6 @@
   [allowed-cves
    as-of
    vulnerability]
-  (let [allowed? (comp seq (partial filter (match-cve? allowed-cves as-of)) :identifiers :advisory)]
-    (->> vulnerability
-         :vulnerabilities
-         (remove allowed?)
-         empty?)))
+  (let [identifiers (-> vulnerability :advisory :identifiers)
+        by-passable-cves (filter (not-expired-bypass? allowed-cves as-of) identifiers)]
+    (boolean (seq by-passable-cves))))
