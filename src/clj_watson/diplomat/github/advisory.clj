@@ -25,6 +25,3 @@
     (throw (Exception. "environment GITHUB_TOKEN variable not set."))))
 
 (def vulnerabilities-by-package (memoize vulnerabilities-by-package*))
-
-(comment
-  (vulnerabilities-by-package 'org.postgresql/postgresql))

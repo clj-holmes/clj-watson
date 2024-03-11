@@ -5,10 +5,8 @@
 (defn match-cve?
   ([allowed-cves as-of]
    (partial match-cve? allowed-cves as-of))
-  ([allowed-cves
-    as-of
-    {identifier :value}]
-   (when-let [expire-date (allowed-cves identifier)]
+  ([allowed-cves as-of {identifier :value}]
+   (when-let [expire-date (get allowed-cves identifier)]
      (time/after? expire-date as-of))))
 
 (defn by-pass?
