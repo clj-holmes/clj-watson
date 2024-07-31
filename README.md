@@ -24,7 +24,7 @@ project's `deps.edn` file or in your user `deps.edn` file
   ;; in :aliases
   :clj-watson {:replace-deps
                {io.github.clj-holmes/clj-watson
-                {:git/tag "v5.1.1" :git/sha "ad5fe07"}}
+                {:git/tag "v5.1.3" :git/sha "5812615"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}
 ```
 
@@ -83,14 +83,16 @@ folder), composes a
 the dependencies, scans all JARs in the classpath and matches vulnerabilities
 using it.
 
-* `clj-watson` v5.x.x uses DependencyCheck 9.0.x and the new NIST NVD API.
+* `clj-watson` v5.1.3 onward uses DependencyCheck 10.0.x and the new NIST NVD API.
+  * `clj-watson` v5.0.0..v5.1.2 used DependencyCheck 9.0.x which caused the NIST NVD API to be overwhelmed; please update to v5.1.3!
 * `clj-watson` v4.x.x uses an earlier version of DependencyCheck and the old NVD data feeds, which have been deprecated.
 
 #### NIST NVD API
 
-As of version v5.0.0, `clj-watson` uses
+As of version v5.0.0, `clj-watson` switched to
 [`DependencyCheck` 9.0.x](https://github.com/jeremylong/DependencyCheck/tree/main?tab=readme-ov-file#900-upgrade-notice)
 which switches from the earlier NVD data feeds to the new NIST NVD API.
+**NIST are forcing everyone to upgrade to 10.0.3 or later so please use `clj-watson` v5.1.3 or later!**
 
 This new API heavily throttles anonymous requests, so it is
 [highly recommended to get an API key](https://github.com/jeremylong/DependencyCheck/tree/main?tab=readme-ov-file#nvd-api-key-highly-recommended)
@@ -202,14 +204,14 @@ directly via the Clojure CLI, by specifying `clj-watson` as a dependency
 via `-Sdeps`:
 
 ```bash
-clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v5.1.1" :git/sha "ad5fe07"}}}' -M -m clj-watson.cli scan -p deps.edn
+clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v5.1.3" :git/sha "5812615"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your `deps.edn` file as an alias:
 
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.1.1" :git/sha "ad5fe07"}}
+ {:clj-watson {:extra-deps {io.github.clj-holmes/clj-watson {:git/tag "v5.1.3" :git/sha "5812615"}}
                :main-opts ["-m" "clj-watson.cli" "scan"]}}}
 ```
 
