@@ -1,5 +1,11 @@
 # CHANGELOG
 
+* v5.1.3 -- 2024-07-31
+  * Address [#60](https://github.com/clj-holmes/clj-watson/issues/60) by updating `org.owasp/dependency-check-core` to 10.0.3.
+    
+* v5.1.2 ae20e1e -- 2024-03-20
+  * GitHub Advisory: fix matching CVE for allowlist via PR [#59](https://github.com/clj-holmes/clj-watson/pull/59) [@markomafs](https://github.com/markomafs).
+ 
 * v5.1.1 ad5fe07 -- 2024-01-15
   * Address [#49](https://github.com/clj-holmes/clj-watson/issues/49) by improving the `-T` invocation to support short names, symbols for strings, and all the defaults.
   * Address [#48](https://github.com/clj-holmes/clj-watson/issues/48) by updating all of the project dependencies, including DependencyCheck to 9.0.8.
