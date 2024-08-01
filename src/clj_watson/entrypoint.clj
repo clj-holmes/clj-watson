@@ -26,6 +26,8 @@
 
 (defmethod scan* :dependency-check [{:keys [deps-edn-path suggest-fix aliases
                                             dependency-check-properties clj-watson-properties]}]
+  ;; dependency-check uses Apache Commons JCS, ask it to use log4j2 to allow us to configure its noisy logging
+  (System/setProperty "jcs.logSystem" "log4j2")
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
         repositories (select-keys deps [:mvn/repos])
         scanned-dependencies (controller.dc.scanner/start! dependencies

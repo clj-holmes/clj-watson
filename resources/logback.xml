@@ -1,0 +1,16 @@
+<configuration>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d %highlight(%level) %logger{0} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Apache Commons JCS is very noisy at the INFO level -->
+  <logger name="org.apache.commons.jcs3" level="WARN" additivity="false">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+   </root>
+</configuration>
