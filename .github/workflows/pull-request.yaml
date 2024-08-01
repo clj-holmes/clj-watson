@@ -37,7 +37,7 @@ jobs:
           tools-deps: 1.11.1.1435
 
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-tests-${{ hashFiles('**/deps.edn') }}
@@ -70,7 +70,7 @@ jobs:
           tools-deps: 1.11.1.1435
 
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-tests-${{ hashFiles('**/deps.edn') }}
