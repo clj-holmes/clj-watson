@@ -21,8 +21,9 @@
  :tools/usage {:ns-default clj-watson.entrypoint}
 
  :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "1.1.0"}}}
-               :outdated    {:replace-deps {olical/depot {:mvn/version "2.3.0"}}
-                             :main-opts ["-m" "depot.outdated.main"]}
+               :outdated    {:deps {com.github.liquidz/antq {:mvn/version "2.8.1206"}
+                                    org.slf4j/slf4j-simple {:mvn/version "2.0.13"}} ;; to rid ourselves of logger warnings
+                             :main-opts ["-m" "antq.core"]}
                :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone
                                             {:mvn/version "2023.12.29-12.09.27"}}
                              :main-opts    ["-m" "clojure-lsp.main"]}
