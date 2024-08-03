@@ -91,8 +91,8 @@
 
 (defn- cell-widths [rows]
   (reduce
-    (fn [widths row]
-      (map max (map count row) widths)) (repeat 0) rows))
+   (fn [widths row]
+     (map max (map count row) widths)) (repeat 0) rows))
 
 (defn- pad-cells
   "Adapted from bb cli"
@@ -233,7 +233,7 @@
 (defn parse-args [args]
   ;; can entertain moving to bb cli dispatch when we have more than one command
   (let [orig-args args
-        {:keys [args opts]} (cli/parse-args args {:spec (select-keys spec-scan-args [:help :usage-help-style]) })]
+        {:keys [args opts]} (cli/parse-args args {:spec (select-keys spec-scan-args [:help :usage-help-style])})]
     (cond
       (:help opts)
       (do
