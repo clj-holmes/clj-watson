@@ -6,7 +6,7 @@
    [clojure.java.io :as io]
    [clojure.pprint :as pprint]))
 
-(defmulti ^:private generate* (fn [_ _ kind] (keyword kind)))
+(defmulti ^:private generate* (fn [_ _ kind] kind))
 
 (defmethod ^:private generate* :stdout-simple [dependencies & _]
   (let [template (-> "simple-report.mustache" io/resource slurp)]

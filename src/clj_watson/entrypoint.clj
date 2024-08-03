@@ -11,7 +11,7 @@
    [clojure.java.io :as io]
    [clojure.tools.reader.edn :as edn]))
 
-(defmulti scan* (fn [{:keys [database-strategy]}] (keyword database-strategy)))
+(defmulti scan* (fn [{:keys [database-strategy]}] database-strategy))
 
 (defmethod scan* :github-advisory [{:keys [deps-edn-path suggest-fix aliases]}]
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
@@ -41,9 +41,10 @@
 (defmethod scan* :default [opts]
   (scan* (assoc opts :database-strategy "dependency-check")))
 
-(defn scan [opts]
-  (let [opts (cli-spec/clean-options opts)
-        {:keys [fail-on-result output deps-edn-path]} opts
+(defn do-scan
+  "Indirect entry point for -M usage."
+  [opts]
+  (let [{:keys [fail-on-result output deps-edn-path]} opts
         vulnerabilities (scan* opts)
         contains-vulnerabilities? (->> vulnerabilities
                                        (map (comp empty? :vulnerabilities))
@@ -52,6 +53,11 @@
     (if (and contains-vulnerabilities? fail-on-result)
       (System/exit 1)
       (System/exit 0))))
+
+(defn scan
+  "Direct entrypoint for -X & -T usage."
+  [opts]
+  (do-scan (cli-spec/validate-tool-opts opts)))
 
 (comment
   (def vulnerabilities (scan* {:deps-edn-path     "resources/vulnerable-deps.edn"

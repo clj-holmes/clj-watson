@@ -226,28 +226,34 @@ clojure -M:clj-watson -p deps.edn
 You can get a full list of the available options by running:
 
 ```bash
-clojure -M:clj-watson scan -\?
+clojure -M:clj-watson scan --help
 ```
 
 This produces:
 
 ```
-NAME:
- clj-watson scan - Performs a scan on a deps.edn file
+clj-watson
 
-USAGE:
- clj-watson scan [command options] [arguments...]
+ARG USAGE:
+ scan [options..]
 
 OPTIONS:
-   -p, --deps-edn-path S*                                                      path of deps.edn to scan.
-   -o, --output edn|json|sarif|stdout|stdout-simple          stdout            Output type.
-   -a, --aliases S                                                             Specify a alias that will have the dependencies analysed alongside with the project deps.It's possible to provide multiple aliases. If a * is provided all the aliases are going to be analysed.
-   -d, --dependency-check-properties S                                         [ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of a dependency-check properties file. If not provided uses resources/dependency-check.properties.
-   -w, --clj-watson-properties S                                               [ONLY APPLIED IF USING DEPENDENCY-CHECK STRATEGY] Path of an additional, optional properties file.
-   -t, --database-strategy dependency-check|github-advisory  dependency-check  Vulnerability database strategy.
-   -s, --[no-]suggest-fix                                    false             Suggest a new deps.edn file fixing all vulnerabilities found.
-   -f, --[no-]fail-on-result                                 false             Enable or disable fail if results were found (useful for CI/CD).
-   -?, --help
+  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan [*required*]
+  -o, --output <json|edn|stdout|stdout-simple|sarif>         Output type for vulnerability findings [stdout]
+  -a, --aliases                                              Include deps.edn aliases in analysis, specify '*' for all.
+                                                             For multiple, repeat arg, ex: -a alias1 -a alias2
+  -t, --database-strategy <dependency-check|github-advisory> Vulnerability database strategy [dependency-check]
+  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnurability findings [false]
+  -f, --fail-on-result                                       When enabled, exit with non-zero on any vulnerability findings
+                                                             Useful for CI/CD [false]
+  -h, --help                                                 Show usage help
+
+OPTIONS valid when database-strategy is dependency-check:
+  -d, --dependency-check-properties <file>                   Path of a dependency-check properties file
+                                                             If not provided uses resources/dependency-check.properties
+  -w, --clj-watson-properties <file>                         Path of an additional, optional properties file
+                                                             Overrides values in dependency-check.properties
+                                                             If not specified classpath is searched for cljwatson.properties
 ```
 
 By default, when using the DEPENDENCY-CHECK strategy, `clj-watson` will load

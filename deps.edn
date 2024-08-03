@@ -1,7 +1,7 @@
 {:deps        {org.clojure/clojure                                     {:mvn/version "1.11.1"}
+               org.babashka/cli                                        {:mvn/version "0.8.60"}
                borkdude/edamame                                        {:mvn/version "1.3.23"}
                cheshire/cheshire                                       {:mvn/version "5.12.0"}
-               cli-matic/cli-matic                                     {:mvn/version "0.5.4"}
                clj-http/clj-http                                       {:mvn/version "3.12.3"}
                clj-time/clj-time                                       {:mvn/version "0.15.2"}
                org.apache.maven.resolver/maven-resolver-transport-http {:mvn/version "1.9.18"}
@@ -34,7 +34,8 @@
                               nubank/mockfn          {:mvn/version "0.7.0"}
                               nubank/state-flow      {:mvn/version "5.14.5"}}
                              :main-opts   ["-m" "kaocha.runner"]}
-               ;; so we can run the recommended command from the README:
-               :clj-watson  {:replace-deps {io.github.clj-holmes/clj-watson
-                                            {:git/tag "v5.1.1" :git/sha "ad5fe07"}}
-                             :main-opts ["-m" "clj-watson.cli" "scan"]}}}
+
+               ;; for dev: so we can run the recommended command from the README:
+               :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:local/root "."}}
+                            :main-opts ["-m" "clj-watson.cli"]
+                            :ns-default clj-watson.entrypoint}}}

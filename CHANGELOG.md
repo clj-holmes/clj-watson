@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* Unreleased
+  * Improve command line experience [#77](https://github.com/clj-holmes/clj-watson/issues/77)
+
 * v5.1.3 5812615 -- 2024-07-31
   * Address [#60](https://github.com/clj-holmes/clj-watson/issues/60) by updating `org.owasp/dependency-check-core` to 10.0.3.
     
