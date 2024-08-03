@@ -90,5 +90,6 @@ jobs:
       - name: clj-holmes (Clojure)
         uses: clj-holmes/clj-holmes-action@main
         with:
+          tags: 'security'
           output-type: 'stdout'
           fail-on-result: 'true'

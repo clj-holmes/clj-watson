@@ -15,8 +15,7 @@
     :ref "<file>"
     :coerce :string
     :validate validate-file-exists
-    :require :yes ;; Normally would `:require true` but clj-holmes\clj-holmes thinks this is a clojure spec
-                  ;; and raises: "Typo on schema declaration using :require instead of :required."
+    :require true
     :desc "Path of deps.edn file to scan"}
 
    :output
