@@ -57,26 +57,24 @@
     settings))
 
 (defn ^:private build-engine [dependency-check-properties clj-watson-properties]
-  (let [settings (create-settings dependency-check-properties clj-watson-properties)
-        engine (Engine. settings)]
-    (update-download-database engine)
-    engine))
+  (let [settings (create-settings dependency-check-properties clj-watson-properties)]
+    (Engine. settings)))
 
 (defn ^:private clojure-file? [dependency-path]
   (string/ends-with? dependency-path ".jar"))
 
-(defn ^:private scan-jars [dependencies dependency-check-properties clj-watson-properties]
-  (let [engine (build-engine dependency-check-properties clj-watson-properties)]
-    (->> dependencies
-         (map :paths)
-         (apply concat)
-         (filter clojure-file?)
-         (map io/file)
-         (.scan engine))
-    (.analyzeDependencies engine)
-    engine))
+(defn ^:private scan-jars [engine dependencies]
+  (->> dependencies
+       (map :paths)
+       (apply concat)
+       (filter clojure-file?)
+       (map io/file)
+       (.scan engine))
+  (.analyzeDependencies engine))
 
-(defn start! [dependencies dependency-check-properties clj-watson-properties]
-  (let [engine (scan-jars dependencies dependency-check-properties clj-watson-properties)
-        scanned-dependencies (->> engine .getDependencies Arrays/asList)]
-    scanned-dependencies))
+(defn start!
+  [dependencies dependency-check-properties clj-watson-properties]
+  (with-open [engine (build-engine dependency-check-properties clj-watson-properties)]
+    (update-download-database engine)
+    (scan-jars engine dependencies)
+    (->> engine .getDependencies Arrays/asList)))
