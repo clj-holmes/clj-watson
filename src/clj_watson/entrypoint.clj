@@ -54,6 +54,7 @@
       (System/exit 1)
       (System/exit 0))))
 
+#_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn scan
   "Direct entrypoint for -X & -T usage."
   [opts]

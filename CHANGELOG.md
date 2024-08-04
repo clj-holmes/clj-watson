@@ -1,6 +1,7 @@
 # CHANGELOG
 
 * Unreleased
+  * Bump deps [#75](https://github.com/clj-holmes/clj-watson/issues/75)
   * Improve command line experience [#77](https://github.com/clj-holmes/clj-watson/issues/77)
 
 * v5.1.3 5812615 -- 2024-07-31
