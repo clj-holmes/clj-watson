@@ -8,13 +8,6 @@
    (org.owasp.dependencycheck Engine)
    (org.owasp.dependencycheck.utils Settings)))
 
-(defn ^:private update-download-database [engine]
-  (binding [*out* *err*]
-    (println "Downloading/Updating database.")
-    (.doUpdates engine)
-    (println "Download/Update completed."))
-  engine)
-
 (defn- sanitize-property
   "Given a line from a properties file, remove sensitive information."
   [line]
@@ -78,7 +71,6 @@
   [dependencies dependency-check-properties clj-watson-properties]
   (with-open [engine (build-engine dependency-check-properties clj-watson-properties)]
     (-> engine
-        (update-download-database)
         (scan-jars dependencies)
         (.getDependencies)
         (Arrays/asList))))
