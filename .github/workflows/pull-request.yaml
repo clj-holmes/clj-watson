@@ -25,7 +25,7 @@ jobs:
           java-version: ${{ matrix.jdk-version }}
 
       - name: Install clojure tools-deps
-        uses: DeLaGuardo/setup-clojure@12
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
           cli: 'latest'
 
@@ -63,7 +63,7 @@ jobs:
           java-version: '17'
 
       - name: Install clojure tools-deps
-        uses: DeLaGuardo/setup-clojure@12
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
           cli: 'latest'
 
