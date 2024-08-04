@@ -3,6 +3,7 @@
 * Unreleased
   * Bump deps [#75](https://github.com/clj-holmes/clj-watson/issues/75)
   * Improve command line experience [#77](https://github.com/clj-holmes/clj-watson/issues/77)
+  * Explicitly close the dependency-check engine when we are done with it [#86](https://github.com/clj-holmes/clj-watson/issues/86)
 
 * v5.1.3 5812615 -- 2024-07-31
   * Address [#60](https://github.com/clj-holmes/clj-watson/issues/60) by updating `org.owasp/dependency-check-core` to 10.0.3.
