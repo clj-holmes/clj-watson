@@ -3,7 +3,6 @@
                borkdude/edamame                                        {:mvn/version "1.4.25"}
                cheshire/cheshire                                       {:mvn/version "5.13.0"}
                clj-http/clj-http                                       {:mvn/version "3.13.0"}
-               clj-time/clj-time                                       {:mvn/version "0.15.2"}
                org.clojure/tools.deps                                  {:mvn/version "0.19.1432"}
                org.owasp/dependency-check-core                         {:mvn/version "10.0.3"}
                org.slf4j/slf4j-api                                     {:mvn/version "2.0.13"}

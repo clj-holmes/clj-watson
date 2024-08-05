@@ -5,6 +5,7 @@
   * Improve command line experience [#77](https://github.com/clj-holmes/clj-watson/issues/77)
   * Explicitly close the dependency-check engine when we are done with it [#86](https://github.com/clj-holmes/clj-watson/issues/86)
   * Respect dependency-check `odc.autoupdate` property [#88](https://github.com/clj-holmes/clj-watson/issues/88)
+  * Replace deprecated clj-time dep with JDK8 java.time interop [#83](https://github.com/clj-holmes/clj-watson/issues/83)
 
 * v5.1.3 5812615 -- 2024-07-31
   * Address [#60](https://github.com/clj-holmes/clj-watson/issues/60) by updating `org.owasp/dependency-check-core` to 10.0.3.

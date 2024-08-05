@@ -1,13 +1,11 @@
-(ns clj-watson.logic.rules.allowlist
-  (:require
-   [clj-time.core :as time]))
+(ns clj-watson.logic.rules.allowlist)
 
 (defn not-expired-bypass?
   ([allowed-cves as-of]
    (partial not-expired-bypass? allowed-cves as-of))
   ([allowed-cves as-of {identifier :value}]
    (when-let [expire-date (get allowed-cves identifier)]
-     (time/after? expire-date as-of))))
+     (.isAfter expire-date as-of))))
 
 (defn by-pass?
   [allowed-cves
