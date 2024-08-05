@@ -5,10 +5,7 @@
     </encoder>
   </appender>
 
-  <!-- Apache Commons JCS is very noisy at the INFO level -->
-  <logger name="org.apache.commons.jcs3" level="WARN" additivity="false">
-    <appender-ref ref="CONSOLE"/>
-  </logger>
+  <!-- See clj-watson.logging-config namespace for suppression of Apache Commons JCS noise -->
 
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>
