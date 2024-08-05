@@ -1,5 +1,6 @@
 <configuration>
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <target>System.err</target>
     <encoder>
       <pattern>%d %highlight(%level) %logger{0} - %msg%n</pattern>
     </encoder>
