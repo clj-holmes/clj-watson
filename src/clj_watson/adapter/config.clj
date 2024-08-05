@@ -1,12 +1,12 @@
 (ns clj-watson.adapter.config
-  (:require
-   [clj-time.format :as time.format]))
-
-(def time-parser (time.format/formatters :date))
+  (:import
+   (java.time LocalDate ZoneOffset)))
 
 (defn ->allow-config
   [{:keys [cve-label expires]}]
-  {cve-label (time.format/parse time-parser expires)})
+  {cve-label
+   ;; yyyy-MM-dd
+   (.atStartOfDay (LocalDate/parse expires) ZoneOffset/UTC)})
 
 (defn config->allow-config-map
   [config]
