@@ -1,6 +1,7 @@
 # CHANGELOG
 
 * Unreleased
+  * Fix: show score and severity in dependency-check findings [#58](https://github.com/clj-holmes/clj-watson/issues/58)
   * Bump deps [#75](https://github.com/clj-holmes/clj-watson/issues/75)
   * Improve command line experience [#77](https://github.com/clj-holmes/clj-watson/issues/77)
   * Explicitly close the dependency-check engine when we are done with it [#86](https://github.com/clj-holmes/clj-watson/issues/86)
