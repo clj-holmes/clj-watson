@@ -8,6 +8,7 @@
    [clj-watson.controller.github.vulnerability :as controller.gh.vulnerability]
    [clj-watson.controller.output :as controller.output]
    [clj-watson.controller.remediate :as controller.remediate]
+   [clj-watson.logging-config :as logging-config]
    [clojure.java.io :as io]
    [clojure.tools.reader.edn :as edn]))
 
@@ -44,6 +45,7 @@
 (defn do-scan
   "Indirect entry point for -M usage."
   [opts]
+  (logging-config/init)
   (let [{:keys [fail-on-result output deps-edn-path]} opts
         vulnerabilities (scan* opts)
         contains-vulnerabilities? (->> vulnerabilities

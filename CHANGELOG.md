@@ -8,7 +8,8 @@
   * Replace deprecated clj-time dep with JDK8 java.time interop [#83](https://github.com/clj-holmes/clj-watson/issues/83)
   * Improve feedback during scan
     * Stop suppressing all logging [#68](https://github.com/clj-holmes/clj-watson/issues/68)
-    * Suppress noisy INFO level logging from Apache JCS Commons [#69](https://github.com/clj-holmes/clj-watson/issues/69)
+    * Suppress noisy INFO level logging from Apache Commons JCS [#69](https://github.com/clj-holmes/clj-watson/issues/69)
+    * Suppress specific irrelevant ERROR level logging from Apache Commons JCS [#78](https://github.com/clj-holmes/clj-watson/issues/78)
 
 * v5.1.3 5812615 -- 2024-07-31
   * Address [#60](https://github.com/clj-holmes/clj-watson/issues/60) by updating `org.owasp/dependency-check-core` to 10.0.3.
