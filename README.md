@@ -330,11 +330,26 @@ PATCHED VERSION: 1.55
 clojure -M:nREPL -m nrepl.cmdline
 ```
 
+## Test
+
+```bash
+clojure -M:test
+```
+
 ## Lint
 
+We use [clojure-lsp from the command line](https://clojure-lsp.io/api/cli/) to lint:
 ```bash
 clojure -M:clojure-lsp format
 clojure -M:clojure-lsp clean-ns
+clojure -M:clojure-lsp diagnostics
+```
+
+## Security
+
+We use [clj-holmes](https://github.com/clj-holmes/clj-holmes) to check for potentially vulnerable patterns in clj-watson source code:
+```bash
+clj-holmes scan -p .
 ```
 
 # License and Copyright
