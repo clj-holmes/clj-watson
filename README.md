@@ -317,6 +317,13 @@ PATCHED VERSION: 1.55
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
 
+# Output & Logging
+
+`clj-watson` uses [SLFJ4](https://www.slf4j.org/) and [Logback](https://logback.qos.ch) to collect and filter meaningful log output from its dependencies.
+This output goes to `stderr`.
+
+It writes settings and vulnerability findings to `stdout`.
+
 # Who uses it
 
 - [180 Seguros](https://180s.com.br)
