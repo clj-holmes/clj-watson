@@ -102,25 +102,60 @@ widely used method among the Clojure/Java SCA tools. It:
 
 It is easy to [request an API key](https://github.com/jeremylong/DependencyCheck/tree/main?tab=readme-ov-file#nvd-api-key-highly-recommended).
 
-You'll specify your key in your `clj-watson.properties` file:
+You can specify you key via:
+
+1. The `nvd.api.key` Java system property on the command line
+2. Or, an `nvd.api.key` entry in your `clj-watson.properties` file
+
+> [!CAUTION]
+> Keeping your nvd api key secret is your responsibility.
+> This is not a hugely sensitive secret, but you don't want others to use your key.
+> You do not want to check it into any public version control system.
+
+##### Via Java System Property on the Command Line
+
+Example usage:
+
+```shell
+clojure -J-Dnvd.api.key=<your key here> -M:clj-watson scan -p deps.edn
+```
+
+Or:
+
+```shell
+clojure -J-Dnvd.api.key=<your key here> -Tclj-watson scan :p deps.edn
+```
+
+Replace `<your key here>` with your actual api key.
+
+> [!CAUTION]
+> You could specify this system property under `:jvm-opts` in your `deps.edn` under your `:clj-watson` alias, but be careful not to commit it to version control. 
+
+##### Via the `clj-watson.properties` File
+
+Specify your key in your `clj-watson.properties` file:
 
 ```
 # clj-watson.properties file
-nvd.api.key=...your key here...
+nvd.api.key=<your key here>
 ```
+Replace `<your key here>` with your actual api key.
 
 `clj-watson` will pick up `clj-watson.properties` automatically if it is on the classpath, or you can specify it on the command line via the `-w` / `--clj-watson-properties` option:
 
 
 ```shell
-$ clojure -M:clj-watson scan -p deps.edn --clj-watson-properties ./clj-watson.properties
+clojure -M:clj-watson scan -p deps.edn --clj-watson-properties ./clj-watson.properties
 ```
 
 Or:
 
+```shell
+clojure -Tclj-watson scan :p deps.edn :clj-watson-properties ./clj-watson.properties
 ```
-$ clojure -Tclj-watson scan :p deps.edn :clj-watson-properties ./clj-watson.properties
-```
+
+> [!CAUTION] 
+> Be careful not to commit your key to version control.
 
 ### GitHub Advisory Database [experimental]
 
