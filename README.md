@@ -1,4 +1,4 @@
-# clj-watson
+# `clj-watson`
 
 A Clojure tool for vulnerability checking.
 
@@ -90,9 +90,9 @@ widely used method among the Clojure/Java SCA tools. It:
 `clj-watson` then takes reports these findings to you, optionally with [potential remediations](#remediation-suggestions).
 
 > [!IMPORTANT]
-> We _always_ recommend using the latest clj-watson, but as a minimum upgrade to v5.1.3.
-> All earlier versions of clj-watson are officially deprecated.
-> Older versions of clj-watson use older problematic versions of DependencyCheck, which NIST is now blocking.
+> We _always_ recommend using the latest version of `clj-watson`, but as a minimum upgrade to v5.1.3.
+> All earlier versions of `clj-watson` are officially deprecated.
+> Older versions of `clj-watson` use older problematic versions of DependencyCheck, which NIST is now blocking.
 
 #### NIST NVD API
 
