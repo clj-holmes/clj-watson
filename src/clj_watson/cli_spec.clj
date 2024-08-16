@@ -83,7 +83,14 @@
     :validate validate-file-exists
     :desc (str "Path of an additional, optional properties file\n"
                "Overrides values in dependency-check.properties\n"
-               "If not specified classpath is searched for cljwatson.properties")}})
+               "If not specified classpath is searched for cljwatson.properties")}
+
+   :run-without-nvd-api-key
+   {:type :flag
+    :default false
+    :desc (str "Run without an nvd.api.key configured.\n"
+               "It will be slow and we cannot recommend it.\n"
+               "See docs for configuration.")}})
 
 (defn- kw->str
   "Copied from bb cli"
@@ -134,6 +141,16 @@
          (map str/trimr)
          (str/join "\n"))))
 
+(defn styled-long-opt [longopt {:keys [usage-help-style]}]
+  (if (= :clojure-tool usage-help-style)
+    longopt
+    (str "--" (kw->str longopt))))
+
+(defn styled-alias [alias {:keys [usage-help-style]}]
+  (if (= :clojure-tool usage-help-style)
+    alias
+    (str "-" (kw->str alias))))
+
 (defn- opts->table
   "Based on bb cli opts->table."
   [{:keys [spec order opts]}]
@@ -141,13 +158,9 @@
     (mapv (fn [[long-opt {:keys [alias default default-desc ref desc extra-desc require]}]]
             (keep identity
                   [(if alias
-                     (if (= :clojure-tool usage-help-style)
-                       (str alias ",")
-                       (str "-" (kw->str alias) ","))
+                     (str (styled-alias alias opts) ",")
                      "")
-                   (if (= :clojure-tool usage-help-style)
-                     (str long-opt " " ref)
-                     (str "--" (kw->str long-opt) " " ref))
+                   (str (styled-long-opt long-opt opts) " " ref)
                    (->> [(if-let [attribute (or (when require "*required*")
                                                 default-desc
                                                 (when (some? default) (str default)))]
@@ -190,7 +203,7 @@
                  :groups [{:heading "OPTIONS:"
                            :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :help]}
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
-                           :order [:dependency-check-properties :clj-watson-properties]}]})))
+                           :order [:dependency-check-properties :clj-watson-properties :run-without-nvd-api-key]}]})))
 
 (defn- error [text]
   (str "\u001B[31m* ERROR: " text "\u001B[0m"))
@@ -246,6 +259,7 @@
                     :msg (format "Invalid command, the only valid command is scan, detected: %s" (str/join ", " args))
                     :spec spec-scan-args
                     :opts opts})
+
       :else
       (cli/parse-opts orig-args {:spec spec-scan-args :error-fn usage-error :restrict true}))))
 

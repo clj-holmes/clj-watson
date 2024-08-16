@@ -26,14 +26,15 @@
       vulnerable-dependencies)))
 
 (defmethod scan* :dependency-check [{:keys [deps-edn-path suggest-fix aliases
-                                            dependency-check-properties clj-watson-properties]}]
+                                            dependency-check-properties clj-watson-properties] :as opts}]
   ;; dependency-check uses Apache Commons JCS, ask it to use log4j2 to allow us to configure its noisy logging
   (System/setProperty "jcs.logSystem" "log4j2")
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
         repositories (select-keys deps [:mvn/repos])
         scanned-dependencies (controller.dc.scanner/start! dependencies
                                                            dependency-check-properties
-                                                           clj-watson-properties)
+                                                           clj-watson-properties
+                                                           opts)
         vulnerable-dependencies (controller.dc.vulnerability/extract scanned-dependencies dependencies repositories)]
     (if suggest-fix
       (controller.remediate/scan vulnerable-dependencies deps)
