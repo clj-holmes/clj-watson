@@ -87,7 +87,7 @@ widely used method among the Clojure/Java SCA tools. It:
 4. Composes a [Common Platform Enumeration (CPE)](https://nvd.nist.gov/products/cpe) based on your dependencies
 5. Returns any matching vulnerabilities
 
-`clj-watson` then takes reports these findings to you, optionally with [potential remediations](#remediation-suggestions).
+`clj-watson` then reports these findings to you, optionally with [potential remediations](#remediation-suggestions).
 
 > [!IMPORTANT]
 > We _always_ recommend using the latest version of `clj-watson`, but as a minimum upgrade to v5.1.3.
