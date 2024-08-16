@@ -4,6 +4,7 @@
   * Fix: show score and severity in dependency-check findings [#58](https://github.com/clj-holmes/clj-watson/issues/58)
   * Bump deps [#75](https://github.com/clj-holmes/clj-watson/issues/75)
   * Improve command line experience [#77](https://github.com/clj-holmes/clj-watson/issues/77)
+  * Encourage use of NVD API key [#67](https://github.com/clj-holmes/clj-watson/issues/67)
   * Explicitly close the dependency-check engine when we are done with it [#86](https://github.com/clj-holmes/clj-watson/issues/86)
   * Respect dependency-check `odc.autoupdate` property [#88](https://github.com/clj-holmes/clj-watson/issues/88)
   * Replace deprecated clj-time dep with JDK8 java.time interop [#83](https://github.com/clj-holmes/clj-watson/issues/83)
