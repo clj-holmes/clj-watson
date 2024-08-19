@@ -30,8 +30,7 @@
 
 (comment
   (env-var->property "CLJ_WATSON_NVD_API_KEY")
-  (env-var->property "CLJ_WATSON_DATA_FILE__NAME")
-  )
+  (env-var->property "CLJ_WATSON_DATA_FILE__NAME"))
 
 (defn ^:private set-watson-env-vars-as-properties []
   (run! (fn [[env-var value]]
