@@ -8,6 +8,7 @@
   * Explicitly close the dependency-check engine when we are done with it [#86](https://github.com/clj-holmes/clj-watson/issues/86)
   * Respect dependency-check `odc.autoupdate` property [#88](https://github.com/clj-holmes/clj-watson/issues/88)
   * Replace deprecated clj-time dep with JDK8 java.time interop [#83](https://github.com/clj-holmes/clj-watson/issues/83)
+  * Allow properties to be specified via environment variables [#104](https://github.com/clj-holmes/clj-watson/issues/104) to make it easier to use `clj-watson` in CI/CD pipelines.
   * Streamline `dependency-check.properties` file [#103](https://github.com/clj-holmes/clj-watson/issues/103) so that it only includes properties which need to be different from the defaults in the core DependencyCheck configuration.
     * This changes the default location of the local database used for analysis from `/tmp/db` to a directory within your local Maven cache (DependencyCheck's default location), which makes `clj-watson` more CI-friendly since `~/.m2` is typically cached in CI. **The first time you run `clj-watson` 6.0.0, it will download the entire NIST NVD database!**
   * Improve feedback during scan
