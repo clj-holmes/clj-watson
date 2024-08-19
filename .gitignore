@@ -1,7 +1,7 @@
 *.class
 *.iml
 *.jar
-/.calva/output-window/
+/.calva/repl.calva-repl
 /.clj-kondo/.cache/
 /.cpcache/
 /.idea/
