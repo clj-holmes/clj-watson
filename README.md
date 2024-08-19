@@ -377,6 +377,9 @@ Properties set via environment variables take precedence over those set in
 the properties files described above, but not over Java system properties
 set on the command-line.
 
+Environment variables are often the most straightforward and most secure
+way to provide sensitive information like API keys in various CI systems.
+
 # Execution
 
 The minimum needed to run `clj-watson` is to provide the path to a `deps.edn`
