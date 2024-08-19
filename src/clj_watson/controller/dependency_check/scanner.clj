@@ -21,16 +21,41 @@
   ;; ensure (fake) API key is redacted:
   (sanitize-property "nvd.api.key=72a48765-90ab-5678-abcd-1234abcd5489"))
 
+(defn ^:private env-var->property [env-var]
+  (-> env-var
+      (string/replace #"^CLJ_WATSON_" "") ; strip prefix
+      (string/lower-case)                 ; lowercase
+      (string/replace "_" ".")            ; _ -> .
+      (string/replace ".." "_")))         ; allow __ -> .. -> _
+
+(comment
+  (env-var->property "CLJ_WATSON_NVD_API_KEY")
+  (env-var->property "CLJ_WATSON_DATA_FILE__NAME")
+  )
+
+(defn ^:private set-watson-env-vars-as-properties []
+  (run! (fn [[env-var value]]
+          (when (string/starts-with? env-var "CLJ_WATSON_")
+            (let [property (env-var->property env-var)
+                  p-value  (System/getProperty property)]
+              (if p-value
+                (println (str "Ignoring " env-var " as " property " is already set."))
+                (do
+                  (println (str "Setting " property " from " env-var "."))
+                  (System/setProperty property value))))))
+        (System/getenv))
+  (println))
+
 (defn ^:private create-settings [^String properties-file-path ^String additional-properties-file-path]
-  (let [settings (Settings.)]
-    (let [props
-          (if properties-file-path
-            (->> properties-file-path File.)
-            (->> "dependency-check.properties" io/resource))]
-      (println (str "\nRead " (count (line-seq (io/reader props))) " dependency-check properties."))
-      (if properties-file-path
-        (->> props (.mergeProperties settings))
-        (->> props slurp .getBytes ByteArrayInputStream. (.mergeProperties settings))))
+  (let [settings (Settings.)
+        props
+        (if properties-file-path
+          (->> properties-file-path File.)
+          (->> "dependency-check.properties" io/resource))]
+    (println (str "\nRead " (count (line-seq (io/reader props))) " dependency-check properties."))
+    (if properties-file-path
+      (->> props (.mergeProperties settings))
+      (->> props slurp .getBytes ByteArrayInputStream. (.mergeProperties settings)))
     (if-let [add-props
              (if additional-properties-file-path
                (->> additional-properties-file-path File.)
@@ -50,6 +75,7 @@
           (->> add-props (.mergeProperties settings))
           (some->> add-props slurp .getBytes ByteArrayInputStream. (.mergeProperties settings))))
       (println "No additional properties found.\n"))
+    (set-watson-env-vars-as-properties)
     settings))
 
 (defn ^:private validate-settings
