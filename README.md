@@ -332,8 +332,6 @@ OPTIONS:
   -h, --help                                                 Show usage help
 
 OPTIONS valid when database-strategy is dependency-check:
-  -d, --dependency-check-properties <file>                   Path of a dependency-check properties file
-                                                             If not provided uses resources/dependency-check.properties
   -w, --clj-watson-properties <file>                         Path of an additional, optional properties file
                                                              Overrides values in dependency-check.properties
                                                              If not specified classpath is searched for cljwatson.properties
@@ -344,18 +342,11 @@ OPTIONS valid when database-strategy is dependency-check:
 
 ## Properties
 
-By default, when using the DEPENDENCY-CHECK strategy, `clj-watson` will load
-its own `dependency-check.properties` file, and then look for a
-`clj-watson.properties` file on the classpath and load that if found, for
-additional properties to apply to the DependencyCheck scan.
-
-If you provide `-d` (or `--dependency-check-properties`) then `clj-watson` will
-load that file instead of its own `dependency-check.properties` file.
-
-If you provide `-w` (or `--clj-watson-properties`) then `clj-watson` will load
-that file and apply those properties to the dependency-check scan. This is
-in addition to the properties loaded from the `dependency-check.properties`
-or the `-d` file. This can be useful to override just a few properties.
+When using the `dependency-check` `database-strategy`, `clj-watson` will:
+- load its internal default `dependency-check.properties` to apply to the `dependency-check` scan
+- optionally override its defaults with your `clj-watson.properties` file
+  - specified explicitly by you via `-w` (or `--clj-watson-properties`)
+  - else automatically found on your classpath
 
 In addition, relevant properties provided as Java system properties are
 read by the underlying DependencyCheck scan, and take precedence over the

@@ -9,6 +9,8 @@
 (def validate-file-exists {:pred #(-> % io/file .exists)
                            :ex-msg (fn [_m] "Specified file not found")})
 
+(declare styled-long-opt)
+
 (def spec-scan-args
   {:deps-edn-path
    {:alias :p
@@ -74,7 +76,8 @@
     :coerce :string
     :validate validate-file-exists
     :desc (str "Path of a dependency-check properties file\n"
-               "If not provided uses resources/dependency-check.properties")}
+               "If not provided uses resources/dependency-check.properties")
+    :deprecated-fn (fn [m] (format "Please use %s instead." (styled-long-opt :clj-watson-properties m)))}
 
    :clj-watson-properties
    {:alias :w
@@ -192,6 +195,21 @@
                    [])
            (str/join "\n\n")))))
 
+(defn- error [text]
+  (str "\u001B[31m* ERROR: " text "\u001B[0m"))
+
+(defn- warning [text]
+  (str "\u001B[33m* WARNING: " text "\u001B[0m"))
+
+(defn- report-deprecations [opts]
+  (doseq [deprecated-opt [:dependency-check-properties]]
+    (when (deprecated-opt opts)
+      (println (warning
+                (format "%s, %s is deprecated and will be deleted in a future release. %s"
+                        (styled-alias (-> spec-scan-args deprecated-opt :alias) opts)
+                        (styled-long-opt deprecated-opt opts)
+                        ((-> spec-scan-args deprecated-opt :deprecated-fn) opts)))))))
+
 (defn- usage-help [{:keys [opts]}]
   (println "clj-watson")
   (println)
@@ -203,12 +221,10 @@
                  :groups [{:heading "OPTIONS:"
                            :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :help]}
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
-                           :order [:dependency-check-properties :clj-watson-properties :run-without-nvd-api-key]}]})))
-
-(defn- error [text]
-  (str "\u001B[31m* ERROR: " text "\u001B[0m"))
+                           :order [:clj-watson-properties :run-without-nvd-api-key]}]})))
 
 (defn- usage-error [{:keys [spec type cause msg option opts] :as data}]
+  (report-deprecations opts)
   (case type
     :clj-watson/cli
     (println (error msg))
@@ -231,7 +247,6 @@
                                   arg-desc))))))
 
     (throw (ex-info msg data)))
-  (println)
   (usage-help data)
   (System/exit 1))
 
@@ -261,7 +276,9 @@
                     :opts opts})
 
       :else
-      (cli/parse-opts orig-args {:spec spec-scan-args :error-fn usage-error :restrict true}))))
+      (let [opts (cli/parse-opts orig-args {:spec spec-scan-args :error-fn usage-error :restrict true})]
+        (report-deprecations opts)
+        opts))))
 
 (defn validate-tool-opts [opts]
   (->> opts
