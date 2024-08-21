@@ -274,9 +274,9 @@ this is the easiest way to install the latest version and keep it up-to-date
 EDN-style options for the CLI tool, which can at first seem a bit unwieldy:
 
 ```bash
-clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
+clojure -Tclj-watson scan '{:output "stdout" :fail-on-cvss 0 :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
 # or:
-clojure -Tclj-watson scan :f true :p deps.edn :s true :a '[*]'
+clojure -Tclj-watson scan :f 0 :p deps.edn :s true :a '[*]'
 ```
 
 Both `:output` (`:o`) and `:database-strategy` (`:t`) can be omitted because
@@ -327,8 +327,10 @@ OPTIONS:
                                                              For multiple, repeat arg, ex: -a alias1 -a alias2
   -t, --database-strategy <dependency-check|github-advisory> Vulnerability database strategy [dependency-check]
   -s, --suggest-fix                                          Include dependency remediation suggestions in vulnurability findings [false]
-  -f, --fail-on-result                                       When enabled, exit with non-zero on any vulnerability findings
-                                                             Useful for CI/CD [false]
+  -f, --fail-on-cvss                                         Exit with non-zero on any vulnerability findings with a CVSS score above the specified level.
+                                                             The default is 11; since the CVSS scores range from 0-10, by default the build will never fail.
+                                                             A value of 0 will cause the build to fail with any vulnerabilities at all.
+                                                             Useful for CI/CD [11.0]"
   -h, --help                                                 Show usage help
 
 OPTIONS valid when database-strategy is dependency-check:

@@ -52,11 +52,13 @@
     :default false
     :desc "Include dependency remediation suggestions in vulnurability findings"}
 
-   :fail-on-result
+   :fail-on-cvss
    {:alias :f
-    :coerce :boolean
-    :default false
-    :desc (str "When enabled, exit with non-zero on any vulnerability findings\n"
+    :coerce :double
+    :default 11.0
+    :desc (str "Exit with non-zero on any vulnerability findings with a CVSS score above the specified level.\n"
+               "The default is 11; since the CVSS scores range from 0-10, by default the build will never fail.\n"
+               "A value of 0 will cause the build to fail with any vulnerabilities at all.\n"
                "Useful for CI/CD")}
 
    :usage-help-style
@@ -219,7 +221,7 @@
   (println
    (format-opts {:spec spec-scan-args :opts opts
                  :groups [{:heading "OPTIONS:"
-                           :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :help]}
+                           :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-cvss :help]}
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
                            :order [:clj-watson-properties :run-without-nvd-api-key]}]})))
 

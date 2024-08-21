@@ -43,17 +43,23 @@
 (defmethod scan* :default [opts]
   (scan* (assoc opts :database-strategy "dependency-check")))
 
+(defn- contains-vulnerabilities?
+  "Checks whether there are any reported vulnerabilities with a CVSS score above the specified threshold."
+  [vulnerabilities fail-on-cvss]
+  (->> vulnerabilities
+       (map :vulnerabilities)
+       (mapcat #(map (comp :score :cvss :advisory) %))
+       (filter #(< fail-on-cvss %))
+       (seq)))
+
 (defn do-scan
   "Indirect entry point for -M usage."
   [opts]
   (logging-config/init)
-  (let [{:keys [fail-on-result output deps-edn-path]} opts
-        vulnerabilities (scan* opts)
-        contains-vulnerabilities? (->> vulnerabilities
-                                       (map (comp empty? :vulnerabilities))
-                                       (some false?))]
+  (let [{:keys [fail-on-cvss output deps-edn-path]} opts
+        vulnerabilities (scan* opts)]
     (controller.output/generate vulnerabilities deps-edn-path output)
-    (if (and contains-vulnerabilities? fail-on-result)
+    (if (contains-vulnerabilities? vulnerabilities fail-on-cvss)
       (System/exit 1)
       (System/exit 0))))
 
