@@ -18,7 +18,7 @@ Vulnerabilities
 {% for vulnerability in vulnerable-dependency.vulnerabilities %}
 SEVERITY: {{vulnerability.advisory.severity|default:"Information not available."}}
 IDENTIFIERS: {% for identifier in vulnerability.advisory.identifiers %}{{identifier.value}} {% endfor %}
-CVSS: {{vulnerability.advisory.cvss.score|default:"Information not available."}}
+CVSS: {{vulnerability.advisory.cvss.score|default:"Information not available."}} (version {{vulnerability.advisory.cvss.version|default:"Unavailable"}})
 PATCHED VERSION: {{vulnerability.firstPatchedVersion.identifier|default:"Information not available."}}
 {% endfor %}
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

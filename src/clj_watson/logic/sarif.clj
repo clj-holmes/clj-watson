@@ -24,7 +24,8 @@
       :help                 {:text help-text
                              :markdown help-text}
       :helpUri              (format "https://github.com/advisories/%s" identifier)
-      :properties           {:security-severity (-> cvss :score str)}
+      :properties           {:security-severity (some-> cvss :score str)
+                             :cvss cvss}
       :defaultConfiguration {:level "error"}}]))
 
 (defn ^:private dependencies->sarif-rules [dependencies]
