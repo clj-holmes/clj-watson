@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* Unreleased
+  * Fix: `--output json` now renders correctly & JSON output now pretty-printed [#116](https://github.com/clj-holmes/clj-watson/issues/116)
+
 * v6.0.0 cb02879 -- 2024-08-20
   * Fix: show score and severity in dependency-check findings [#58](https://github.com/clj-holmes/clj-watson/issues/58)
   * Bump deps [#75](https://github.com/clj-holmes/clj-watson/issues/75)
