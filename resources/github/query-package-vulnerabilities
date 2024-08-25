@@ -12,6 +12,7 @@ query Vulnerabilities {
         severity
         cvss {
           score
+          vectorString
         }
         identifiers {
           value

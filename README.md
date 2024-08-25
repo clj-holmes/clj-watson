@@ -383,9 +383,6 @@ clojure -M:clj-watson -p deps.edn
 ```
 ```
 ...
-Downloading/Updating database.
-Download/Update completed.
-...
 
 Dependency Information
 -----------------------------------------------------
@@ -408,7 +405,7 @@ Vulnerabilities
 
 SEVERITY: Information not available.
 IDENTIFIERS: CVE-2022-1000000
-CVSS: 7.5
+CVSS: 7.5 (version 3.1)
 PATCHED VERSION: 1.55
 
 SEVERITY: Information not available.
@@ -417,6 +414,28 @@ CVSS: 5.3
 PATCHED VERSION: 1.55
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
+
+# CVSS Scores & Severities
+
+A Common Vulnerability Scoring System (CVSS) score is a number from `0.0` to `10.0` that conveys the severity of a vulnerability.
+There are multiple different scores available, but `clj-watson` will always only report and use the base score.
+
+Over the years, CVSS has been revised a number of times.
+As of this writing, you can expect to see versions `2.0`, `3.0`, `3.1`, and `4.0`.
+Sometimes, a single vulnerability will specify scores from multiple CVSS versions.
+To err on the side of caution, `clj-watson` will always use and report the highest base score.
+
+If you are curious about other scores, you can always bring up the CVE on the NVD NIST website, for an arbitrary example: https://nvd.nist.gov/vuln/detail/CVE-2022-21724.
+
+A severity is `low`, `medium`, `high`, or `critical`, and is based on the CVSS score.
+See the [NVD NIST website description for details](https://nvd.nist.gov/vuln-metrics/cvss).
+
+> [!TIP]
+> The experimental `github-advisory` strategy has some differences:
+> - In addition to `medium` can return a severity of `moderate` which is equivalent to `medium`.
+`clj-watson` will always convert `moderate` to `medium` for `github-advisory`.
+> - It only populates scores from a single CVSS version.
+> - It does not always populate the CVSS score, or populates it with `0.0`.
 
 # Output & Logging
 
