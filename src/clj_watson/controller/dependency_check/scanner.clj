@@ -96,16 +96,20 @@
 (defn ^:private build-engine [settings]
   (Engine. settings))
 
-(defn ^:private clojure-file? [dependency-path]
+(defn ^:private jar-file? [dependency-path]
   (string/ends-with? dependency-path ".jar"))
 
-(defn ^:private scan-jars [engine dependencies]
+(defn ^:private deps->jars [dependencies]
   (->> dependencies
+       ;; as far as I understand, a dep will only ever point to a single jar
+       ;; but we exclude non-jar deps and perhaps local paths
        (map :paths)
        (apply concat)
-       (filter clojure-file?)
-       (map io/file)
-       (.scan engine))
+       (filter jar-file?)
+       (map io/file)))
+
+(defn ^:private scan-jars [engine jars]
+  (.scan engine jars)
   (.analyzeDependencies engine)
   engine)
 
@@ -114,8 +118,11 @@
   (let [settings (create-settings dependency-check-properties clj-watson-properties)]
     (when-let [{:keys [exit]} (validate-settings settings opts)]
       (System/exit exit))
-    (with-open [engine (build-engine settings)]
-      (-> engine
-          (scan-jars dependencies)
-          (.getDependencies)
-          (Arrays/asList)))))
+    (let [jars (deps->jars dependencies)
+          vulnerable-jars (with-open [engine (build-engine settings)]
+                            (-> engine
+                                (scan-jars jars)
+                                (.getDependencies)
+                                (Arrays/asList)))]
+      {:deps-scanned (count jars)
+       :findings vulnerable-jars})))

@@ -34,6 +34,8 @@
 (defn init
   "Complement `resources/logaback.xml` with some customizations"
   []
+  ;; dependency-check uses Apache Commons JCS, ask it to use log4j2 to allow us to configure its noisy logging
+  (System/setProperty "jcs.logSystem" "log4j2")
   (.addTurboFilter (LoggerFactory/getILoggerFactory) (create-custom-filter)))
 
 (comment

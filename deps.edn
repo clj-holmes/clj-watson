@@ -25,7 +25,7 @@
                              :main-opts    ["-m" "clojure-lsp.main"]}
                :test        {:extra-paths ["test"]
                              :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
-                             :main-opts   ["-m" "kaocha.runner"]}
+                             :main-opts   ["-m" "kaocha.runner" "--reporter" "documentation"]}
 
                ;; for dev: so we can run the recommended command from the README:
                :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:local/root "."}}
