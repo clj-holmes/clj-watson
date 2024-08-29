@@ -9,51 +9,42 @@
    [clj-watson.controller.output :as controller.output]
    [clj-watson.controller.remediate :as controller.remediate]
    [clj-watson.logging-config :as logging-config]
+   [clj-watson.logic.summarize :as summarize]
    [clojure.java.io :as io]
    [clojure.tools.reader.edn :as edn]))
 
 (defmulti scan* (fn [{:keys [database-strategy]}] database-strategy))
-
-(defmethod scan* :github-advisory [{:keys [deps-edn-path suggest-fix aliases]}]
-  (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
-        repositories (select-keys deps [:mvn/repos])
-        config (when-let [config-file (io/resource "clj-watson-config.edn")]
+(defmethod scan* :github-advisory [{:keys [dependencies repositories]}]
+  (let [config (when-let [config-file (io/resource "clj-watson-config.edn")]
                  (edn/read-string (slurp config-file)))
-        allow-list (adapter.config/config->allow-config-map config)
-        vulnerable-dependencies (controller.gh.vulnerability/scan-dependencies dependencies repositories allow-list)]
-    (if suggest-fix
-      (controller.remediate/scan vulnerable-dependencies deps)
-      vulnerable-dependencies)))
+        allow-list (adapter.config/config->allow-config-map config)]
+    (controller.gh.vulnerability/scan-dependencies dependencies repositories allow-list)))
 
-(defmethod scan* :dependency-check [{:keys [deps-edn-path suggest-fix aliases
-                                            dependency-check-properties clj-watson-properties] :as opts}]
-  ;; dependency-check uses Apache Commons JCS, ask it to use log4j2 to allow us to configure its noisy logging
-  (System/setProperty "jcs.logSystem" "log4j2")
-  (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
-        repositories (select-keys deps [:mvn/repos])
-        scanned-dependencies (controller.dc.scanner/start! dependencies
-                                                           dependency-check-properties
-                                                           clj-watson-properties
-                                                           opts)
-        vulnerable-dependencies (controller.dc.vulnerability/extract scanned-dependencies dependencies repositories)]
-    (if suggest-fix
-      (controller.remediate/scan vulnerable-dependencies deps)
-      vulnerable-dependencies)))
+(defmethod scan* :dependency-check [{:keys [dependency-check-properties clj-watson-properties
+                                            dependencies repositories] :as opts}]
+  (let [{:keys [findings] :as result}
+        (controller.dc.scanner/start! dependencies
+                                      dependency-check-properties
+                                      clj-watson-properties
+                                      opts)]
+    (assoc result :findings (controller.dc.vulnerability/extract findings dependencies repositories))))
 
 (defmethod scan* :default [opts]
-  (scan* (assoc opts :database-strategy "dependency-check")))
+  (scan* (assoc opts :database-strategy :dependency-check)))
 
-(defn do-scan
-  "Indirect entry point for -M usage."
-  [opts]
+(defn do-scan [{:keys [fail-on-result output deps-edn-path aliases suggest-fix] :as opts}]
   (logging-config/init)
-  (let [{:keys [fail-on-result output deps-edn-path]} opts
-        vulnerabilities (scan* opts)
-        contains-vulnerabilities? (->> vulnerabilities
-                                       (map (comp empty? :vulnerabilities))
-                                       (some false?))]
-    (controller.output/generate vulnerabilities deps-edn-path output)
-    (if (and contains-vulnerabilities? fail-on-result)
+  (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
+        repositories (select-keys deps [:mvn/repos])
+        {:keys [findings] :as result} (scan* (assoc opts
+                                                    :dependencies dependencies
+                                                    :repositories repositories))
+        findings (if suggest-fix
+                   (controller.remediate/scan findings deps)
+                   findings)]
+    (controller.output/generate findings deps-edn-path output)
+    (-> result summarize/summarize controller.output/final-summary)
+    (if (and (seq findings) fail-on-result)
       (System/exit 1)
       (System/exit 0))))
 
@@ -64,11 +55,14 @@
   (do-scan (cli-spec/validate-tool-opts opts)))
 
 (comment
-  (def vulnerabilities (scan* {:deps-edn-path     "resources/vulnerable-deps.edn"
-                               :database-strategy "dependency-check"
-                               :suggest-fix       true}))
+  (def vulnerabilities (do-scan {:deps-edn-path     "resources/vulnerable-deps.edn"
+                                 :database-strategy :dependency-check
+                                 :suggest-fix       true}))
 
   (def vulnerabilities (scan* {:deps-edn-path     "resources/vulnerable-deps.edn"
-                               :database-strategy "github-advisory"}))
+                               :database-strategy :github-advisory}))
+
   (controller.output/generate vulnerabilities "deps.edn" "sarif")
-  (controller.output/generate vulnerabilities "deps.edn" "stdout-simple"))
+  (controller.output/generate vulnerabilities "deps.edn" "stdout-simple")
+
+  :eoc)
