@@ -1,6 +1,7 @@
 (ns clj-watson.cli-spec
   (:require
    [babashka.cli :as cli]
+   [clj-watson.logic.table :as table]
    [clojure.java.io :as io]
    [clojure.string :as str]))
 
@@ -59,6 +60,16 @@
     :desc (str "When enabled, exit with non-zero on any vulnerability findings\n"
                "Useful for CI/CD")}
 
+   :cvss-fail-threshold
+   {:alias :c
+    :ref "<score>"
+    :coerce :double
+    :desc (str "Exit with non-zero when any vulnerability's CVSS base score is >= threshold\n"
+               "CVSS scores range from 0.0 (least severe) to 10.0 (most severe)\n"
+               "We interpret a score of 0.0 as suspicious\n"
+               "Missing or suspicious CVSS base scores are conservatively derived\n"
+               "Useful for CI/CD")}
+
    :usage-help-style
    {:coerce :keyword
     :default :cli
@@ -100,50 +111,6 @@
   [kw]
   (subs (str kw) 1))
 
-(defn- cell-widths [rows]
-  (reduce
-   (fn [widths row]
-     (map max (map count row) widths)) (repeat 0) rows))
-
-(defn- pad-cells
-  "Adapted from bb cli"
-  [rows widths]
-  (let [pad-row (fn [row]
-                  (map (fn [width cell] (cli/pad width cell)) widths row))]
-    (map pad-row rows)))
-
-(defn- expand-multilines
-  "Expand last column cell over multiple rows if it contains newlines"
-  [rows]
-  (reduce (fn [acc row]
-            (let [[line & extra-lines] (-> row last str/split-lines)
-                  cols (count row)]
-              (if (seq extra-lines)
-                (apply conj acc
-                       (assoc (into [] row) (dec cols) line)
-                       (map #(conj (into [] (repeat (dec cols) ""))
-                                   %)
-                            extra-lines))
-                (conj acc row))))
-          []
-          rows))
-
-(defn- format-table
-  "Modified from bb cli format-table. Allow pre-computed widths to be passed in."
-  [{:keys [rows indent widths] :or {indent 2}}]
-  (let [widths (or widths (cell-widths rows))
-        rows (expand-multilines rows)
-        rows (pad-cells rows widths)
-        fmt-row (fn [leader divider trailer row]
-                  (str leader
-                       (apply str (interpose divider row))
-                       trailer))]
-    (->> rows
-         (map (fn [row]
-                (fmt-row (apply str (repeat indent " ")) " " "" row)))
-         (map str/trimr)
-         (str/join "\n"))))
-
 (defn styled-long-opt [longopt {:keys [usage-help-style]}]
   (if (= :clojure-tool usage-help-style)
     longopt
@@ -183,15 +150,15 @@
   [{:as cfg
     :keys [groups]}]
   (if (not groups)
-    (format-table {:rows (opts->table cfg) :indent 2})
+    (table/format-table {:rows (opts->table cfg) :indent 2})
     (let [groups (mapv #(assoc % :rows
                                (opts->table (assoc cfg :order (:order %))))
                        groups)
-          widths (cell-widths (mapcat :rows groups))]
+          widths (table/cell-widths (mapcat :rows groups))]
       (->> groups
            (reduce (fn [acc {:keys [heading rows]}]
                      (conj acc (str heading "\n"
-                                    (format-table {:rows rows :widths widths}))))
+                                    (table/format-table {:rows rows :widths widths}))))
                    [])
            (str/join "\n\n")))))
 
@@ -219,7 +186,7 @@
   (println
    (format-opts {:spec spec-scan-args :opts opts
                  :groups [{:heading "OPTIONS:"
-                           :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :help]}
+                           :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :cvss-fail-threshold :help]}
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
                            :order [:clj-watson-properties :run-without-nvd-api-key]}]})))
 
@@ -227,7 +194,7 @@
   (report-deprecations opts)
   (case type
     :clj-watson/cli
-    (println (error msg))
+    (println (str (error msg) "\n"))
 
     :org.babashka/cli
     (let [error-desc (cause {:require "Missing required argument"
@@ -277,7 +244,15 @@
 
       :else
       (let [opts (cli/parse-opts orig-args {:spec spec-scan-args :error-fn usage-error :restrict true})]
-        (report-deprecations opts)
+        (if (and (:cvss-fail-threshold opts) (:fail-on-result opts))
+          (usage-error {:type :clj-watson/cli
+                        :msg (format "Invalid usage, specificy only one of: %s"
+                                     (->> [:fail-on-result :cvss-fail-threshold]
+                                          (mapv #(styled-long-opt % opts))
+                                          (str/join ", ")))
+                        :spec spec-scan-args
+                        :opts opts})
+          (report-deprecations opts))
         opts))))
 
 (defn validate-tool-opts [opts]

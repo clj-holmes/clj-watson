@@ -1,6 +1,7 @@
 # CHANGELOG
 
 * Unreleased
+  * Add `--cvss-fail-threshold` to fail when a vulnerability meets or exceeds a given CVSS score [#114](https://github.com/clj-holmes/clj-watson/issues/114)
   * Fix: `--output json` now renders correctly & JSON output now pretty-printed [#116](https://github.com/clj-holmes/clj-watson/issues/116)
   * Recognize CVSS2 and CVSS4 scores when available [#112](https://github.com/clj-holmes/clj-watson/issues/112)
   * Show short summary of findings [#87](https://github.com/clj-holmes/clj-watson/issues/87)
