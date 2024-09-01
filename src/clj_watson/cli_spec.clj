@@ -246,7 +246,7 @@
       (let [opts (cli/parse-opts orig-args {:spec spec-scan-args :error-fn usage-error :restrict true})]
         (if (and (:cvss-fail-threshold opts) (:fail-on-result opts))
           (usage-error {:type :clj-watson/cli
-                        :msg (format "Invalid usage, specificy only one of: %s"
+                        :msg (format "Invalid usage, specify only one of: %s"
                                      (->> [:fail-on-result :cvss-fail-threshold]
                                           (mapv #(styled-long-opt % opts))
                                           (str/join ", ")))
