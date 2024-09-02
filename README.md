@@ -41,7 +41,7 @@ The first time it runs, it will download the entire vulnerability database, whic
 can take several minutes. Subsequent runs will be much faster.
 
 > [!NOTE]
-> The database is stored in your local Maven cache (on macOS/Linux, that's under `~/.m2/repository/org/owasp/dependency-check-utils/10.0.3/data/9.0/` currently) - in case you ever need to delete that folder, if it looks like the database is corrupted.
+> The database is stored in your local Maven cache (on macOS/Linux, that's under `~/.m2/repository/org/owasp/dependency-check-utils/10.0.4/data/9.0/` currently) - in case you ever need to delete that folder, if it looks like the database is corrupted.
 
 `clj-watson` can also be installed as a Clojure CLI tool:
 
