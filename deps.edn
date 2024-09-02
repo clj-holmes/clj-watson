@@ -1,27 +1,27 @@
 {:deps        {org.clojure/clojure                                     {:mvn/version "1.11.4"}
                org.clojure/tools.logging                               {:mvn/version "1.3.0"}
                org.babashka/cli                                        {:mvn/version "0.8.60"}
-               borkdude/edamame                                        {:mvn/version "1.4.25"}
+               borkdude/edamame                                        {:mvn/version "1.4.27"}
                cheshire/cheshire                                       {:mvn/version "5.13.0"}
                clj-http/clj-http                                       {:mvn/version "3.13.0"}
-               org.clojure/tools.deps                                  {:mvn/version "0.19.1432"}
-               org.owasp/dependency-check-core                         {:mvn/version "10.0.3"}
-               org.slf4j/slf4j-api                                     {:mvn/version "2.0.13"}
-               ch.qos.logback/logback-classic                          {:mvn/version "1.5.6"}
+               org.clojure/tools.deps                                  {:mvn/version "0.20.1440"}
+               org.owasp/dependency-check-core                         {:mvn/version "10.0.4"}
+               org.slf4j/slf4j-api                                     {:mvn/version "2.0.16"}
+               ch.qos.logback/logback-classic                          {:mvn/version "1.5.7"}
                org.apache.logging.log4j/log4j-to-slf4j                 {:mvn/version "2.23.1"}
                selmer/selmer                                           {:mvn/version "1.12.61"}
-               version-clj/version-clj                                 {:mvn/version "2.0.2"}}
+               version-clj/version-clj                                 {:mvn/version "2.0.3"}}
 
  :paths       ["src" "resources"]
 
  :tools/usage {:ns-default clj-watson.entrypoint}
 
- :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "1.2.0"}}}
-               :outdated    {:deps {com.github.liquidz/antq {:mvn/version "2.8.1206"}
-                                    org.slf4j/slf4j-simple {:mvn/version "2.0.13"}} ;; to rid ourselves of logger warnings
+ :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "1.3.0"}}}
+               :outdated    {:deps {com.github.liquidz/antq {:mvn/version "2.9.1221"}
+                                    org.slf4j/slf4j-simple {:mvn/version "2.0.16"}} ;; to rid ourselves of logger warnings
                              :main-opts ["-m" "antq.core"]}
                :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone
-                                            {:mvn/version "2024.04.22-11.50.26"}}
+                                            {:mvn/version "2024.08.05-18.16.00"}}
                              :main-opts    ["-m" "clojure-lsp.main"]}
                :test        {:extra-paths ["test"]
                              :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
