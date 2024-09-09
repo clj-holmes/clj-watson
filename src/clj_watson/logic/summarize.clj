@@ -1,5 +1,6 @@
 (ns clj-watson.logic.summarize
   (:require
+   [clj-watson.logic.utils :as u]
    [clojure.string :as str]))
 
 (def ^:private known-severities ["Critical" "High" "Medium" "Low"])
@@ -34,7 +35,7 @@
        :advisory
        :severity))
 
-(defn summarize
+(defn final-summary
   "Account for fact that data is coming from external sources that do not guarantee sensible values.
   Separate expected severities from potentially unrecognized and potentially unspecified.
 
@@ -68,7 +69,109 @@
      :cnt-deps-unexpected-severities unexpected
      :cnt-deps-unspecified-severity unspecified}))
 
+(defn- derive-score
+  "Derive a score from severity.
+  We want to err on the side of caution, so choose upper bounds.
+  We can't say if a High is CVSS2 or CVSS3/4 so convert it to CVSS2 10.0."
+  [severity]
+  (get {"Critical" 10.0
+        "High" 10.0
+        "Medium" 6.9
+        "Low" 3.9} severity))
+
+(defn- suspicious-score
+  "When score looks iffy, return `score` else `nil`"
+  [score]
+  (when (and (some? score)
+             (or (not (number? score))
+                 (<= score 0) ;; we consider a score of 0 suspicious
+                 (> score 10)))
+    score))
+
+(defn- analyze-cvss-scores [{:keys [advisory]}]
+  (let [score (-> advisory :cvss :score)
+        severity (:severity advisory)
+        normalized-severity (when severity (str/capitalize severity))
+        suspicious-score (suspicious-score score)
+        suspicious-severity (when-not ((set known-severities) normalized-severity)
+                              severity)
+        severity (if (some? suspicious-severity)
+                   severity
+                   normalized-severity)
+        summary (u/assoc-some {:identifiers (->> advisory :identifiers (mapv :value))}
+                              :severity severity
+                              :score score
+                              :score-version (-> advisory :cvss :version)
+                              :suspicious-score suspicious-score)]
+    (if-let [derived (cond
+                       (nil? score) [:missing-score]
+                       (some? suspicious-score) [:suspicious-score])]
+      (cond
+        (nil? severity)
+        (assoc summary
+               :score 10.0
+               :score-derivation (conj derived :missing-severity))
+
+        (some? suspicious-severity)
+        (assoc summary
+               :score 10.0
+               :suspicious-severity suspicious-severity
+               :score-derivation (conj derived :suspicious-severity))
+
+        :else
+        (assoc summary
+               :score (derive-score severity)
+               :score-derivation (conj derived :valid-severity)))
+      summary)))
+
+(defn- distill-cvss-scores [vulnerabilities]
+  (->> vulnerabilities
+       (mapv analyze-cvss-scores)
+       (sort-by (juxt :score :identifiers)) ;; include identifiers for consistent sort order
+       last))
+
+(defn cvss-threshold-summary
+  "Summarize `findings` against `threshold`.
+
+  Returns map with given `:threshold` and `:scores-met` as a vector of maps of:
+  - `:identifiers` the vulnerability ids
+  - `:dependency` vulnerable dep, e.g. group/artifact
+  - `:version` dependency version
+  - `:score` cvss or derived score
+  - `:severity` cvss severity
+  - `:score-version` cvss version (if available)
+  - `:suspicious-score` if original score looks suspicious, populated with original score
+  - `:suspicious-severity` if severity unrecognized, populated with severity
+  - `:score-derivation` a vector describing why score was derived, ex. `[:suspicious-score :missing-severity]`
+     - scores are derived when `:missing-score` or `:suspicious-score`
+     - and will be derived from a `:valid-severity` else default to critical when `:missing-severity` or `:suspicious-severity`."
+  [threshold {:keys [findings]}]
+  (let [summary (->> findings
+                     (mapv (fn [{:keys [dependency mvn/version vulnerabilities]}]
+                             (merge {:dependency dependency
+                                     :version version}
+                                    (distill-cvss-scores vulnerabilities))))
+                     (filterv (fn [{:keys [score]}] (>= score threshold)))
+                     (sort-by (juxt :score :dependency)) ;; include dependency for consistent sort order
+                     (into []))]
+    {:threshold threshold :scores-met summary}))
+
 (comment
+  (cvss-threshold-summary 1.0 {:findings [{:dependency "a/b"
+                                           :mvn/version "2.1.0"
+                                           :vulnerabilities [{:advisory {:identifiers [{:value "cve2"}]
+                                                                         :cvss {:score 3.1
+                                                                                :version 2.0}
+                                                                         :severity "Medium"}}
+                                                             {:advisory {:identifiers [{:value "cve3"}]}}]}]})
+  ;; => {:threshold 1.0,
+  ;;     :scores-met
+  ;;     [{:dependency "a/b",
+  ;;       :version "2.1.0",
+  ;;       :identifiers ["cve3"],
+  ;;       :score 10.0,
+  ;;       :score-derivation [:missing-score :missing-severity]}]}
+
   (sort-by-severity [{:advisory {:severity "Critical"}}
                      {:advisory {:severity "Foo"}}
                      {:advisory {:severity "Medium"}}

@@ -329,6 +329,11 @@ OPTIONS:
   -s, --suggest-fix                                          Include dependency remediation suggestions in vulnurability findings [false]
   -f, --fail-on-result                                       When enabled, exit with non-zero on any vulnerability findings
                                                              Useful for CI/CD [false]
+  -c, --cvss-fail-threshold <score>                          Exit with non-zero when any vulnerability's CVSS base score is >= threshold
+                                                             CVSS scores range from 0.0 (least severe) to 10.0 (most severe)
+                                                             We interpret a score of 0.0 as suspicious
+                                                             Missing or suspicious CVSS base scores are conservatively derived
+                                                             Useful for CI/CD
   -h, --help                                                 Show usage help
 
 OPTIONS valid when database-strategy is dependency-check:
@@ -436,6 +441,59 @@ See the [NVD NIST website description for details](https://nvd.nist.gov/vuln-met
 `clj-watson` will always convert `moderate` to `medium` for `github-advisory`.
 > - It only populates scores from a single CVSS version.
 > - It does not always populate the CVSS score, or populates it with `0.0`.
+
+# Failing on Findings
+
+By default, `clj-watson` exits with `0`.
+
+You can opt to have `clj-watson` exit with a non-zero value when it detects vulnerabilities, which can be useful when running from a continuous integration (CI) server or service.
+
+Specify `--fail-on-result` (or `-f`) to exit with non-zero when any vulnerabilities are detected.
+
+Example usages:
+
+```
+clojure -M:clj-watson --deps-edn-path deps.edn --fail-on-result
+clojure -Tclj-watson :deps-edn-path deps.edn :fail-on-result true
+```
+
+For finer control use `--cvss-fail-threshold` (or `-c`) to specify a CVSS score at which to fail.
+When any detected vulnerability has a score equal to or above the threshold, `clj-watson` will summarize vulnerabilities that have met the threshold and exit with non-zero.
+
+Example usages:
+```
+clojure -M:clj-watson --deps-edn-path deps.edn --cvss-fail-threshold 5.8
+clojure -Tclj-watson :deps-edn-path deps.edn :cvss-fail-threshold 5.8
+```
+
+Example summary:
+
+```
+CVSS fail score threshold of 5.8 met for:
+
+  Dependency                                     Version Identifiers      CVSS Score
+  org.apache.httpcomponents/httpclient           4.1.2   CVE-2014-3577    5.8 (version 2.0)
+  com.fasterxml.jackson.core/jackson-annotations 2.4.0   CVE-2018-1000873 6.5 (version 3.1)
+  com.fasterxml.jackson.core/jackson-core        2.4.2   CVE-2018-1000873 6.5 (version 3.1)
+  org.jsoup/jsoup                                1.6.1   CVE-2021-37714   7.5 (version 3.1)
+  com.fasterxml.jackson.core/jackson-databind    2.4.2   CVE-2020-9548    9.8 (version 3.1)
+  org.clojure/clojure                            1.8.0   CVE-2017-20189   9.8 (version 3.1)
+  org.codehaus.plexus/plexus-utils               3.0     CVE-2017-1000487 9.8 (version 3.1)
+```
+
+When the score is missing or suspicious-looking, `clj-watson` will conservatively derive a score and indicate how it has done so (see `httpclient` below):
+
+```
+CVSS fail score threshold of 5.8 met for:
+
+  Dependency                                  Version Identifiers                          CVSS Score
+  org.jsoup/jsoup                             1.6.1   GHSA-m72m-mhq2-9p6c CVE-2021-37714   7.5 (version 3.1)
+  com.fasterxml.jackson.core/jackson-databind 2.4.2   GHSA-qxxx-2pp7-5hmx CVE-2017-7525    9.8 (version 3.1)
+  com.mchange/c3p0                            0.9.5.2 GHSA-q485-j897-qc27 CVE-2018-20433   9.8 (version 3.0)
+  org.clojure/clojure                         1.8.0   GHSA-jgxc-8mwq-9xqw CVE-2017-20189   9.8 (version 3.1)
+  org.codehaus.plexus/plexus-utils            3.0     GHSA-8vhq-qq4p-grq3 CVE-2017-1000487 9.8 (version 3.1)
+  org.apache.httpcomponents/httpclient        4.1.2   GHSA-2x83-r56g-cv47 CVE-2012-6153    10.0 (score 0.0 suspicious - derived from High severity)
+```
 
 # Output & Logging
 
