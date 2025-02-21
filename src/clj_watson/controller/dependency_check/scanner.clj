@@ -8,7 +8,7 @@
    (java.io ByteArrayInputStream File)
    (java.util Arrays)
    (org.owasp.dependencycheck Engine)
-   (org.owasp.dependencycheck.utils Settings)))
+   (org.owasp.dependencycheck.utils Settings Downloader)))
 
 (defn- sanitize-property
   "Given a line from a properties file, remove sensitive information."
@@ -118,6 +118,7 @@
   (let [settings (create-settings dependency-check-properties clj-watson-properties)]
     (when-let [{:keys [exit]} (validate-settings settings opts)]
       (System/exit exit))
+    (.configure (Downloader/getInstance) settings)
     (let [jars (deps->jars dependencies)
           vulnerable-jars (with-open [engine (build-engine settings)]
                             (-> engine
