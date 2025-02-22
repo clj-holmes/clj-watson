@@ -1,6 +1,7 @@
 # CHANGELOG
 
 * Unreleased
+  * Fix: allow `clj-watson` to use pre-built NVD cache via PR [#127](https://github.com/clj-holmes/clj-watson/pull/127) from [@stijnopheide](https://github.com/stijnopheide).
   * Add `--cvss-fail-threshold` to fail when a vulnerability meets or exceeds a given CVSS score [#114](https://github.com/clj-holmes/clj-watson/issues/114)
   * Fix: `--output json` now renders correctly & JSON output now pretty-printed [#116](https://github.com/clj-holmes/clj-watson/issues/116)
   * Recognize CVSS2 and CVSS4 scores when available [#112](https://github.com/clj-holmes/clj-watson/issues/112)
