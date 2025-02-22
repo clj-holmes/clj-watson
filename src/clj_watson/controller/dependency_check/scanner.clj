@@ -8,7 +8,7 @@
    (java.io ByteArrayInputStream File)
    (java.util Arrays)
    (org.owasp.dependencycheck Engine)
-   (org.owasp.dependencycheck.utils Settings Downloader)))
+   (org.owasp.dependencycheck.utils Downloader Settings)))
 
 (defn- sanitize-property
   "Given a line from a properties file, remove sensitive information."
