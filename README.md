@@ -24,7 +24,7 @@ project's `deps.edn` file or in your user `deps.edn` file
   ;; in :aliases
   :clj-watson {:replace-deps
                {io.github.clj-holmes/clj-watson
-                {:git/tag "v6.0.0" :git/sha "cb02879"}}
+                {:git/tag "v6.0.1" :git/sha "b520351"}}
                :main-opts ["-m" "clj-watson.cli"]}
 ```
 
@@ -287,14 +287,14 @@ directly via the Clojure CLI, by specifying `clj-watson` as a dependency
 via `-Sdeps`:
 
 ```bash
-clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.0" :git/sha "cb02879"}}}' -M -m clj-watson.cli scan -p deps.edn
+clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.1" :git/sha "b520351"}}}' -M -m clj-watson.cli scan -p deps.edn
 ```
 Or you can just add it to your `deps.edn` file as an alias:
 
 ```clojure
 {:deps {}
  :aliases
- {:clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.0" :git/sha "cb02879"}}
+ {:clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.1" :git/sha "b520351"}}
                :main-opts ["-m" "clj-watson.cli"]}}}
 ```
 
