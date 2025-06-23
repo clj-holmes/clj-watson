@@ -1,5 +1,8 @@
 # CHANGELOG
 
+* v6.1.0 in progress
+  * Fix references to `clj-watson.properties` file in the documentation via PR [#130](https://github.com/clj-holmes/clj-watson/pull/130) from [@samumbach](https://github.com/samumbach).
+
 * v6.0.1 b520351 -- 2025-03-07
   * Fix: allow `clj-watson` to use pre-built NVD cache via PR [#127](https://github.com/clj-holmes/clj-watson/pull/127) from [@stijnopheide](https://github.com/stijnopheide).
   * Add `--cvss-fail-threshold` to fail when a vulnerability meets or exceeds a given CVSS score [#114](https://github.com/clj-holmes/clj-watson/issues/114)
