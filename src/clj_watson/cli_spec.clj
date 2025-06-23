@@ -97,7 +97,7 @@
     :validate validate-file-exists
     :desc (str "Path of an additional, optional properties file\n"
                "Overrides values in dependency-check.properties\n"
-               "If not specified classpath is searched for cljwatson.properties")}
+               "If not specified classpath is searched for clj-watson.properties")}
 
    :run-without-nvd-api-key
    {:type :flag

@@ -339,7 +339,7 @@ OPTIONS:
 OPTIONS valid when database-strategy is dependency-check:
   -w, --clj-watson-properties <file>                         Path of an additional, optional properties file
                                                              Overrides values in dependency-check.properties
-                                                             If not specified classpath is searched for cljwatson.properties
+                                                             If not specified classpath is searched for clj-watson.properties
       --run-without-nvd-api-key                              Run without an nvd.api.key configured.
                                                              It will be slow and we cannot recommend it.
                                                              See docs for configuration. [false]
