@@ -1,6 +1,9 @@
 # CHANGELOG
 
 * v6.1.0 in progress
+  * Docs
+    * [OSS Index now requires credentials](README.md#oss-index-configuration), therefore OSS Index findings enrichment is effectively disabled by default [#133](https://github.com/clj-holmes/clj-watson/issues/133)
+    * Review and freshen docs
   * Fix references to `clj-watson.properties` file in the documentation via PR [#130](https://github.com/clj-holmes/clj-watson/pull/130) from [@samumbach](https://github.com/samumbach).
   * Update DependencyCheck settings reporting [#141](https://github.com/clj-holmes/clj-watson/issues/141)
     * generalized occluding of sensitive values
@@ -8,7 +11,7 @@
     * added unit tests
   * Command line parsing review and fixes [#137](https://github.com/clj-holmes/clj-watson/issues/137)
     * -X/-T exec usage, as per convention, now throws on error instead of explicitly exiting process
-    * -X/-T exec usage now allows for conventional value syntax, e.g. `:p '"deps.edn"'` now works (in addition to `:p deps.edn`). 
+    * -X/-T exec usage now allows for conventional value syntax, e.g. `:p '"deps.edn"'` now works (in addition to `:p deps.edn`).
     * -X/-T exec usage invalid boolean values now trigger an error (instead of being ignored)
     * now warning when using `dependency-check`-only options with `github-advisory` `database-strategy`
     * now reporting unrecognized options in appropriate style for -M vs -X/-T usage

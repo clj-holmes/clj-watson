@@ -139,3 +139,13 @@
       exit
       (scan settings dependencies))))
 
+(comment
+  ;; current database dir (handy for docs which reference this dir that changes):
+  (->> (Settings.)
+       .getDataDirectory
+       .toPath
+       (.relativize (.toPath (io/file (System/getProperty "user.home"))))
+       (str "~/"))
+  ;; => "~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0"
+
+  :eoc)

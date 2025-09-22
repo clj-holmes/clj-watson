@@ -1,11 +1,11 @@
 # `clj-watson`
 
-A Clojure tool for vulnerability checking.
+A Clojure tool that checks for vulnerable dependencies
 
-`clj-watson` is a software composition analysis (SCA) tool that scans
-dependencies specified in a Clojure `deps.edn` file looking for vulnerable direct and
-transitive dependencies, and builds a report with all the information needed
-to help you understand how the vulnerabilities manifest in your software.
+`clj-watson` is a software composition analysis (SCA) tool that:
+1. scans dependencies specified in a Clojure `deps.edn` file 
+2. looks for vulnerable direct and transitive dependencies
+3. builds a report with all the information needed to help you understand how the vulnerabilities manifest in your software
 
 `clj-watson` can suggest a remediation for the vulnerabilities found,
 and can check against both the
@@ -14,34 +14,40 @@ and can check against both the
 [GitHub Advisory Database](https://github.com/advisories)
 (experimental).
 
+> [!IMPORTANT]
+> We only support latest version of `clj-watson`.
+> All earlier versions of `clj-watson` are officially deprecated.
+
 ## Quick Start
 
-`clj-watson` can be added as an alias either on a per-project basis in your
-project's `deps.edn` file or in your user `deps.edn` file
+1. `clj-watson` can be added as an alias, either on a per-project basis in your
+project's `deps.edn` file, or in your user `deps.edn` file
 (either `~/.clojure/deps.edn` or `~/.config/clojure/deps.edn`):
 
-```clojure
-  ;; in :aliases
-  :clj-watson {:replace-deps
-               {io.github.clj-holmes/clj-watson
-                {:git/tag "v6.0.1" :git/sha "b520351"}}
-               :main-opts ["-m" "clj-watson.cli"]}
-```
+    ```clojure
+      ;; under :aliases
+      :clj-watson {:replace-deps
+                   {io.github.clj-holmes/clj-watson
+                    {:git/tag "v6.0.1" :git/sha "b520351"}}
+                   :main-opts ["-m" "clj-watson.cli"]}
+    ```
 
-> [!IMPORTANT]
-> You'll need to first [setup your NVD API key](#nist-nvd-api).
+2. [Setup your NVD API key](#nist-nvd-api).
 
-Then you can run it with:
+3. Optionally [setup OSS Index enrichment](#oss-index-configuration) which is now disabled if credentials are not configured.
 
-```bash
-clojure -M:clj-watson scan -p deps.edn
-```
+4. Run clj-watson like so:
 
-The first time it runs, it will download the entire vulnerability database, which
-can take several minutes. Subsequent runs will be much faster.
+      ```bash
+      clojure -M:clj-watson scan -p deps.edn
+      ```
+
+The first time `clj-watson` runs, it downloads the entire vulnerability database.
+This can take several minutes. Subsequent runs will be much faster.
 
 > [!NOTE]
-> The database is stored in your local Maven cache (on macOS/Linux, that's under `~/.m2/repository/org/owasp/dependency-check-utils/10.0.4/data/9.0/` currently) - in case you ever need to delete that folder, if it looks like the database is corrupted.
+> The database is stored under in your local maven repository, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0/`.
+> If you delete this directory, the database will be automatically re-downloaded.
 
 `clj-watson` can also be installed as a Clojure CLI tool:
 
@@ -49,60 +55,51 @@ can take several minutes. Subsequent runs will be much faster.
 clojure -Ttools install-latest :lib io.github.clj-holmes/clj-watson :as clj-watson
 ```
 
-Then can be run via:
+After [setting up your NVD API key](#nist-nvd-api), you can run `clj-watson` like so:
 
 ```bash
-clojure -Tclj-watson scan :deps-edn-path '"deps.edn"' :output '"stdout"'
-# or:
-clojure -Tclj-watson scan '{:deps-edn-path "deps.edn" :output "stdout"}'
+clojure -Tclj-watson scan :deps-edn-path deps.edn
 ```
 
-The tool option keywords match the long-form CLI option names (see below)
-but the abbreviations are also supported. In addition, any string option may
-be specified as a bare Clojure symbol (if it is legally representable as such),
-which means the above command-line can be simplified to just:
+The -T tool option keywords match both the long-form and alias [-M CLI options](#cli-options).
+So this also works:
 
 ```bash
 clojure -Tclj-watson scan :p deps.edn
 ```
 
-`:output` can be omitted because it defaults to `stdout`, and `:deps-edn-path`
-can be shortened to `:p` (matching the `-p` short form of `--deps-edn-path`).
-
 > [!NOTE]
-> `:aliases` (or `:a`) should be specified as a vector of keywords (or symbols), e.g., `:a '[:foo :bar]`, whereas it would be specified multiple times (as strings) in the regular CLI, `-a foo -a bar`.
+> For -T tool usage, `:aliases` (or `:a`) is specified as a vector of keywords (or symbols), e.g., `:a '[:foo :bar]'`, whereas it is specified multiple times in for -M usage, `-a foo -a bar`.
+> Run:
+> - `clojure -M:clj-watson scan --help` for -M usage help
+> - `clojure -Tclj-watson scan :help true` for -T tool usage help
 
-# How it works
+## Vulnerability Database Strategies
 
-## Vulnerability database strategies
+`clj-watson` supports two strategies for vulnerabilities scans:
+- [DependencyCheck](#dependencycheck)
+- [GitHub Advisory Database [experimental]](#github-advisory-database-experimental)
 
-`clj-watson` supports two methods for vulnerabilities scans.
+## DependencyCheck
 
-### DependencyCheck
-
-[DependencyCheck](https://github.com/jeremylong/DependencyCheck) is the most
-widely used method among the Clojure/Java SCA tools. It:
-1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/10.0.3/data/9.0/` currently).
+[DependencyCheck](https://github.com/dependency-check/DependencyCheck) is the most
+widely used method among Clojure/Java SCA tools. It:
+1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven repository, under `~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0/`).
 3. Scans JARs from dependencies specified in your `deps.edn`
 4. Composes a [Common Platform Enumeration (CPE)](https://nvd.nist.gov/products/cpe) based on your dependencies
 5. Returns any matching vulnerabilities
 
 `clj-watson` then reports these findings to you, optionally with [potential remediations](#remediation-suggestions).
 
-> [!IMPORTANT]
-> We _always_ recommend using the latest version of `clj-watson`, but as a minimum upgrade to v5.1.3.
-> All earlier versions of `clj-watson` are officially deprecated.
-> Older versions of `clj-watson` use older problematic versions of DependencyCheck, which NIST is now blocking.
-
-#### NIST NVD API
+### NIST NVD API
 
 > [!IMPORTANT]
 > The [NIST NVD data feeds discourage access without API keys by heavily throttling anonymous requests](https://nvd.nist.gov/general/news/API-Key-Announcement).
 > So, request one and use it.
 
-It is easy to [request an API key](https://github.com/jeremylong/DependencyCheck/tree/main?tab=readme-ov-file#nvd-api-key-highly-recommended).
+It is easy to [request an API key](https://github.com/dependency-check/DependencyCheck/tree/main?tab=readme-ov-file#nvd-api-key-highly-recommended).
 
-You can specify you key via:
+You can specify your key via:
 
 1. The `nvd.api.key` Java system property on the command line
 2. Or, the `CLJ_WATSON_NVD_API_KEY` environment variable
@@ -111,86 +108,171 @@ You can specify you key via:
 > [!CAUTION]
 > Keeping your nvd api key secret is your responsibility.
 > This is not a hugely sensitive secret, but you don't want others to use your key.
-> You do not want to check it into any public version control system.
+> You do not want to check it into any version control system.
 
-##### Via Java System Property on the Command Line
+### OSS Index Configuration
 
-Example usage:
+> [!NOTE]
+> When the OSS Index started requiring authentication, DependencyCheck switched to automatically disabling its usage when credentials are not configured.
+> You can re-enable it, if you so wish, by specifying OSS Index credentials.
 
-```shell
-clojure -J-Dnvd.api.key=<your key here> -M:clj-watson scan -p deps.edn
-```
+[DependencyCheck can enrich vulnerability findings by consulting the OSS Index](https://dependency-check.github.io/DependencyCheck/analyzers/oss-index-analyzer.html).
 
-Or:
-
-```shell
-clojure -J-Dnvd.api.key=<your key here> -Tclj-watson scan :p deps.edn
-```
-
-Replace `<your key here>` with your actual api key.
+To enable the OSS Index, you'll need [OSS Index credentials](https://ossindex.sonatype.org/user/register):
+1. specify `analyzer.ossindex.user`, and `analyzer.ossindex.password` Java system properties on the command line
+2. Or, specify `CLJ_WATSON_ANALYZER_OSSINDEX_USER` and `CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD` environment variables
+3. Or, add `analyzer.ossindex.user` & `analayzer.ossindex.password` entries in your `clj-watson.properties` file
 
 > [!CAUTION]
-> You could specify this system property under `:jvm-opts` in your `deps.edn` under your `:clj-watson` alias, but be careful not to commit it to version control.
+> Keeping your OSS Index credentials secret is your responsibility.
+> You do not want to check them into any version control system.
 
-##### Via Environment Variable
+> [!TIP]
+> If you want to explicitly disable OSS Index enrichment and quiet the warning from DependencyCheck about missing credentials, specify:
+> 1. `analyzer.ossindex.enabled=false` as a Java system property on the command line
+> 2. or `CLJ_WATSON_ANALYZER_OSSINDEX_ENABLED=false` environment variable
+> 3. or `analyzer.ossindex.enabled=false` in your `clj-watson.properties` file
 
-Example usage:
+### Specifying DependencyCheck Options
+In all examples below, replace `<your ...>` with your actual values.
 
+You can mix and match, precedence, from highest to lowest, is:
+
+1. **Java System Properties** as specified on command line.
+
+   Example: `-J-Dnvd.api.key=<your nvd nist api key here>`
+2. **Environment Variables**
+Environment variables are often the most straightforward and most secure way to provide sensitive information like API keys and credentials in CI systems.
+
+   Example: `CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here>`
+
+   `clj-watson` converts environment variables starting with `CLJ_WATSON_` to DependencyCheck system properties. For example `CLJ_WATSON_NVD_API_KEY` converts to the `nvd.api.key` system property.
+Specify two underscores for system properties with an underscore, for example `data.file_name` is expressed as `CLJ_WATSON_DATA_FILE__NAME`.
+3. **Properties File**  as specified in the `clj-watson.properties` file.
+
+   Example: `oss.index.enabled=false`
+
+   `clj-watson` first loads its default internal `dependency-check.properties` and applies overrides from your `clj-watson.properties` file. The `clj-watson.properties` file is specified explicitly via `--clj-watson-properties` on the [command line](#cli-options), or discovered automatically on your classpath.
+
+#### Using Java System Property on the Command Line
+
+Example -M usage:
 ```shell
-CLJ_WATSON_NVD_API_KEY=<your key here> clojure -M:clj-watson scan -p deps.edn
+clojure -J-Dnvd.api.key=<your nvd nist api key here> \
+  -M:clj-watson scan -p deps.edn
 ```
 
-Or:
+<details>
+  <summary>With OSS Index enabled:</summary>
 
 ```shell
-export CLJ_WATSON_NVD_API_KEY=<your key here>
+clojure -J-Dnvd.api.key=<your nvd nist api key here> \
+        -J-Danalyzer.ossindex.user=<your ossindex user here> \
+        -J-Danalyzer.ossindex.password=<your ossindex password here> \
+  -M:clj-watson scan -p deps.edn
+```
+</details>
 
-clojure -M:clj-watson scan -p deps.edn
+Example -T tool usage:
+```shell
+clojure -J-Dnvd.api.key=<your nvd nist api key here> \
+  -Tclj-watson scan :p deps.edn
 ```
 
-Or:
+<details>
+  <summary>With OSS Index enabled:</summary>
 
 ```shell
-CLJ_WATSON_NVD_API_KEY=<your key here> clojure -Tclj-watson scan :p deps.edn
+clojure -J-Dnvd.api.key=<your nvd nist api key here> \
+        -J-Danalyzer.ossindex.user=<your ossindex user here> \
+        -J-Danalyzer.ossindex.password=<your ossindex password here> \
+  -Tclj-watson scan :p deps.edn
+```
+</details>
+
+> [!CAUTION]
+> You can specify system properties under `:jvm-opts` in your `deps.edn` under your `:clj-watson` alias, but be careful not to commit secrets to version control.
+
+#### Using Environment Variables
+
+Example -M usage:
+```shell
+CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
+  clojure -M:clj-watson scan -p deps.edn
 ```
 
-Or:
+<details>
+  <summary>With OSS Index enabled:</summary>
 
 ```shell
-export CLJ_WATSON_NVD_API_KEY=<your key here>
+CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
+  CLJ_WATSON_ANALYZER_OSSINDEX_USER=<your ossindex user here> \
+  CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your ossindex password here> \
+  clojure -M:clj-watson scan -p deps.edn
+```
+</details>
 
-clojure -Tclj-watson scan :p deps.edn
+Example -T tool usage:
+```shell
+CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
+  clojure -Tclj-watson scan :p deps.edn
 ```
 
-Replace `<your key here>` with your actual api key.
+<details>
+  <summary>With OSS Index enabled:</summary>
 
-##### Via the `clj-watson.properties` File
+```shell
+CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
+  CLJ_WATSON_ANALYZER_OSSINDEX_USER=<your ossindex user here> \
+  CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your ossindex password here> \
+  clojure -Tclj-watson scan :p deps.edn
+```
+</details>
 
-Specify your key in your `clj-watson.properties` file:
+> [!NOTE]
+> In Bash, you can also export your environment variables prior to running your command, for example:
+> ```shell
+> export CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here>
+> export CLJ_WATSON_ANALYZER_OSSINDEX_USER=<your ossindex user here>
+> export CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your ossindex password here>
+> clojure -M:clj-watson scan -p deps.edn
+> ```
+
+#### Using the `clj-watson.properties` File
+
+Specify your options in your `clj-watson.properties` file:
 
 ```
 # clj-watson.properties file
-nvd.api.key=<your key here>
+nvd.api.key=<your nvd nist api key here>
 ```
-Replace `<your key here>` with your actual api key.
 
-`clj-watson` will pick up `clj-watson.properties` automatically if it is on the classpath, or you can specify it on the command line via the `-w` / `--clj-watson-properties` option:
+Or, with OSS Index enabled:
+```
+# clj-watson.properties file
+nvd.api.key=<your nvd nist api key here>
+analyzer.ossindex.user=<your ossindex user here>
+analyzer.ossindex.password=<your ossindex password here>
+```
 
+`clj-watson` will pick up the `clj-watson.properties` file automatically if it is on the classpath, or you can specify it on the command line via the `-w` / `--clj-watson-properties` option:
+
+Example -M usage:
 
 ```shell
 clojure -M:clj-watson scan -p deps.edn --clj-watson-properties ./clj-watson.properties
 ```
 
-Or:
+Example -T usage:
 
 ```shell
 clojure -Tclj-watson scan :p deps.edn :clj-watson-properties ./clj-watson.properties
 ```
 
 > [!CAUTION]
-> Be careful not to commit your key to version control.
+> Be careful not to commit any secrets to version control.
 
-### GitHub Advisory Database [experimental]
+## GitHub Advisory Database [experimental]
 
 This approach doesn't need to download a database since it uses the
 [GitHub Advisory Database](https://github.com/advisories) via its
@@ -202,7 +284,7 @@ In order to use this approach, it is necessary to generate a
 to access the GraphQL API, or if you use GitHub Actions it is possible to use
 their GitHub token.
 
-Another important thing to be aware of is that the API has a limit of 5,000
+An important thing to be aware of is that the API has a limit of 5,000
 requests per hour/per PAT.
 
 If you create a PAT or use the GitHub Action token, you can set it as an
@@ -229,7 +311,7 @@ configuration file to your classpath with the following structure:
 **The big difference between `clj-watson` and other tools!**
 
 Since fixing the vulnerabilities found manually can be a truly frustrating
-process `clj-watson` provides a way to suggest a remediation.
+process, `clj-watson` provides a way to suggest a remediation.
 
 It performs lookups for the whole dependency tree, checking if the latest
 version of a parent dependency uses the secure version of the child dependency
@@ -260,51 +342,53 @@ satisfies this condition, it will propose an exclusion instead:
  dependency-b {:mvn/version "v3"}}
 ```
 
-In order to get the automated remediation suggestions, provide
+In order to get the automated remediation suggestions, specify
 the `--suggest-fix` or `-s` option when running `clj-watson`.
 
-# Installation
+## Installation Notes
 
 > [!IMPORTANT]
 > You'll need to [setup your NVD API key](#nist-nvd-api).
 
-`clj-watson` can be installed as a Clojure CLI tool, as shown above. While
+See [Quick Start](#quick-start) for an overview.
+
+### Tools Usage
+
+`clj-watson` can be installed as a Clojure CLI tool, as shown under [Quick Start](#quick-start).  While
 this is the easiest way to install the latest version and keep it up-to-date
 (using `clojure -Ttools install-latest`), it also means using the key/value
-EDN-style options for the CLI tool, which can at first seem a bit unwieldy:
+EDN-style options for the CLI tool, which can, at first, seem a bit unwieldy.
+Example equivalent usages:
 
 ```bash
-clojure -Tclj-watson scan '{:output "stdout" :fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"] :database-strategy "dependency-check"}'
+clojure -Tclj-watson scan '{:fail-on-result true :deps-edn-path "deps.edn" :suggest-fix true :aliases ["*"]}'
 # or:
-clojure -Tclj-watson scan :f true :p deps.edn :s true :a '[*]'
+clojure -Tclj-watson scan :fail-on-result true :deps-edn-path deps.edn :suggest-fix true :aliases '[*]'
 ```
 
-Both `:output` (`:o`) and `:database-strategy` (`:t`) can be omitted because
-they default to `"stdout"` and `"dependency-check"` respectively.
+If you aren't familiar with -T tools, you might be surprised that exceptions are thrown for what seem like non-exceptional things. 
+For example a typo on the command line will show what you'd expect (explanation of error and usage help) but also show output that looks like this:
 
-In addition to the CLI tool install, shown above, it can also be invoked
-directly via the Clojure CLI, by specifying `clj-watson` as a dependency
-via `-Sdeps`:
+```
+Execution error (ExceptionInfo) at clj-watson.entrypoint/scan$fn (entrypoint.clj:75).
+usage error
+
+Full report at:
+/tmp/clojure-16796860161725335561.edn
+```
+
+This is the nature of -T tools, which are designed to be potentially chained, and therefore throw instead of exiting, and therefore exhibit this behaviour.
+
+### Invoking with -Sdeps
+
+An alternative invocation is via `-Sdeps`:
 
 ```bash
-clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.1" :git/sha "b520351"}}}' -M -m clj-watson.cli scan -p deps.edn
-```
-Or you can just add it to your `deps.edn` file as an alias:
-
-```clojure
-{:deps {}
- :aliases
- {:clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.1" :git/sha "b520351"}}
-               :main-opts ["-m" "clj-watson.cli"]}}}
+clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.1" :git/sha "b520351"}}}' \
+  -M -m clj-watson.cli scan -p deps.edn
 ```
 
-and invoke it with:
-
-```bash
-clojure -M:clj-watson scan -p deps.edn
-```
-
-# CLI Options
+## CLI Options
 
 You can get a full list of the available options by running:
 
@@ -345,46 +429,23 @@ OPTIONS valid when database-strategy is dependency-check:
                                                              See docs for configuration. [false]
 ```
 
-## Properties
+> [!TIP]
+> If you are running `clj-watson` as a tool run:
+> ```bash
+> clojure -Tclj-watson scan :help true
+> ```
 
-When using the `dependency-check` `database-strategy`, `clj-watson` will:
-- load its internal default `dependency-check.properties` to apply to the `dependency-check` scan
-- optionally override its defaults with your `clj-watson.properties` file
-  - specified explicitly by you via `-w` (or `--clj-watson-properties`)
-  - else automatically found on your classpath
-
-In addition, relevant properties provided as Java system properties are
-read by the underlying DependencyCheck scan, and take precedence over the
-properties provided in these files. See the `-Dnvd.api.key=` example above.
-
-## Environment Variables
-
-`clj-watson` also supports environment variables that start with `CLJ_WATSON_`.
-These are used to set properties that are not provided on the command line.
-The `CLJ_WATSON_` prefix is removed, and the rest of the name is converted to
-a lowercase property name with `_` replaced by `.` (e.g., `CLJ_WATSON_NVD_API_KEY`).
-To specify a property name that contains an underscore, use two underscores
-in the environment variable name, e.g., `CLJ_WATSON_DATA_FILE__NAME` to
-set the `data.file_name` property.
-
-Properties set via environment variables take precedence over those set in
-the properties files described above, but not over Java system properties
-set on the command-line.
-
-Environment variables are often the most straightforward and most secure
-way to provide sensitive information like API keys in various CI systems.
-
-# Execution
+## Execution
 
 The minimum needed to run `clj-watson` is to provide the path to a `deps.edn`
 file, but it is recommended that you also provide the `-s` option so
 `clj-watson` will try to suggest remediations for any vulnerabilities found.
 
 > [!IMPORTANT]
-> You'll need to first [setup your NVD API key](#nist-nvd-api).
+> You must first [setup your NVD API key](#nist-nvd-api).
 
 ```bash
-clojure -M:clj-watson -p deps.edn
+clojure -M:clj-watson scan -p deps.edn -s
 ```
 ```
 ...
@@ -420,7 +481,7 @@ PATCHED VERSION: 1.55
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 ```
 
-# CVSS Scores & Severities
+## CVSS Scores & Severities
 
 A Common Vulnerability Scoring System (CVSS) score is a number from `0.0` to `10.0` that conveys the severity of a vulnerability.
 There are multiple different scores available, but `clj-watson` will always only report and use the base score.
@@ -442,7 +503,7 @@ See the [NVD NIST website description for details](https://nvd.nist.gov/vuln-met
 > - It only populates scores from a single CVSS version.
 > - It does not always populate the CVSS score, or populates it with `0.0`.
 
-# Failing on Findings
+## Failing on Findings
 
 By default, `clj-watson` exits with `0`.
 
@@ -453,8 +514,8 @@ Specify `--fail-on-result` (or `-f`) to exit with non-zero when any vulnerabilit
 Example usages:
 
 ```
-clojure -M:clj-watson --deps-edn-path deps.edn --fail-on-result
-clojure -Tclj-watson :deps-edn-path deps.edn :fail-on-result true
+clojure -M:clj-watson scan --deps-edn-path deps.edn --fail-on-result
+clojure -Tclj-watson scan :deps-edn-path deps.edn :fail-on-result true
 ```
 
 For finer control use `--cvss-fail-threshold` (or `-c`) to specify a CVSS score at which to fail.
@@ -462,8 +523,8 @@ When any detected vulnerability has a score equal to or above the threshold, `cl
 
 Example usages:
 ```
-clojure -M:clj-watson --deps-edn-path deps.edn --cvss-fail-threshold 5.8
-clojure -Tclj-watson :deps-edn-path deps.edn :cvss-fail-threshold 5.8
+clojure -M:clj-watson scan --deps-edn-path deps.edn --cvss-fail-threshold 5.8
+clojure -Tclj-watson scan :deps-edn-path deps.edn :cvss-fail-threshold 5.8
 ```
 
 Example summary:
@@ -495,34 +556,38 @@ CVSS fail score threshold of 5.8 met for:
   org.apache.httpcomponents/httpclient        4.1.2   GHSA-2x83-r56g-cv47 CVE-2012-6153    10.0 (score 0.0 suspicious - derived from High severity)
 ```
 
-# Output & Logging
+## Output & Logging
 
 `clj-watson` uses [SLFJ4](https://www.slf4j.org/) and [Logback](https://logback.qos.ch) to collect and filter meaningful log output from its dependencies.
 This output goes to `stderr`.
 
 It writes settings and vulnerability findings to `stdout`.
 
-# Who uses it
+## Who uses it
 
 - [180 Seguros](https://180s.com.br)
 - [org.clojure/tools.deps](https://github.com/clojure/tools.deps)
 - [World Singles Networks](https://worldsinglesnetworks.com/)
+- [clj-yaml](https://github.com/clj-commons/clj-yaml)
+- [pomegranate](https://github.com/clj-commons/pomegranate)
 
-# Development
+Are you using clj-watson? Let us know and we'll add your project here!
 
-## nREPL
+## Development
+
+### nREPL
 
 ```bash
 clojure -M:nREPL -m nrepl.cmdline
 ```
 
-## Test
+### Test
 
 ```bash
 clojure -M:test
 ```
 
-## Lint
+### Lint
 
 We use [clojure-lsp from the command line](https://clojure-lsp.io/api/cli/) to lint:
 ```bash
@@ -531,14 +596,14 @@ clojure -M:clojure-lsp clean-ns
 clojure -M:clojure-lsp diagnostics
 ```
 
-## Security
+### Security
 
 We use [clj-holmes](https://github.com/clj-holmes/clj-holmes) to check for potentially vulnerable patterns in clj-watson source code:
 ```bash
 clj-holmes scan -p .
 ```
 
-# License and Copyright
+## License and Copyright
 
 Copyright © 2021-2024 Matheus Bernardes
 
