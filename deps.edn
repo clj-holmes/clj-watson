@@ -21,7 +21,7 @@
                                     org.slf4j/slf4j-simple {:mvn/version "2.0.17"}} ;; to rid ourselves of logger warnings
                              :main-opts ["-m" "antq.core"]}
                :clojure-lsp {:replace-deps {com.github.clojure-lsp/clojure-lsp-standalone
-                                            {:mvn/version "2025.06.13-20.45.44"}}
+                                            {:mvn/version "2025.08.25-14.21.46"}}
                              :main-opts    ["-m" "clojure-lsp.main"]}
                :test        {:extra-paths ["test"]
                              :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
