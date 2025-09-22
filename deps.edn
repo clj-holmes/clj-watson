@@ -4,7 +4,7 @@
                borkdude/edamame                        {:mvn/version "1.4.32"}
                ch.qos.logback/logback-classic          {:mvn/version "1.5.18"}
                cheshire/cheshire                       {:mvn/version "6.1.0"}
-               clj-http/clj-http                       {:mvn/version "3.13.0"}
+               clj-http/clj-http                       {:mvn/version "3.13.1"}
                org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.25.0"}
                org.babashka/cli                        {:mvn/version "0.8.65"}
                org.owasp/dependency-check-core         {:mvn/version "12.1.3"}
