@@ -2,6 +2,7 @@
 
 * v6.1.0 in progress
   * Fix references to `clj-watson.properties` file in the documentation via PR [#130](https://github.com/clj-holmes/clj-watson/pull/130) from [@samumbach](https://github.com/samumbach).
+  * Tools usage fix for conventional value syntax [#137](https://github.com/clj-holmes/clj-watson/issues/137)
   * Bump deps [#134](https://github.com/clj-holmes/clj-watson/issues/134)
 
 * v6.0.1 b520351 -- 2025-03-07

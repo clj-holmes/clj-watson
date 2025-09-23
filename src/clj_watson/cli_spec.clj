@@ -224,7 +224,7 @@
                    (apply conj acc (interleave (repeat k) v))
                    (conj acc k v)))
                [])
-       (mapv pr-str)))
+       (mapv #(if (string? %) % (pr-str %)))))
 
 (defn parse-args [args]
   ;; can entertain moving to bb cli dispatch when we have more than one command
