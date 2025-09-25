@@ -24,7 +24,8 @@
                                             {:mvn/version "2025.08.25-14.21.46"}}
                              :main-opts    ["-m" "clojure-lsp.main"]}
                :test        {:extra-paths ["test"]
-                             :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+                             :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
+                                          nubank/matcher-combinators {:mvn/version "3.9.2"}}
                              :main-opts   ["-m" "kaocha.runner" "--reporter" "documentation"]}
 
                ;; for dev: so we can run the recommended command from the README:

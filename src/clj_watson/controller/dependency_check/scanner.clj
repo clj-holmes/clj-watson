@@ -116,14 +116,15 @@
 (defn start!
   [dependencies dependency-check-properties clj-watson-properties opts]
   (let [settings (create-settings dependency-check-properties clj-watson-properties)]
-    (when-let [{:keys [exit]} (validate-settings settings opts)]
-      (System/exit exit))
-    (.configure (Downloader/getInstance) settings)
-    (let [jars (deps->jars dependencies)
-          vulnerable-jars (with-open [engine (build-engine settings)]
-                            (-> engine
-                                (scan-jars jars)
-                                (.getDependencies)
-                                (Arrays/asList)))]
-      {:deps-scanned (count jars)
-       :findings vulnerable-jars})))
+    (if-let [exit (validate-settings settings opts)]
+      exit
+      (do
+        (.configure (Downloader/getInstance) settings)
+        (let [jars (deps->jars dependencies)
+              vulnerable-jars (with-open [engine (build-engine settings)]
+                                (-> engine
+                                    (scan-jars jars)
+                                    (.getDependencies)
+                                    (Arrays/asList)))]
+          {:deps-scanned (count jars)
+           :findings vulnerable-jars})))))

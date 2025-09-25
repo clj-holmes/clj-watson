@@ -177,6 +177,21 @@
                         (styled-long-opt deprecated-opt opts)
                         ((-> spec-scan-args deprecated-opt :deprecated-fn) opts)))))))
 
+(defn- report-ignored-opts [opts]
+  (when (= :github-advisory (:database-strategy opts))
+    (doseq [depcheck-only-opt [:dependency-check-properties :clj-watson-properties :run-without-nvd-api-key]]
+      (when (depcheck-only-opt opts)
+        (let [alias (-> spec-scan-args depcheck-only-opt :alias)]
+          (println (warning
+                    (format "%s %s ignored, it only applies when %s is dependency-check"
+                            (if alias (str (styled-alias alias opts) ",") "   ")
+                            (styled-long-opt depcheck-only-opt opts)
+                            (styled-long-opt :database-strategy opts)))))))))
+
+(defn report-warnings [opts]
+  (report-deprecations opts)
+  (report-ignored-opts opts))
+
 (defn- usage-help [{:keys [opts]}]
   (println "clj-watson")
   (println)
@@ -190,23 +205,42 @@
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
                            :order [:clj-watson-properties :run-without-nvd-api-key]}]})))
 
-(defn- usage-error [{:keys [spec type cause msg option opts] :as data}]
-  (report-deprecations opts)
+(defn- usage-error [{:keys [spec type cause msg option value opts] :as data}]
+  (report-warnings opts)
   (case type
     :clj-watson/cli
     (println (str (error msg) "\n"))
 
     :org.babashka/cli
-    (let [error-desc (cause {:require "Missing required argument"
-                             :validate "Invalid value for argument"
-                             :coerce "Cannot coerce value for argument"
-                             :restrict "Unrecognized argument"})
+    (let [error-desc (cond
+                       (= :require cause)
+                       "Missing required option"
+
+                       (and (= :coerce cause) (= "true" value))
+                       "Option specified without value"
+
+                       (= :coerce cause)
+                       (format "Cannot coerce %s to %s"
+                               value (-> spec option :coerce name))
+
+                       (= :validate cause)
+                       "Invalid value for option"
+
+                       (= :restrict cause)
+                       "Unrecognized option"
+
+                       :else
+                       msg)
+
           ;; show our custom validation messages
           msg (when (and (= :validate cause)
                          (some-> spec option :validate :ex-msg))
                 msg)]
       (if (= :restrict cause)
-        (println (error (format "%s: %s" error-desc option)))
+        (println (error (format "%s: %s" error-desc
+                                (if (= 1 (-> option name count))
+                                  (styled-alias option opts)
+                                  (styled-long-opt option opts)))))
         (let [arg-desc (format-opts {:spec (select-keys spec [option])
                                      :opts opts})]
           (println (error (format "%s:%s\n%s" error-desc
@@ -214,8 +248,7 @@
                                   arg-desc))))))
 
     (throw (ex-info msg data)))
-  (usage-help data)
-  (System/exit 1))
+  (usage-help data))
 
 (defn- opts->args [m]
   (->> m
@@ -234,29 +267,57 @@
       (:help opts)
       (do
         (usage-help {:opts opts})
-        (System/exit 0))
+        {:exit 0})
 
       (not= ["scan"] args)
-      (usage-error {:type :clj-watson/cli
-                    :msg (format "Invalid command, the only valid command is scan, detected: %s" (str/join ", " args))
-                    :spec spec-scan-args
-                    :opts opts})
+      (do
+        (usage-error {:type :clj-watson/cli
+                      :msg (format "Invalid command, the only valid command is scan, detected: %s" (str/join ", " args))
+                      :spec spec-scan-args
+                      :opts opts})
+        {:exit 1})
 
       :else
-      (let [opts (cli/parse-opts orig-args {:spec spec-scan-args :error-fn usage-error :restrict true})]
-        (if (and (:cvss-fail-threshold opts) (:fail-on-result opts))
-          (usage-error {:type :clj-watson/cli
-                        :msg (format "Invalid usage, specify only one of: %s"
-                                     (->> [:fail-on-result :cvss-fail-threshold]
-                                          (mapv #(styled-long-opt % opts))
-                                          (str/join ", ")))
-                        :spec spec-scan-args
-                        :opts opts})
-          (report-deprecations opts))
-        opts))))
+      (let [errors (atom [])
+            {:keys [args opts]} (cli/parse-args orig-args {:spec spec-scan-args
+                                                           :error-fn (fn [error] (swap! errors conj error))
+                                                           :restrict true})]
+        (cond
+           ;; when parsed under the full spec, elements can be interpreted as args, let's catch those cases
+           ;; for example maybe someone specified: --boolean-opt yes
+           ;; since yes is not a valid boolean opt, it gets interpreted as an arg 
+          (not= ["scan"] args)
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Unable to parse, found invalid: %s"
+                                       (->> args (remove #(= "scan" %)) first))
+                          :spec spec-scan-args
+                          :opts opts})
+            {:exit 1})
+
+          (> (count @errors) 0)
+          (do
+            (usage-error (first @errors))
+            {:exit 1})
+
+          (and (:cvss-fail-threshold opts) (:fail-on-result opts))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, specify only one of: %s"
+                                       (->> [:fail-on-result :cvss-fail-threshold]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", ")))
+                          :spec spec-scan-args
+                          :opts opts})
+            {:exit 1})
+          :else
+          (do
+            (report-warnings opts)
+            opts))))))
 
 (defn validate-tool-opts [opts]
   (->> opts
        opts->args
        (into ["scan" ":usage-help-style" ":clojure-tool"])
        parse-args))
+

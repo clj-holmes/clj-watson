@@ -46,23 +46,36 @@
     (-> result summarize/final-summary controller.output/final-summary)
     (cond
       (and fail-on-result (seq findings))
-      (System/exit 1)
+      {:exit 1}
 
       cvss-fail-threshold
       (let [{:keys [scores-met] :as cvss-summary} (summarize/cvss-threshold-summary cvss-fail-threshold result)]
         (controller.output/cvss-threshold-summary cvss-summary)
         (if (seq scores-met)
-          (System/exit 1)
-          (System/exit 0)))
+          {:exit 1}
+          {:exit 0}))
 
       :else
-      (System/exit 0))))
+      {:exit 0})))
+
+(defn scan-main [args]
+  (let [opts (cli-spec/parse-args args)]
+    (if (:exit opts)
+      opts
+      (do-scan opts))))
+
+(defn scan-exec [opts]
+  (let [opts (cli-spec/validate-tool-opts opts)]
+    (if (:exit opts)
+      opts
+      (do-scan opts))))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn scan
   "Direct entrypoint for -X & -T usage."
   [opts]
-  (do-scan (cli-spec/validate-tool-opts opts)))
+  (let [{:keys [exit]} (scan-exec opts)]
+    (System/exit exit)))
 
 (comment
   (def vulnerabilities (do-scan {:deps-edn-path     "resources/vulnerable-deps.edn"
