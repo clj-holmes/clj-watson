@@ -178,7 +178,7 @@
                         ((-> spec-scan-args deprecated-opt :deprecated-fn) opts)))))))
 
 (defn- report-ignored-opts [opts]
-  (when (= :github-advisory (:database-strategy opts))
+  (when (not= :dependency-check (:database-strategy opts))
     (doseq [depcheck-only-opt [:dependency-check-properties :clj-watson-properties :run-without-nvd-api-key]]
       (when (depcheck-only-opt opts)
         (let [alias (-> spec-scan-args depcheck-only-opt :alias)]
@@ -262,6 +262,7 @@
 (defn parse-args [args]
   ;; can entertain moving to bb cli dispatch when we have more than one command
   (let [orig-args args
+        usage-error-result {:exit 1 :exit-error "usage error"}
         {:keys [args opts]} (cli/parse-args args {:spec (select-keys spec-scan-args [:help :usage-help-style])})]
     (cond
       (:help opts)
@@ -275,7 +276,7 @@
                       :msg (format "Invalid command, the only valid command is scan, detected: %s" (str/join ", " args))
                       :spec spec-scan-args
                       :opts opts})
-        {:exit 1})
+        usage-error-result)
 
       :else
       (let [errors (atom [])
@@ -293,12 +294,12 @@
                                        (->> args (remove #(= "scan" %)) first))
                           :spec spec-scan-args
                           :opts opts})
-            {:exit 1})
+            usage-error-result)
 
           (> (count @errors) 0)
           (do
             (usage-error (first @errors))
-            {:exit 1})
+            usage-error-result)
 
           (and (:cvss-fail-threshold opts) (:fail-on-result opts))
           (do
@@ -309,7 +310,7 @@
                                             (str/join ", ")))
                           :spec spec-scan-args
                           :opts opts})
-            {:exit 1})
+            usage-error-result)
           :else
           (do
             (report-warnings opts)

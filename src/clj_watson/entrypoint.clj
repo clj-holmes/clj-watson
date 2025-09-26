@@ -22,12 +22,14 @@
 
 (defmethod scan* :dependency-check [{:keys [dependency-check-properties clj-watson-properties
                                             dependencies repositories] :as opts}]
-  (let [{:keys [findings] :as result}
+  (let [{:keys [findings exit] :as result}
         (controller.dc.scanner/start! dependencies
                                       dependency-check-properties
                                       clj-watson-properties
                                       opts)]
-    (assoc result :findings (controller.dc.vulnerability/extract findings dependencies repositories))))
+    (if exit
+      result
+      (assoc result :findings (controller.dc.vulnerability/extract findings dependencies repositories)))))
 
 (defmethod scan* :default [opts]
   (scan* (assoc opts :database-strategy :dependency-check)))
@@ -36,36 +38,28 @@
   (logging-config/init)
   (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
         repositories (select-keys deps [:mvn/repos])
-        {:keys [findings] :as result} (scan* (assoc opts
-                                                    :dependencies dependencies
-                                                    :repositories repositories))
-        findings (if suggest-fix
-                   (controller.remediate/scan findings deps)
-                   findings)]
-    (controller.output/generate findings deps-edn-path output)
-    (-> result summarize/final-summary controller.output/final-summary)
-    (cond
-      (and fail-on-result (seq findings))
-      {:exit 1}
+        {:keys [findings exit] :as result} (scan* (assoc opts
+                                                         :dependencies dependencies
+                                                         :repositories repositories))]
+    (if exit
+      result
+      (let [findings (if suggest-fix
+                       (controller.remediate/scan findings deps)
+                       findings)]
+        (controller.output/generate findings deps-edn-path output)
+        (-> result summarize/final-summary controller.output/final-summary)
+        (cond
+          (and fail-on-result (seq findings))
+          {:exit 1 :exit-error "fail-on-result requested and met"}
 
-      cvss-fail-threshold
-      (let [{:keys [scores-met] :as cvss-summary} (summarize/cvss-threshold-summary cvss-fail-threshold result)]
-        (controller.output/cvss-threshold-summary cvss-summary)
-        (if (seq scores-met)
-          {:exit 1}
-          {:exit 0}))
-
-      :else
-      {:exit 0})))
+          cvss-fail-threshold
+          (let [{:keys [scores-met] :as cvss-summary} (summarize/cvss-threshold-summary cvss-fail-threshold result)]
+            (controller.output/cvss-threshold-summary cvss-summary)
+            (when (seq scores-met)
+              {:exit 1 :exit-error "cvss-fail-threshold requested and met"})))))))
 
 (defn scan-main [args]
   (let [opts (cli-spec/parse-args args)]
-    (if (:exit opts)
-      opts
-      (do-scan opts))))
-
-(defn scan-exec [opts]
-  (let [opts (cli-spec/validate-tool-opts opts)]
     (if (:exit opts)
       opts
       (do-scan opts))))
@@ -74,8 +68,13 @@
 (defn scan
   "Direct entrypoint for -X & -T usage."
   [opts]
-  (let [{:keys [exit]} (scan-exec opts)]
-    (System/exit exit)))
+  (reduce (fn [opts f]
+            (let [{:keys [exit exit-error] :as res} (f opts)]
+              (cond (nil? exit) res
+                    (zero? exit) (reduced res)
+                    :else (throw (ex-info exit-error {})))))
+          opts
+          [cli-spec/validate-tool-opts do-scan]))
 
 (comment
   (def vulnerabilities (do-scan {:deps-edn-path     "resources/vulnerable-deps.edn"

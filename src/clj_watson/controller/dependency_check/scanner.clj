@@ -32,6 +32,7 @@
   (env-var->property "CLJ_WATSON_NVD_API_KEY")
   (env-var->property "CLJ_WATSON_DATA_FILE__NAME"))
 
+;; mock target
 (defn ^:private set-watson-env-vars-as-properties []
   (run! (fn [[env-var value]]
           (when (string/starts-with? env-var "CLJ_WATSON_")
@@ -77,11 +78,15 @@
     (set-watson-env-vars-as-properties)
     settings))
 
+;; mock target
+(defn ^:private get-nvd-api-key [settings]
+  (or (.getString settings "nvd.api.key") (System/getProperty "nvd.api.key")))
+
 (defn ^:private validate-settings
   "Validate settings, logging any findings.
   Returns {:exit <code>} when app should exit with exit <code>, else nil"
   [settings {:keys [run-without-nvd-api-key] :as opts}]
-  (when (not (or (.getString settings "nvd.api.key") (System/getProperty "nvd.api.key")))
+  (when (not (get-nvd-api-key settings))
     (if run-without-nvd-api-key
       (log/warn (format (str "We cannot recommend running without an nvd.api.key specified.\n"
                              "   You have opted to ignore this advice via the %s option.\n"
@@ -91,7 +96,7 @@
                                   "   If you insist, rerun with the %s option, but be warned\n"
                                   "   that you will experience slow NVD data updates and downloads.")
                              (cli-spec/styled-long-opt :run-without-nvd-api-key opts)))
-          {:exit 1}))))
+          {:exit 1 :exit-error "usage error"}))))
 
 (defn ^:private build-engine [settings]
   (Engine. settings))
@@ -113,18 +118,21 @@
   (.analyzeDependencies engine)
   engine)
 
+;; mock target
+(defn ^:private scan [settings dependencies]
+  (.configure (Downloader/getInstance) settings)
+  (let [jars (deps->jars dependencies)
+        vulnerable-jars (with-open [engine (build-engine settings)]
+                          (-> engine
+                              (scan-jars jars)
+                              (.getDependencies)
+                              (Arrays/asList)))]
+    {:deps-scanned (count jars)
+     :findings vulnerable-jars}))
+
 (defn start!
   [dependencies dependency-check-properties clj-watson-properties opts]
   (let [settings (create-settings dependency-check-properties clj-watson-properties)]
     (if-let [exit (validate-settings settings opts)]
       exit
-      (do
-        (.configure (Downloader/getInstance) settings)
-        (let [jars (deps->jars dependencies)
-              vulnerable-jars (with-open [engine (build-engine settings)]
-                                (-> engine
-                                    (scan-jars jars)
-                                    (.getDependencies)
-                                    (Arrays/asList)))]
-          {:deps-scanned (count jars)
-           :findings vulnerable-jars})))))
+      (scan settings dependencies))))
