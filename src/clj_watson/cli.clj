@@ -11,5 +11,6 @@
   "Entrypoint for -M cli usage"
   [& args]
   (let [{:keys [exit]} (entrypoint/scan-main args)]
-    (when exit
-      (system-exit exit))))
+    (if exit
+      (system-exit exit)
+      (shutdown-agents))))
