@@ -9,7 +9,7 @@
     * now warning when using `dependency-check`-only options with `github-advisory` `database-strategy`
     * now reporting unrecognized options in appropriate style for -M vs -X/-T usage
     * command line usage errors reviewed and updated for succinctness and clarity
-    * made code more REPL friendly by only issuing System/exit add out edges of API 
+    * made code more REPL-friendly by only issuing `System/exit` from the outer edge of API
     * added unit tests
   * Bump deps [#134](https://github.com/clj-holmes/clj-watson/issues/134)
 
