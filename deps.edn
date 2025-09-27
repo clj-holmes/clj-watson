@@ -25,9 +25,14 @@
                              :main-opts    ["-m" "clojure-lsp.main"]}
                :test        {:extra-paths ["test"]
                              :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
-                                          nubank/matcher-combinators {:mvn/version "3.9.2"}}
+                                          nubank/matcher-combinators {:mvn/version "3.9.2"}
+                                          babashka/process {:mvn/version "0.6.23"}
+                                          babashka/fs {:mvn/version "0.5.27"}}
                              :main-opts   ["-m" "kaocha.runner" "--reporter" "documentation"]}
 
+               :create-settings-test {:exec-fn clj-watson.unit.controller.dependency-check.scanner-test/create-settings-test-entrypoint}
+               :create-settings-test-resources {:extra-paths ["target/create-settings-test"]}
+               
                ;; for dev: so we can run the recommended command from the README:
                :clj-watson {:replace-deps {io.github.clj-holmes/clj-watson {:local/root "."}}
                             :main-opts ["-m" "clj-watson.cli"]
