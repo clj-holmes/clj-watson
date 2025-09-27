@@ -1,3 +1,4 @@
 {:linters {:unresolved-symbol {:exclude []}
            :refer-all {:exclude [clojure.test]}}
- :output  {:show-rule-name-in-message true}}
+ :output  {:show-rule-name-in-message true}
+ :lint-as {clj-watson.test-util/with-log-capture clojure.core/let}}

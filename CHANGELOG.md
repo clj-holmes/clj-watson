@@ -2,6 +2,15 @@
 
 * v6.1.0 in progress
   * Fix references to `clj-watson.properties` file in the documentation via PR [#130](https://github.com/clj-holmes/clj-watson/pull/130) from [@samumbach](https://github.com/samumbach).
+  * Command line parsing review and fixes [#137](https://github.com/clj-holmes/clj-watson/issues/137)
+    * -X/-T exec usage, as per convention, now throws on error instead of explicitly exiting process
+    * -X/-T exec usage now allows for conventional value syntax, e.g. `:p '"deps.edn"'` now works (in addition to `:p deps.edn`). 
+    * -X/-T exec usage invalid boolean values now trigger an error (instead of being ignored)
+    * now warning when using `dependency-check`-only options with `github-advisory` `database-strategy`
+    * now reporting unrecognized options in appropriate style for -M vs -X/-T usage
+    * command line usage errors reviewed and updated for succinctness and clarity
+    * made code more REPL-friendly by only issuing `System/exit` from the outer edge of API
+    * added unit tests
   * Bump deps [#134](https://github.com/clj-holmes/clj-watson/issues/134)
 
 * v6.0.1 b520351 -- 2025-03-07
