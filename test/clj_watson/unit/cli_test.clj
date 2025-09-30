@@ -1,4 +1,4 @@
-(ns cli-test
+(ns clj-watson.unit.cli-test
   "Sanity -M tests. Because scanning takes a very long time, we use mocks.
   See -X/-T exec variant in clj-watson.unit.entrypoint-test"
   (:require
