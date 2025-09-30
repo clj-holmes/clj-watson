@@ -39,7 +39,7 @@ jobs:
       - name: Tools versions
         run: |
           java --version
-          clojure --version
+          clojure -Sdescribe
 
       - name: Execute ${{ matrix.namespace }} Test
         run: clojure -M:test ${{ matrix.namespace }}
