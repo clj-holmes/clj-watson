@@ -33,7 +33,10 @@
                 (do
                   (println (str "Setting " property " from " env-var "."))
                   (System/setProperty property value))))))
-        (System/getenv))
+        (->> (System/getenv)
+             (into {})
+             (into [])
+             (sort-by first)))
   (println))
 
 (defn ^:private resource-as-file [resource]
