@@ -102,6 +102,8 @@
                                               ":report-on-props" (pr-str report-on-props))}]]
 
       (testing desc
+        (println "-desc->" desc)
+        (println "-args->" (pr-str args))
         (let [{:keys [out exit]} (apply shell/sh (conj args #_#_:env env-vars))
               expected-settings (reduce (fn [acc [prop-name expected-winner]]
                                           (let [v (get dc-defaults prop-name :not-set)]
