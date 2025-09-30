@@ -102,6 +102,7 @@
                                               ":report-on-props" (pr-str report-on-props))}]]
 
       (testing desc
+        (println "-can we launch clojure?->" (:out (shell/sh "clojure" "-Sdescribe")))
         (println "-desc->" desc)
         (println "-args->" (pr-str args))
         (let [{:keys [out exit]} (apply shell/sh (conj args #_#_:env env-vars))
