@@ -107,7 +107,7 @@
                  (:out (shell/sh "sh" "-c" "clojure -Sdescribe")))
         (println "-desc->" desc)
         (println "-args->" (pr-str args))
-        (let [{:keys [out exit]} (apply shell/sh (conj args #_#_:env env-vars))
+        (let [{:keys [out exit]} (apply shell/sh (conj args :env env-vars))
               expected-settings (reduce (fn [acc [prop-name expected-winner]]
                                           (let [v (get dc-defaults prop-name :not-set)]
                                             (assoc acc prop-name
