@@ -2,6 +2,10 @@
 
 * v6.1.0 in progress
   * Fix references to `clj-watson.properties` file in the documentation via PR [#130](https://github.com/clj-holmes/clj-watson/pull/130) from [@samumbach](https://github.com/samumbach).
+  * Update DependencyCheck settings reporting [#141](https://github.com/clj-holmes/clj-watson/issues/141)
+    * generalized occluding of sensitive values
+    * show properties filenames and counts of properties
+    * added unit tests
   * Command line parsing review and fixes [#137](https://github.com/clj-holmes/clj-watson/issues/137)
     * -X/-T exec usage, as per convention, now throws on error instead of explicitly exiting process
     * -X/-T exec usage now allows for conventional value syntax, e.g. `:p '"deps.edn"'` now works (in addition to `:p deps.edn`). 

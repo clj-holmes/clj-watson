@@ -1,25 +1,15 @@
 (ns clj-watson.controller.dependency-check.scanner
   (:require
    [clj-watson.cli-spec :as cli-spec]
+   [clj-watson.logic.utils :as utils]
    [clojure.java.io :as io]
    [clojure.string :as string]
    [clojure.tools.logging :as log])
   (:import
-   (java.io ByteArrayInputStream File)
+   (java.nio.file Paths)
    (java.util Arrays)
    (org.owasp.dependencycheck Engine)
    (org.owasp.dependencycheck.utils Downloader Settings)))
-
-(defn- sanitize-property
-  "Given a line from a properties file, remove sensitive information."
-  [line]
-  (string/replace line
-                  #"(key=[-a-fA-F0-9]{4}).*([-a-fA-F0-9]{4})"
-                  "$1****-****-****-****-********$2"))
-
-(comment
-  ;; ensure (fake) API key is redacted:
-  (sanitize-property "nvd.api.key=72a48765-90ab-5678-abcd-1234abcd5489"))
 
 (defn ^:private env-var->property [env-var]
   (-> env-var
@@ -43,38 +33,50 @@
                 (do
                   (println (str "Setting " property " from " env-var "."))
                   (System/setProperty property value))))))
-        (System/getenv))
+        (->> (System/getenv)
+             (into {})
+             (into [])
+             (sort-by first)))
   (println))
 
-(defn ^:private create-settings [^String properties-file-path ^String additional-properties-file-path]
+(defn ^:private resource-as-file [resource]
+  (when-let  [r (io/resource resource)]
+    (-> r .toURI Paths/get .toFile)))
+
+;; called from test
+(defn ^:private create-settings [^String watson-default-props-file ^String watson-user-props-file]
   (let [settings (Settings.)
-        props
-        (if properties-file-path
-          (->> properties-file-path File.)
-          (->> "dependency-check.properties" io/resource))]
-    (println (str "\nRead " (count (line-seq (io/reader props))) " dependency-check properties."))
-    (if properties-file-path
-      (->> props (.mergeProperties settings))
-      (->> props slurp .getBytes ByteArrayInputStream. (.mergeProperties settings)))
-    (if-let [add-props
-             (if additional-properties-file-path
-               (->> additional-properties-file-path File.)
-               (some->> "clj-watson.properties" io/resource))]
-      (do
-        (println "Merging additional properties:")
-        (try
-          (doseq [line (line-seq (io/reader add-props))]
-            (println (str "  " (sanitize-property line))))
-          (catch Exception e
-            (println (str "Unable to read: "
-                          (or additional-properties-file-path "clj-watson.properties")
-                          " due to: "
-                          (ex-message e)))))
-        (println "\n")
-        (if additional-properties-file-path
-          (->> add-props (.mergeProperties settings))
-          (some->> add-props slurp .getBytes ByteArrayInputStream. (.mergeProperties settings))))
-      (println "No additional properties found.\n"))
+        default-props-file
+        (if watson-default-props-file
+          (io/file watson-default-props-file)
+          (resource-as-file "dependency-check.properties"))
+        num-props (count (utils/load-properties default-props-file))
+        plural-props (fn [cnt] (if (= 1 cnt) "property" "properties"))]
+    (println (str "\nReading " num-props " dependency-check "
+                  (plural-props num-props)
+                  " from:\n " (.getCanonicalPath default-props-file)))
+    (with-open [in-stream (io/input-stream default-props-file)]
+      (.mergeProperties settings in-stream))
+    (if-let [user-props-file
+             (if watson-user-props-file
+               (->> watson-user-props-file io/file)
+               (resource-as-file "clj-watson.properties"))]
+      (let [props-to-merge (->> (utils/load-properties user-props-file)
+                                (into {})
+                                (into [])
+                                (sort-by first))
+            num-props-to-merge (count props-to-merge)]
+        (println (str "Merging " num-props-to-merge " additional clj-watson "
+                      (plural-props num-props-to-merge)
+                      " from:\n " (.getCanonicalPath user-props-file)))
+        (doseq [[k v] props-to-merge]
+          ;; similar to dependency check's odc.settings.mask, but more conservative
+          (println (str "  " k "=" (if (re-find #"(key|token|user|password|pw|secret)" k)
+                                     "***OCCLUDED***"
+                                     v)))
+          (.setString settings k v)))
+      (println "No additional clj-watson properties found."))
+    (println)
     (set-watson-env-vars-as-properties)
     settings))
 
@@ -136,3 +138,4 @@
     (if-let [exit (validate-settings settings opts)]
       exit
       (scan settings dependencies))))
+
