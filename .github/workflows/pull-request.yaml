@@ -55,7 +55,7 @@ jobs:
           ps -o pid,ppid,cmd,%mem,%cpu --sort=-%mem | head
 
       - name: Execute ${{ matrix.namespace }} Test
-        run: clojure -M:test -v clj-watson.unit.controller.dependency-check.scanner-test/create-settings-test
+        run: clojure -M:test
 
   check-lint:
 
