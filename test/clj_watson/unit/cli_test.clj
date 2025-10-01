@@ -25,7 +25,8 @@
 
 (deftest exits-with-one-on-cli-usage-error
   (let [exit-code (atom :not-set)]
-    (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))]
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))]
       (is (match? {:out-lines (m/embeds [#"\* ERROR:"
                                          "ARG USAGE:"])}
                   (main "scan" "--bad-opt")))
@@ -33,7 +34,8 @@
 
 (deftest exits-with-zero-on-help-request
   (let [exit-code (atom :not-set)]
-    (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))]
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))]
       (is (match? {:out-lines (m/via #(take 3 %) ["clj-watson"
                                                   ""
                                                   "ARG USAGE:"])}
@@ -43,7 +45,8 @@
 (deftest exits-with-one-on-missing-dependency-check-nvd-api-key
   (let [exit-code (atom :not-set)]
     (tu/with-log-capture [logged-lines {}]
-      (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))
+      (with-redefs [shutdown-agents (fn [])
+                    cli/system-exit (fn [code] (reset! exit-code code))
                     scanner/set-watson-env-vars-as-properties (fn [& _])
                     scanner/get-nvd-api-key (fn [_])]
         (main "scan" "--deps-edn-path" "deps.edn")
@@ -55,7 +58,8 @@
 (deftest allows-run-without-nvd-api-key
   (let [exit-code (atom :not-set)]
     (tu/with-log-capture [logged-lines {}]
-      (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))
+      (with-redefs [shutdown-agents (fn [])
+                    cli/system-exit (fn [code] (reset! exit-code code))
                     scanner/get-nvd-api-key (fn [_])
                     scanner/scan (fn [& _] {:deps-scanned 0
                                             :findings []})]
@@ -68,7 +72,8 @@
 
 (deftest exits-naturally-when-findings
   (let [exit-code (atom :not-set)]
-    (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))
                   entrypoint/scan* mocked-scan]
       (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"
                                          "Vulnerable dependencies found: 1 (1 High)"])}
@@ -77,7 +82,8 @@
 
 (deftest exits-with-one-on-fail-request-when-findings
   (let [exit-code (atom :not-set)]
-    (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))
                   entrypoint/scan* mocked-scan]
       (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"
                                          "Vulnerable dependencies found: 1 (1 High)"])}
@@ -86,7 +92,8 @@
 
 (deftest exits-with-one-on-cvss-threshold-breach-when-findings
   (let [exit-code (atom :not-set)]
-    (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))
                   entrypoint/scan* mocked-scan]
       (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"
                                          "Vulnerable dependencies found: 1 (1 High)"
@@ -97,7 +104,8 @@
 
 (deftest exits-naturally-when-under-cvss-threshold
   (let [exit-code (atom :not-set)]
-    (with-redefs [cli/system-exit (fn [code] (reset! exit-code code))
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))
                   entrypoint/scan* mocked-scan]
       (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"
                                          "Vulnerable dependencies found: 1 (1 High)"
