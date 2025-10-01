@@ -44,6 +44,10 @@ jobs:
           java --version
           clojure -Sdescribe
 
+      - name: Troubleshoot - dump env var names
+        run: |
+          env | cut -d= -f1 | sort
+
       - name: Execute ${{ matrix.namespace }} Test
         run: clojure -M:test ${{ matrix.namespace }}
 
