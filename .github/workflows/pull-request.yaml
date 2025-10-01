@@ -48,6 +48,12 @@ jobs:
         run: |
           env | cut -d= -f1 | sort
 
+      - name: Troubleshoot - dump env stats
+        run: |
+          free -h
+          ulimit -a
+          ps -o pid,ppid,cmd,%mem,%cpu --sort=-%mem | head
+
       - name: Execute ${{ matrix.namespace }} Test
         run: clojure -M:test ${{ matrix.namespace }}
 
