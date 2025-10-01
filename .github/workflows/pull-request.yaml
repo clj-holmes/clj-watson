@@ -13,7 +13,7 @@ jobs:
       matrix:
         namespace: [ unit ]
         operating-system: [ubuntu-latest]
-        jdk-version: ['11', '17', '21']
+        jdk-version: ['11', '17', '21', '25']
 
     runs-on: ${{ matrix.operating-system }}
 
@@ -27,7 +27,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.jdk-version }}
 
-      - name: Install clojure tools-deps
+      - name: Install clojure cli
         uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: 'latest'
@@ -73,9 +73,9 @@ jobs:
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '25'
 
-      - name: Install clojure tools-deps
+      - name: Install clojure cli
         uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: 'latest'
