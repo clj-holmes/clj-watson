@@ -1,7 +1,10 @@
 (ns clj-watson.unit.controller.output-test
   (:require
    [clj-watson.controller.output :as output]
-   [clojure.test :refer [deftest is]]))
+   [clj-watson.test-util :as tu]
+   [clojure.test :refer [deftest is use-fixtures]]))
+
+(use-fixtures :each tu/pool-debug-fixture)
 
 (deftest final-summary-all-good-test
   (is (= (str "Dependencies scanned: 72\n"

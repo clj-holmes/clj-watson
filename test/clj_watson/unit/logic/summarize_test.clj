@@ -1,7 +1,10 @@
 (ns clj-watson.unit.logic.summarize-test
   (:require
    [clj-watson.logic.summarize :as summarize]
-   [clojure.test :refer [deftest is]]))
+   [clj-watson.test-util :as tu]
+   [clojure.test :refer [deftest is use-fixtures]]))
+
+(use-fixtures :each tu/pool-debug-fixture)
 
 (deftest final-summary-all-good-test
   (is (= {:cnt-deps-scanned 42

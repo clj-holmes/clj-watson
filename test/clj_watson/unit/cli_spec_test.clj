@@ -2,9 +2,11 @@
   (:require
    [clj-watson.cli-spec :as cli-spec]
    [clj-watson.test-util :as tu]
-   [clojure.test :refer [deftest is]]
+   [clojure.test :refer [deftest is use-fixtures]]
    [matcher-combinators.matchers :as m]
    [matcher-combinators.test]))
+
+(use-fixtures :each tu/pool-debug-fixture)
 
 (defn- main-parse-args [& args]
   (tu/with-out-capture

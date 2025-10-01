@@ -3,13 +3,16 @@
    [babashka.fs :as fs]
    [clj-watson.controller.dependency-check.scanner :as scanner]
    [clj-watson.logic.utils :as utils]
+   [clj-watson.test-util :as tu]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.java.shell :as shell]
    [clojure.string :as str]
-   [clojure.test :refer [deftest is testing]]
+   [clojure.test :refer [deftest is testing use-fixtures]]
    [matcher-combinators.matchers :as m]
    [matcher-combinators.test]))
+
+(use-fixtures :each tu/pool-debug-fixture)
 
 (def work-dir "target/create-settings-test")
 

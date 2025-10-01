@@ -1,10 +1,13 @@
 (ns clj-watson.unit.adapter.config-test
   (:require
    [clj-watson.adapter.config :as adapter.config]
+   [clj-watson.test-util :as tu]
    [clojure.test :refer :all])
   (:import
    (java.time ZonedDateTime)
    (java.time.format DateTimeParseException)))
+
+(use-fixtures :each tu/pool-debug-fixture)
 
 (deftest ->allow-config
   (testing "Allow Parsing"

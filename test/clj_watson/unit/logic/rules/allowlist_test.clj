@@ -1,9 +1,12 @@
 (ns clj-watson.unit.logic.rules.allowlist-test
   (:require
    [clj-watson.logic.rules.allowlist :as logic.rules.allowlist]
+   [clj-watson.test-util :as tu]
    [clojure.test :refer :all])
   (:import
    (java.time ZonedDateTime)))
+
+(use-fixtures :each tu/pool-debug-fixture)
 
 (def expired-as-of (ZonedDateTime/parse "2023-03-03T00:00:00Z")) ;; always from yyyy-MM-dd
 (def as-of (ZonedDateTime/parse "2024-04-04T11:42:17Z"))         ;; clj-watson usage is as of now
