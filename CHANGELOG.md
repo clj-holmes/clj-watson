@@ -12,6 +12,7 @@
     * made code more REPL-friendly by only issuing `System/exit` from the outer edge of API
     * added unit tests
   * Bump deps [#134](https://github.com/clj-holmes/clj-watson/issues/134)
+  * Add JDK25 to the CI test matrix [#143](https://github.com/clj-holmes/clj-watson/issues/143)
 
 * v6.0.1 b520351 -- 2025-03-07
   * Fix: allow `clj-watson` to use pre-built NVD cache via PR [#127](https://github.com/clj-holmes/clj-watson/pull/127) from [@stijnopheide](https://github.com/stijnopheide).
