@@ -1,24 +1,7 @@
 (ns clj-watson.test-util
   (:require
    [clojure.string :as str]
-   [clojure.test]
    [clojure.tools.logging :as log]))
-
-(def platform
-  (str "clj " (clojure-version) " jdk " (System/getProperty "java.version")))
-
-(defmethod clojure.test/report :begin-test-var [m]
-  (let [test-name (-> m :var meta :name)]
-    (println (format "=== %s [%s]" test-name platform))))
-
-(defn pool-debug-fixture [f]
-  (println "-----executors before---->")
-  (println " pooled " clojure.lang.Agent/pooledExecutor)
-  (println " solo" clojure.lang.Agent/soloExecutor)
-  (f)
-  (println "-----executors after---->")
-  (println " pooled " clojure.lang.Agent/pooledExecutor)
-  (println " solo" clojure.lang.Agent/soloExecutor))
 
 (defmacro with-out-capture
   [& body]

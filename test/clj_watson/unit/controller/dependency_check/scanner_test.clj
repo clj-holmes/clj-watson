@@ -1,18 +1,15 @@
 (ns clj-watson.unit.controller.dependency-check.scanner-test
   (:require
    [babashka.fs :as fs]
+   [babashka.process :as p]
    [clj-watson.controller.dependency-check.scanner :as scanner]
    [clj-watson.logic.utils :as utils]
-   [clj-watson.test-util :as tu]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
-   [clojure.java.shell :as shell]
    [clojure.string :as str]
-   [clojure.test :refer [deftest is testing use-fixtures]]
+   [clojure.test :refer [deftest is testing]]
    [matcher-combinators.matchers :as m]
    [matcher-combinators.test]))
-
-(use-fixtures :each tu/pool-debug-fixture)
 
 (def work-dir "target/create-settings-test")
 
@@ -103,14 +100,12 @@
                                   :args (conj (into ["clojure"] (:sys in-settings))
                                               "-X:test:create-settings-test:create-settings-test-resources"
                                               ":report-on-props" (pr-str report-on-props))}]]
-
       (testing desc
-        (println "-testing123->")
-        (println "-can run clojure?->"
-                 (:out (shell/sh "sh" "-c" "clojure -Sdescribe")))
-        (println "-desc->" desc)
-        (println "-args->" (pr-str args))
-        (let [{:keys [out exit]} (apply shell/sh (conj args :env env-vars))
+        (let [{:keys [out exit]} (apply p/shell {:continue true
+                                                 :out :string
+                                                 :err :string
+                                                 :env env-vars}
+                                        args)
               expected-settings (reduce (fn [acc [prop-name expected-winner]]
                                           (let [v (get dc-defaults prop-name :not-set)]
                                             (assoc acc prop-name

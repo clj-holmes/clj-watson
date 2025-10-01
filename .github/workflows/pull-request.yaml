@@ -1,9 +1,6 @@
 name: pull-request
 
 on:
-  push:
-    branches:
-    - 'lread/**'
   pull_request:
     branches: [ main ]
 
@@ -42,20 +39,10 @@ jobs:
       - name: Tools versions
         run: |
           java --version
-          clojure -Sdescribe
-
-      - name: Troubleshoot - dump env var names
-        run: |
-          env | cut -d= -f1 | sort
-
-      - name: Troubleshoot - dump env stats
-        run: |
-          free -h
-          ulimit -a
-          ps -o pid,ppid,cmd,%mem,%cpu --sort=-%mem | head
+          clojure --version
 
       - name: Execute ${{ matrix.namespace }} Test
-        run: clojure -M:test
+        run: clojure -M:test ${{ matrix.namespace }}
 
   check-lint:
 

@@ -5,11 +5,9 @@
    [clj-watson.controller.dependency-check.scanner :as scanner]
    [clj-watson.entrypoint :as entrypoint]
    [clj-watson.test-util :as tu]
-   [clojure.test :refer [deftest is use-fixtures]]
+   [clojure.test :refer [deftest is]]
    [matcher-combinators.matchers :as m]
    [matcher-combinators.test]))
-
-(use-fixtures :each tu/pool-debug-fixture)
 
 (defn- exec [opts]
   (tu/with-out-capture
