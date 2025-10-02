@@ -28,7 +28,8 @@
   (-> dependencies (logic.sarif/generate deps-edn-path) (json/generate-string {:pretty true}) println))
 
 (defn generate [dependencies deps-edn-path kind]
-  (generate* dependencies deps-edn-path kind))
+  (binding [*print-namespace-maps* false]
+    (generate* dependencies deps-edn-path kind)))
 
 (defn final-summary
   "See `clj-waston.logic.summarize/summary` for description"
