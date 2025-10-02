@@ -15,8 +15,8 @@ and can check against both the
 (experimental).
 
 > [!IMPORTANT]
-> We only support latest version of `clj-watson`.
-> All earlier versions of `clj-watson` are officially deprecated.
+> We strongly encourage you to always use the latest version of `clj-watson`.
+> Older versions might not pick up current vulnerabilities, and might even outright fail due to their usage of now obsolete strategies.
 
 ## Quick Start
 
