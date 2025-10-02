@@ -19,6 +19,7 @@
     * made code more REPL-friendly by only issuing `System/exit` from the outer edge of API
     * added unit tests
   * Switch to Maven as authority for version ordering [#146](https://github.com/clj-holmes/clj-watson/issues/146)
+  * Output maps in reports using a familiar syntax [#147](https://github.com/clj-holmes/clj-watson/issues/147)
   * Bump deps [#134](https://github.com/clj-holmes/clj-watson/issues/134)
   * Add JDK25 to the CI test matrix [#143](https://github.com/clj-holmes/clj-watson/issues/143)
 
