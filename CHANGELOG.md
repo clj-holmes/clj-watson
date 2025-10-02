@@ -2,7 +2,7 @@
 
 * v6.1.0 in progress
   * Docs
-    * [OSS Index now requires credentials](README.md#oss-index-configuration), therefore OSS Index findings enrichment is effectively disabled by default [#133](https://github.com/clj-holmes/clj-watson/issues/133)
+    * [OSS Index now requires credentials](README.md#oss-index-configuration), therefore OSS Index analysis is effectively disabled by default [#133](https://github.com/clj-holmes/clj-watson/issues/133)
     * Review and freshen docs
   * Fix references to `clj-watson.properties` file in the documentation via PR [#130](https://github.com/clj-holmes/clj-watson/pull/130) from [@samumbach](https://github.com/samumbach).
   * Update DependencyCheck settings reporting [#141](https://github.com/clj-holmes/clj-watson/issues/141)

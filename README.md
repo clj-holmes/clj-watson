@@ -34,7 +34,7 @@ project's `deps.edn` file, or in your user `deps.edn` file
 
 2. [Setup your NVD API key](#nist-nvd-api).
 
-3. Optionally [setup OSS Index enrichment](#oss-index-configuration) which is now disabled if credentials are not configured.
+3. Optionally [configure OSS Index](#oss-index-configuration) which is now disabled if credentials are not configured.
 
 4. Run clj-watson like so:
 
@@ -116,7 +116,7 @@ You can specify your key via:
 > When the OSS Index started requiring authentication, DependencyCheck switched to automatically disabling its usage when credentials are not configured.
 > You can re-enable it, if you so wish, by specifying OSS Index credentials.
 
-[DependencyCheck can enrich vulnerability findings by consulting the OSS Index](https://dependency-check.github.io/DependencyCheck/analyzers/oss-index-analyzer.html).
+[DependencyCheck can also consult the OSS Index](https://dependency-check.github.io/DependencyCheck/analyzers/oss-index-analyzer.html).
 
 To enable the OSS Index, you'll need [OSS Index credentials](https://ossindex.sonatype.org/user/register):
 1. specify `analyzer.ossindex.user`, and `analyzer.ossindex.password` Java system properties on the command line
@@ -128,7 +128,7 @@ To enable the OSS Index, you'll need [OSS Index credentials](https://ossindex.so
 > You do not want to check them into any version control system.
 
 > [!TIP]
-> If you want to explicitly disable OSS Index enrichment and quiet the warning from DependencyCheck about missing credentials, specify:
+> If you want to explicitly disable OSS Index analysis and quiet the warning from DependencyCheck about missing credentials, specify:
 > 1. `analyzer.ossindex.enabled=false` as a Java system property on the command line
 > 2. or `CLJ_WATSON_ANALYZER_OSSINDEX_ENABLED=false` environment variable
 > 3. or `analyzer.ossindex.enabled=false` in your `clj-watson.properties` file
