@@ -69,7 +69,7 @@ clojure -Tclj-watson scan :p deps.edn
 ```
 
 > [!NOTE]
-> For -T tool usage, `:aliases` (or `:a`) is specified as a vector of keywords (or symbols), e.g., `:a '[:foo :bar]'`, whereas it is specified multiple times in for -M usage, `-a foo -a bar`.
+> For -T tool usage, `:aliases` (or `:a`) is specified as a vector of keywords (or symbols), e.g., `:a '[:foo :bar]'`, whereas it is specified multiple times for -M usage, `-a foo -a bar`.
 > Run:
 > - `clojure -M:clj-watson scan --help` for -M usage help
 > - `clojure -Tclj-watson scan :help true` for -T tool usage help
