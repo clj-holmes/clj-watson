@@ -10,7 +10,7 @@
                org.owasp/dependency-check-core         {:mvn/version "12.1.6"}
                org.slf4j/slf4j-api                     {:mvn/version "2.0.17"}
                selmer/selmer                           {:mvn/version "1.12.62"}
-               version-clj/version-clj                 {:mvn/version "2.0.3"}}
+               org.apache.maven/maven-artifact         {:mvn/version "3.9.11"}}
 
  :paths       ["src" "resources"]
 

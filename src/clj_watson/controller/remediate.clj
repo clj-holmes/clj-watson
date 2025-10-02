@@ -2,8 +2,8 @@
   (:require
    [clj-watson.diplomat.dependency :as diplomat.dependency]
    [clj-watson.logic.dependency :as logic.dependency]
-   [clojure.tools.deps.util.maven :as maven]
-   [version-clj.core :as version]))
+   [clj-watson.logic.version :as version]
+   [clojure.tools.deps.util.maven :as maven]))
 
 (defn ^:private parent-contains-child-version?
   [parent-dependency parent-version child-dependency child-version deps]
