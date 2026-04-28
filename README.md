@@ -32,6 +32,9 @@ project's `deps.edn` file, or in your user `deps.edn` file
                    :main-opts ["-m" "clj-watson.cli"]}
     ```
 
+You can also add a dependency on `org.owasp/dependency-check-core` if you want to use a newer version (recommended -- but it
+introduces a maintenance burden on you to keep it updated!). The current version, as of April 28th, 2026 is `{:mvn/version "12.2.1"}`.
+
 2. [Setup your NVD API key](#nist-nvd-api).
 
 3. Optionally [configure OSS Index](#oss-index-configuration) which is now disabled if credentials are not configured.
@@ -122,6 +125,13 @@ To enable the OSS Index, you'll need [OSS Index credentials](https://ossindex.so
 1. specify `analyzer.ossindex.user`, and `analyzer.ossindex.password` Java system properties on the command line
 2. Or, specify `CLJ_WATSON_ANALYZER_OSSINDEX_USER` and `CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD` environment variables
 3. Or, add `analyzer.ossindex.user` & `analayzer.ossindex.password` entries in your `clj-watson.properties` file
+
+As of April 2026, Sonatype OSS Index [migrated to Sonatype Guide](https://help.sonatype.com/en/oss-index-migration-steps.html),
+which means you need to:
+1. override `analyzer.ossindex.url`, setting it to `https://api.guide.sonatype.com`
+2. login to your OSS Index account (or create a new one) at [https://guide.sonatype.com/](https://guide.sonatype.com/)
+3. create a new API token (which will start with `sonatype_pat_`)
+4. update your credentials so the password is that new token, instead of your old OSS Index password
 
 > [!CAUTION]
 > Keeping your OSS Index credentials secret is your responsibility.
