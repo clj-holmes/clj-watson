@@ -17,8 +17,7 @@
 (defn- main-usage [pre-lines]
   (m/embeds (into pre-lines ["clj-watson"
                              "ARG USAGE:"
-                             "OPTIONS:"
-                             #".* -p, --deps-edn-path"])))
+                             "OPTIONS:"])))
 
 (defn- exec-usage [pre-lines]
   (m/embeds (into pre-lines ["clj-watson"
@@ -56,14 +55,12 @@
 
 (deftest main-deps-edn-path-is-required
   (is (match? {:result {:exit 1 :exit-error "usage error"}
-               :out-lines (main-usage [#"\* ERROR: .*Missing required"
-                                       #".* -p, --deps-edn-path"])}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, specify at least one of: --deps-edn-path, --classpath"])}
               (main-parse-args ["scan"]))))
 
 (deftest exec-deps-edn-path-is-required
   (is (match? {:result {:exit 1 :exit-error "usage error"}
-               :out-lines (exec-usage [#"\* ERROR: .*Missing required"
-                                       #".* :p, :deps-edn-path"])}
+               :out-lines (exec-usage [#"\* ERROR: Invalid usage, specify at least one of: :deps-edn-path, :classpath"])}
               (exec-parse-opts {}))))
 
 (deftest main-deps-edn-path-must-exist

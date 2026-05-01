@@ -18,9 +18,14 @@
     :ref "<file>"
     :coerce :string
     :validate validate-file-exists
-    :require :yes ;; Normally would `:require true` but clj-holmes\clj-holmes thinks this is a clojure spec
+    ;:require :yes ;; Normally would `:require true` but clj-holmes\clj-holmes thinks this is a clojure spec
                   ;; and raises: "Typo on schema declaration using :require instead of :required."
     :desc "Path of deps.edn file to scan"}
+
+   :classpath
+   {:ref "<classpath>"
+    :desc "The classpath to scan"
+    :coerce :string}
 
    :output
    {:alias :o
@@ -286,7 +291,7 @@
         (cond
            ;; when parsed under the full spec, elements can be interpreted as args, let's catch those cases
            ;; for example maybe someone specified: --boolean-opt yes
-           ;; since yes is not a valid boolean opt, it gets interpreted as an arg 
+           ;; since yes is not a valid boolean opt, it gets interpreted as an arg
           (not= ["scan"] args)
           (do
             (usage-error {:type :clj-watson/cli
@@ -311,6 +316,28 @@
                           :spec spec-scan-args
                           :opts opts})
             usage-error-result)
+
+          (not (or (:deps-edn-path opts) (:classpath opts)))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, specify at least one of: %s"
+                                       (->> [:deps-edn-path :classpath]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", ")))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
+
+          (and (:deps-edn-path opts) (:classpath opts))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, specify only one of: %s"
+                                       (->> [:deps-edn-path :classpath]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", ")))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
           :else
           (do
             (report-warnings opts)
@@ -321,4 +348,3 @@
        opts->args
        (into ["scan" ":usage-help-style" ":clojure-tool"])
        parse-args))
-
