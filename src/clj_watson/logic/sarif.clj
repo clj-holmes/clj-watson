@@ -1,6 +1,7 @@
 (ns clj-watson.logic.sarif
   (:require
    [clj-watson.logic.template :as logic.template]
+   [clj-watson.version :as version]
    [clojure.java.io :as io]
    [clojure.string :as string]))
 
@@ -10,7 +11,7 @@
    :runs    [{:tool
               {:driver {:name           "clj-watson"
                         :informationUri "https://github.com/clj-holmes/clj-watson"
-                        :version        "3.0.2"}}}]})
+                        :version        (version/get-version)}}}]})
 
 (defn ^:private advisory->sarif-rule [dependency dependency-info {{:keys [description summary identifiers cvss]} :advisory}]
   (let [identifier (-> identifiers first :value)

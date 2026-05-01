@@ -16,7 +16,11 @@
 
  :tools/usage {:ns-default clj-watson.entrypoint}
 
- :aliases     {:nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "1.4.0"}}}
+ :aliases     {:build       {:deps {io.github.clojure/tools.build {:mvn/version "0.10.10"}}
+                             ;; resources => read version file!
+                             :paths ["." "resources"]
+                             :ns-default build}
+               :nREPL       {:extra-deps {nrepl/nrepl {:mvn/version "1.4.0"}}}
                :outdated    {:deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}
                                     org.slf4j/slf4j-simple {:mvn/version "2.0.17"}} ;; to rid ourselves of logger warnings
                              :main-opts ["-m" "antq.core"]}
