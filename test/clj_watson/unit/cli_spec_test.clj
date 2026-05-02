@@ -63,6 +63,36 @@
                :out-lines (exec-usage [#"\* ERROR: Invalid usage, specify at least one of: :deps-edn-path, :classpath"])}
               (exec-parse-opts {}))))
 
+(deftest main-deps-edn-path-and-classpath-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, specify only one of: --deps-edn-path, --classpath"])}
+              (main-parse-args ["scan" "-p" "deps.edn" "--classpath" "some/classpath"]))))
+
+(deftest main-classpath-and-aliases-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, neither of --aliases, --suggest-fix will work with --classpath"])}
+              (main-parse-args ["scan" "--classpath" "some/classpath" "--aliases" "some-alias"]))))
+
+(deftest main-classpath-and-suggest-fix-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, neither of --aliases, --suggest-fix will work with --classpath"])}
+              (main-parse-args ["scan" "--classpath" "some/classpath" "--suggest-fix"]))))
+
+(deftest exec-deps-edn-path-and-classpath-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, specify only one of: :deps-edn-path, :classpath"])}
+              (exec-parse-opts {:p "deps.edn" :classpath "some/classpath"}))))
+
+(deftest exec-classpath-and-aliases-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, neither of :aliases, :suggest-fix will work with :classpath"])}
+              (exec-parse-opts {:classpath "some/classpath" :aliases "some-alias"}))))
+
+(deftest exec-classpath-and-suggest-fix-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (exec-usage [#"\* ERROR: Invalid usage, neither of :aliases, :suggest-fix will work with :classpath"])}
+              (exec-parse-opts {:classpath "some/classpath" :suggest-fix true}))))
+
 (deftest main-deps-edn-path-must-exist
   (doseq [args
           [["scan" "-p" "idontexist.edn"]
