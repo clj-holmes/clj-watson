@@ -3,9 +3,13 @@
 A Clojure tool that checks for vulnerable dependencies
 
 `clj-watson` is a software composition analysis (SCA) tool that:
-1. scans dependencies specified in a Clojure `deps.edn` file 
+1. scans dependencies specified in a Clojure `deps.edn` file
 2. looks for vulnerable direct and transitive dependencies
 3. builds a report with all the information needed to help you understand how the vulnerabilities manifest in your software
+
+As of 6.1.0, `clj-watson` can also check dependencies via an explicitly specified
+classpath, which is useful for contexts where `deps.edn` is not available or not the
+primary source of dependencies, e.g., Leiningen projects.
 
 `clj-watson` can suggest a remediation for the vulnerabilities found,
 and can check against both the
@@ -76,6 +80,16 @@ clojure -Tclj-watson scan :p deps.edn
 > Run:
 > - `clojure -M:clj-watson scan --help` for -M usage help
 > - `clojure -Tclj-watson scan :help true` for -T tool usage help
+
+As of 6.1.0, `clj-watson` can also check dependencies via an explicitly specified
+classpath:
+
+```bash
+clojure -Tclj-watson scan :classpath '"'$(lein classpath)'"'
+```
+
+> [!NOTE]
+> The `:classpath` value needs to be a single string, so the example above uses shell quoting to ensure that the output of `lein classpath` is passed as a single string.
 
 ## Vulnerability Database Strategies
 
@@ -171,6 +185,13 @@ Example -M usage:
 clojure -J-Dnvd.api.key=<your nvd nist api key here> \
   -M:clj-watson scan -p deps.edn
 ```
+
+Or via a classpath:
+```shell
+clojure -J-Dnvd.api.key=<your nvd nist api key here> \
+  -M:clj-watson scan --classpath $(lein classpath)
+```
+
 
 <details>
   <summary>With OSS Index enabled:</summary>
@@ -376,7 +397,7 @@ clojure -Tclj-watson scan '{:fail-on-result true :deps-edn-path "deps.edn" :sugg
 clojure -Tclj-watson scan :fail-on-result true :deps-edn-path deps.edn :suggest-fix true :aliases '[*]'
 ```
 
-If you aren't familiar with -T tools, you might be surprised that exceptions are thrown for what seem like non-exceptional things. 
+If you aren't familiar with -T tools, you might be surprised that exceptions are thrown for what seem like non-exceptional things.
 For example a typo on the command line will show what you'd expect (explanation of error and usage help) but also show output that looks like this:
 
 ```
@@ -415,7 +436,8 @@ ARG USAGE:
  scan [options..]
 
 OPTIONS:
-  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan [*required*]
+  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan
+      --classpath <classpath>                                The classpath to scan
   -o, --output <json|edn|stdout|stdout-simple|sarif>         Output type for vulnerability findings [stdout]
   -a, --aliases                                              Include deps.edn aliases in analysis, specify '*' for all.
                                                              For multiple, repeat arg, ex: -a alias1 -a alias2

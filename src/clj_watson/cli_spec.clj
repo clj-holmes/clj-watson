@@ -206,7 +206,7 @@
   (println
    (format-opts {:spec spec-scan-args :opts opts
                  :groups [{:heading "OPTIONS:"
-                           :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :cvss-fail-threshold :help]}
+                           :order [:deps-edn-path :classpath :output :aliases :database-strategy :suggest-fix :fail-on-result :cvss-fail-threshold :help]}
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
                            :order [:clj-watson-properties :run-without-nvd-api-key]}]})))
 
