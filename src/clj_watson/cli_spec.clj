@@ -18,13 +18,11 @@
     :ref "<file>"
     :coerce :string
     :validate validate-file-exists
-    ;:require :yes ;; Normally would `:require true` but clj-holmes\clj-holmes thinks this is a clojure spec
-                  ;; and raises: "Typo on schema declaration using :require instead of :required."
-    :desc "Path of deps.edn file to scan"}
+    :desc "Path of deps.edn file to scan. Mutually exclusive with --classpath"}
 
    :classpath
    {:ref "<classpath>"
-    :desc "The classpath to scan"
+    :desc "The classpath to scan. Mutually exclusive with --deps-edn-path"
     :coerce :string}
 
    :output
@@ -39,7 +37,7 @@
    :aliases
    {:alias :a
     :coerce [:string] ;; would coerce to keyword here, but would prefer to distinguish '*' as something special
-    :desc "Include deps.edn aliases in analysis, specify '*' for all."
+    :desc "Include deps.edn aliases in analysis, specify '*' for all. Cannot be used with classpath"
     :extra-desc {:clojure-tool "For multiple, use a vector, ex: '[alias1 alias2]'"
                  :cli "For multiple, repeat arg, ex: -a alias1 -a alias2"}}
 
@@ -56,7 +54,7 @@
    {:alias :s
     :coerce :boolean
     :default false
-    :desc "Include dependency remediation suggestions in vulnurability findings"}
+    :desc "Include dependency remediation suggestions in vulnurability findings. Cannot be used with classpath"}
 
    :fail-on-result
    {:alias :f
@@ -335,6 +333,18 @@
                                        (->> [:deps-edn-path :classpath]
                                             (mapv #(styled-long-opt % opts))
                                             (str/join ", ")))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
+
+          (and (:classpath opts) (or (:aliases opts) (:suggest-fix opts)))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, neither of %s will work with %s"
+                                       (->> [:aliases :suggest-fix]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", "))
+                                       (styled-long-opt :classpath opts))
                           :spec spec-scan-args
                           :opts opts})
             usage-error-result)
