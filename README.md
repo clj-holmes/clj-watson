@@ -3,7 +3,7 @@
 A Clojure tool that checks for vulnerable dependencies
 
 `clj-watson` is a software composition analysis (SCA) tool that:
-1. scans dependencies specified in a Clojure `deps.edn` file 
+1. scans dependencies specified in a Clojure `deps.edn` file
 2. looks for vulnerable direct and transitive dependencies
 3. builds a report with all the information needed to help you understand how the vulnerabilities manifest in your software
 
@@ -33,7 +33,7 @@ project's `deps.edn` file, or in your user `deps.edn` file
     ```
 
 You can also add a dependency on `org.owasp/dependency-check-core` if you want to use a newer version (recommended -- but it
-introduces a maintenance burden on you to keep it updated!). The current version, as of April 28th, 2026 is `{:mvn/version "12.2.1"}`.
+introduces a maintenance burden on you to keep it updated!). The current version, as of May 3rd, 2026 is `{:mvn/version "12.2.2"}`.
 
 2. [Setup your NVD API key](#nist-nvd-api).
 
@@ -49,7 +49,7 @@ The first time `clj-watson` runs, it downloads the entire vulnerability database
 This can take several minutes. Subsequent runs will be much faster.
 
 > [!NOTE]
-> The database is stored under in your local Maven cache, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0/`.
+> The database is stored under in your local Maven cache, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0/`.
 > If you delete this directory, the database will be automatically re-downloaded.
 
 `clj-watson` can also be installed as a Clojure CLI tool:
@@ -87,7 +87,7 @@ clojure -Tclj-watson scan :p deps.edn
 
 [DependencyCheck](https://github.com/dependency-check/DependencyCheck) is the most
 widely used method among Clojure/Java SCA tools. It:
-1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0/`).
+1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0/`).
 3. Scans JARs from dependencies specified in your `deps.edn`
 4. Composes a [Common Platform Enumeration (CPE)](https://nvd.nist.gov/products/cpe) based on your dependencies
 5. Returns any matching vulnerabilities
@@ -376,7 +376,7 @@ clojure -Tclj-watson scan '{:fail-on-result true :deps-edn-path "deps.edn" :sugg
 clojure -Tclj-watson scan :fail-on-result true :deps-edn-path deps.edn :suggest-fix true :aliases '[*]'
 ```
 
-If you aren't familiar with -T tools, you might be surprised that exceptions are thrown for what seem like non-exceptional things. 
+If you aren't familiar with -T tools, you might be surprised that exceptions are thrown for what seem like non-exceptional things.
 For example a typo on the command line will show what you'd expect (explanation of error and usage help) but also show output that looks like this:
 
 ```
