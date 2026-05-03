@@ -2,6 +2,7 @@
   (:require
    [clojure.set :refer [rename-keys]]
    [clojure.tools.deps :as deps]
+   [clojure.tools.deps.edn :as deps-edn]
    [clojure.tools.deps.util.maven :as maven]
    [edamame.core :refer [parse-string]])
   (:import
@@ -38,11 +39,11 @@
                  {}))))
 
 (defn parse [^String deps-path aliases]
-  (let [project-deps (-> deps-path File. deps/slurp-deps (update :mvn/repos merge maven/standard-repos))
+  (let [project-deps (-> deps-path File. deps-edn/read-deps (update :mvn/repos merge maven/standard-repos))
         aliases (build-aliases project-deps aliases)
         dependencies-physical-location (deps->dependencies-location deps-path)
-        aliases-resolver {:resolve-args (deps/combine-aliases project-deps aliases)
-                          :classpath-args (deps/combine-aliases project-deps aliases)}]
+        aliases-resolver {:resolve-args (deps-edn/combine-aliases project-deps aliases)
+                          :classpath-args (deps-edn/combine-aliases project-deps aliases)}]
     {:deps project-deps
      :dependencies (-> project-deps
                        (deps/calc-basis aliases-resolver)
