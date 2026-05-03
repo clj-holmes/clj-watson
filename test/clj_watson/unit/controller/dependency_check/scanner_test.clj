@@ -32,7 +32,7 @@
         ;; Grab some actual valid properties from dependency check, update as necessary if properties change
                    ;; prop name         expected-winner  applied in (:dc-default-prop defines expectation)
         properties [["data.driver_name" :sys             #{:sys :env-var :watson-user :watson-default :dc-default}]
-                    ["cpe.url"          :env-var         #{:env-var :watson-user :watson-default :dc-default}]
+                    ["cpe.url"          :env-var         #{:env-var :watson-user}] ;; as of 12.2.1, this is not a dc default
                     ;; multiple watson user props to test output value occlusion
                     ["data.password"    :watson-user     #{:watson-user :watson-default :dc-default}]
                     ["nvd.api.key"      :watson-user     #{:watson-user}] ;; nvd.api.key is not a dc default prop
@@ -118,7 +118,7 @@
           (is (match? (m/equals expected-settings) (edn/read-string (slurp (fs/file work-dir "result.edn"))))
               "resulting settings")
           (is (match? [""
-                       "Reading 5 dependency-check properties from:"
+                       "Reading 4 dependency-check properties from:"
                        #" .*/clj-watson/target/create-settings-test/dependency-check.properties"
                        "Merging 6 additional clj-watson properties from:"
                        #" .*/clj-watson/target/create-settings-test/clj-watson.properties"
