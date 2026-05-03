@@ -85,7 +85,7 @@
 
 (deftest exec-classpath-and-aliases-cannot-both-be-specified
   (is (match? {:result {:exit 1 :exit-error "usage error"}
-               :out-lines (main-usage [#"\* ERROR: Invalid usage, neither of :aliases, :suggest-fix will work with :classpath"])}
+               :out-lines (exec-usage [#"\* ERROR: Invalid usage, neither of :aliases, :suggest-fix will work with :classpath"])}
               (exec-parse-opts {:classpath "some/classpath" :aliases "some-alias"}))))
 
 (deftest exec-classpath-and-suggest-fix-cannot-both-be-specified
