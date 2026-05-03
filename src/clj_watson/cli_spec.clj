@@ -54,7 +54,7 @@
    {:alias :s
     :coerce :boolean
     :default false
-    :desc "Include dependency remediation suggestions in vulnurability findings. Cannot be used with classpath"}
+    :desc "Include dependency remediation suggestions in vulnerability findings. Cannot be used with classpath"}
 
    :fail-on-result
    {:alias :f
