@@ -442,7 +442,7 @@ OPTIONS:
   -a, --aliases                                              Include deps.edn aliases in analysis, specify '*' for all. Cannot be used with classpath
                                                              For multiple, repeat arg, ex: -a alias1 -a alias2
   -t, --database-strategy <dependency-check|github-advisory> Vulnerability database strategy [dependency-check]
-  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnurability findings. Cannot be used with classpath [false]
+  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnerability findings. Cannot be used with classpath [false]
   -f, --fail-on-result                                       When enabled, exit with non-zero on any vulnerability findings
                                                              Useful for CI/CD [false]
   -c, --cvss-fail-threshold <score>                          Exit with non-zero when any vulnerability's CVSS base score is >= threshold
