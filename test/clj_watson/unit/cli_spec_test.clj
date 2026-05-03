@@ -17,7 +17,9 @@
 (defn- main-usage [pre-lines]
   (m/embeds (into pre-lines ["clj-watson"
                              "ARG USAGE:"
-                             "OPTIONS:"])))
+                             "OPTIONS:"
+                             #".* -p, --deps-edn-path"
+                             #".* --classpath"])))
 
 (defn- exec-usage [pre-lines]
   (m/embeds (into pre-lines ["clj-watson"
