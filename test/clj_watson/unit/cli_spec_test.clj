@@ -82,7 +82,7 @@
 
 (deftest exec-deps-edn-path-and-classpath-cannot-both-be-specified
   (is (match? {:result {:exit 1 :exit-error "usage error"}
-               :out-lines (main-usage [#"\* ERROR: Invalid usage, specify only one of: :deps-edn-path, :classpath"])}
+               :out-lines (exec-usage [#"\* ERROR: Invalid usage, specify only one of: :deps-edn-path, :classpath"])}
               (exec-parse-opts {:p "deps.edn" :classpath "some/classpath"}))))
 
 (deftest exec-classpath-and-aliases-cannot-both-be-specified
