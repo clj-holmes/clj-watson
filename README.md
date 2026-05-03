@@ -37,7 +37,7 @@ introduces a maintenance burden on you to keep it updated!). The current version
 
 2. [Setup your NVD API key](#nist-nvd-api).
 
-3. Optionally [configure OSS Index](#oss-index-configuration) which is now disabled if credentials are not configured.
+3. Optionally [configure OSS Index / Sonatype Guide](#oss-index-configuration) which is now disabled if credentials are not configured.
 
 4. Run clj-watson like so:
 
@@ -121,17 +121,21 @@ You can specify your key via:
 
 [DependencyCheck can also consult the OSS Index](https://dependency-check.github.io/DependencyCheck/analyzers/oss-index-analyzer.html).
 
-To enable the OSS Index, you'll need [OSS Index credentials](https://ossindex.sonatype.org/user/register):
+To enable the OSS Index (now Sonatype Guide), you'll need [OSS Index credentials](https://guide.sonatype.com/user/register):
 1. specify `analyzer.ossindex.user`, and `analyzer.ossindex.password` Java system properties on the command line
 2. Or, specify `CLJ_WATSON_ANALYZER_OSSINDEX_USER` and `CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD` environment variables
 3. Or, add `analyzer.ossindex.user` & `analayzer.ossindex.password` entries in your `clj-watson.properties` file
 
 As of April 2026, Sonatype OSS Index [migrated to Sonatype Guide](https://help.sonatype.com/en/oss-index-migration-steps.html),
 which means you need to:
-1. override `analyzer.ossindex.url`, setting it to `https://api.guide.sonatype.com`
-2. login to your OSS Index account (or create a new one) at [https://guide.sonatype.com/](https://guide.sonatype.com/)
-3. create a new API token (which will start with `sonatype_pat_`)
-4. update your credentials so the password is that new token, instead of your old OSS Index password
+1. login to your OSS Index account (or create a new one) at [https://guide.sonatype.com/](https://guide.sonatype.com/)
+2. create a new API token (which will start with `sonatype_pat_`)
+3. update your credentials so the password is that new token, instead of your old OSS Index password
+
+If you are not using `clj-watson` 6.1.0 or later, you will also need to
+override `analyzer.ossindex.url`, setting it to `https://api.guide.sonatype.com`.
+In `dependency-check-core` 12.2.2, the default value of this property was
+updated to `https://api.guide.sonatype.com`.
 
 > [!CAUTION]
 > Keeping your OSS Index credentials secret is your responsibility.
