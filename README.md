@@ -436,13 +436,17 @@ ARG USAGE:
  scan [options..]
 
 OPTIONS:
-  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan. Mutually exclusive with --classpath
-      --classpath <classpath>                                The classpath to scan. Mutually exclusive with --deps-edn-path
+  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan.
+                                                             This option is mutually exclusive with --classpath
+      --classpath <classpath>                                The classpath to scan.
+                                                             This option is mutually exclusive with --deps-edn-path
   -o, --output <json|edn|stdout|stdout-simple|sarif>         Output type for vulnerability findings [stdout]
-  -a, --aliases                                              Include deps.edn aliases in analysis, specify '*' for all. Cannot be used with classpath
+  -a, --aliases                                              Include deps.edn aliases in analysis, specify '*' for all.
                                                              For multiple, repeat arg, ex: -a alias1 -a alias2
+                                                             This option is not compatible with --classpath
   -t, --database-strategy <dependency-check|github-advisory> Vulnerability database strategy [dependency-check]
-  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnerability findings. Cannot be used with classpath [false]
+  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnerability findings. [false]
+                                                             This option is not compatible with --classpath
   -f, --fail-on-result                                       When enabled, exit with non-zero on any vulnerability findings
                                                              Useful for CI/CD [false]
   -c, --cvss-fail-threshold <score>                          Exit with non-zero when any vulnerability's CVSS base score is >= threshold
