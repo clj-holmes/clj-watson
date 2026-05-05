@@ -18,11 +18,15 @@
     :ref "<file>"
     :coerce :string
     :validate validate-file-exists
-    :desc "Path of deps.edn file to scan. Mutually exclusive with --classpath"}
+    :desc "Path of deps.edn file to scan."
+    :extra-desc {:clojure-tool "This option is mutually exclusive with :classpath"
+                 :cli "This option is mutually exclusive with --classpath"}}
 
    :classpath
    {:ref "<classpath>"
-    :desc "The classpath to scan. Mutually exclusive with --deps-edn-path"
+    :desc "The classpath to scan."
+    :extra-desc {:clojure-tool "This option is mutually exclusive with :deps-edn-path"
+                 :cli "This option is mutually exclusive with --deps-edn-path"}
     :coerce :string}
 
    :output
@@ -37,9 +41,11 @@
    :aliases
    {:alias :a
     :coerce [:string] ;; would coerce to keyword here, but would prefer to distinguish '*' as something special
-    :desc "Include deps.edn aliases in analysis, specify '*' for all. Cannot be used with classpath"
-    :extra-desc {:clojure-tool "For multiple, use a vector, ex: '[alias1 alias2]'"
-                 :cli "For multiple, repeat arg, ex: -a alias1 -a alias2"}}
+    :desc "Include deps.edn aliases in analysis, specify '*' for all."
+    :extra-desc {:clojure-tool (str "For multiple, use a vector, ex: '[alias1 alias2]'\n"
+                                    "This option is not compatible with :classpath")
+                 :cli (str "For multiple, repeat arg, ex: -a alias1 -a alias2\n"
+                           "This option is not compatible with --classpath")}}
 
    :database-strategy
    {:alias :t
@@ -54,7 +60,9 @@
    {:alias :s
     :coerce :boolean
     :default false
-    :desc "Include dependency remediation suggestions in vulnerability findings. Cannot be used with classpath"}
+    :desc "Include dependency remediation suggestions in vulnerability findings."
+    :extra-desc {:clojure-tool "This option is not compatible with :classpath"
+                 :cli "This option is not compatible with --classpath"}}
 
    :fail-on-result
    {:alias :f
