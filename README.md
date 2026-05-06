@@ -32,7 +32,7 @@ project's `deps.edn` file, or in your user `deps.edn` file
       ;; under :aliases
       :clj-watson {:replace-deps
                    {io.github.clj-holmes/clj-watson
-                    {:git/tag "v6.0.1" :git/sha "b520351"}}
+                    {:git/tag "v6.1.0" :git/sha "be98e4d"}}
                    :main-opts ["-m" "clj-watson.cli"]}
     ```
 
@@ -408,7 +408,7 @@ This is the nature of -T tools, which are designed to be potentially chained, an
 An alternative invocation is via `-Sdeps`:
 
 ```bash
-clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v6.0.1" :git/sha "b520351"}}}' \
+clojure -Sdeps '{:deps {io.github.clj-holmes/clj-watson {:git/tag "v6.1.0" :git/sha "be98e4d"}}}' \
   -M -m clj-watson.cli scan -p deps.edn
 ```
 
