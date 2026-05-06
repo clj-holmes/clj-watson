@@ -78,6 +78,16 @@
                   (main "scan" "--deps-edn-path" "deps.edn")))
       (is (= :not-set @exit-code)))))
 
+(deftest exits-naturally-when-findings-with-classpath
+  (let [exit-code (atom :not-set)]
+    (with-redefs [shutdown-agents (fn [])
+                  cli/system-exit (fn [code] (reset! exit-code code))
+                  entrypoint/scan* mocked-scan]
+      (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"
+                                         "Vulnerable dependencies found: 1 (1 High)"])}
+                  (main "scan" "--classpath" "src")))
+      (is (= :not-set @exit-code)))))
+
 (deftest exits-with-one-on-fail-request-when-findings
   (let [exit-code (atom :not-set)]
     (with-redefs [shutdown-agents (fn [])

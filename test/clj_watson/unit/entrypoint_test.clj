@@ -62,6 +62,13 @@
                  :result nil}
                 (exec {:deps-edn-path "deps.edn"})))))
 
+(deftest doesnt-throw-when-findings-with-classpath
+  (with-redefs [entrypoint/scan* mocked-scan]
+    (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"
+                                       "Vulnerable dependencies found: 1 (1 High)"])
+                 :result nil}
+                (exec {:classpath "src"})))))
+
 (deftest throws-on-fail-request-when-findings
   (with-redefs [entrypoint/scan* mocked-scan]
     (is (match? {:out-lines (m/embeds ["Dependencies scanned: 1"

@@ -1,6 +1,7 @@
 # CHANGELOG
 
-* v6.1.0 in progress
+* v6.1.0 -- 2026-05-02
+  * Check dependencies via classpath (separately from `deps.edn`), inspired by [#152](https://github.com/clj-holmes/clj-watson/issues/152), as a way to use `clj-watson` in contexts where `deps.edn` is not available or not the primary source of dependencies, e.g., Leiningen projects.
   * Docs
     * [OSS Index now requires credentials](README.md#oss-index-configuration), and has migrated to Sonatype Guide; see [#133](https://github.com/clj-holmes/clj-watson/issues/133)
     * Review and freshen docs

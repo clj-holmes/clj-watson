@@ -7,6 +7,10 @@ A Clojure tool that checks for vulnerable dependencies
 2. looks for vulnerable direct and transitive dependencies
 3. builds a report with all the information needed to help you understand how the vulnerabilities manifest in your software
 
+As of 6.1.0, `clj-watson` can also check dependencies via an explicitly specified
+classpath, which is useful for contexts where `deps.edn` is not available or not the
+primary source of dependencies, e.g., Leiningen projects.
+
 `clj-watson` can suggest a remediation for the vulnerabilities found,
 and can check against both the
 [NIST National Vulnerability Database (NVD)](https://nvd.nist.gov/)
@@ -76,6 +80,16 @@ clojure -Tclj-watson scan :p deps.edn
 > Run:
 > - `clojure -M:clj-watson scan --help` for -M usage help
 > - `clojure -Tclj-watson scan :help true` for -T tool usage help
+
+As of 6.1.0, `clj-watson` can also check dependencies via an explicitly specified
+classpath:
+
+```bash
+clojure -Tclj-watson scan :classpath '"'$(lein classpath)'"'
+```
+
+> [!NOTE]
+> The `:classpath` value needs to be a single string, so the example above uses shell quoting to ensure that the output of `lein classpath` is passed as a single string.
 
 ## Vulnerability Database Strategies
 
@@ -170,6 +184,13 @@ Example -M usage:
 clojure -J-Dnvd.api.key=<your nvd nist api key here> \
   -M:clj-watson scan -p deps.edn
 ```
+
+Or via a classpath:
+```shell
+clojure -J-Dnvd.api.key=<your nvd nist api key here> \
+  -M:clj-watson scan --classpath $(lein classpath)
+```
+
 
 <details>
   <summary>With OSS Index enabled:</summary>
@@ -408,12 +429,17 @@ ARG USAGE:
  scan [options..]
 
 OPTIONS:
-  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan [*required*]
+  -p, --deps-edn-path <file>                                 Path of deps.edn file to scan.
+                                                             This option is mutually exclusive with --classpath
+      --classpath <classpath>                                The classpath to scan.
+                                                             This option is mutually exclusive with --deps-edn-path
   -o, --output <json|edn|stdout|stdout-simple|sarif>         Output type for vulnerability findings [stdout]
   -a, --aliases                                              Include deps.edn aliases in analysis, specify '*' for all.
                                                              For multiple, repeat arg, ex: -a alias1 -a alias2
+                                                             This option is not compatible with --classpath
   -t, --database-strategy <dependency-check|github-advisory> Vulnerability database strategy [dependency-check]
-  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnurability findings [false]
+  -s, --suggest-fix                                          Include dependency remediation suggestions in vulnerability findings. [false]
+                                                             This option is not compatible with --classpath
   -f, --fail-on-result                                       When enabled, exit with non-zero on any vulnerability findings
                                                              Useful for CI/CD [false]
   -c, --cvss-fail-threshold <score>                          Exit with non-zero when any vulnerability's CVSS base score is >= threshold

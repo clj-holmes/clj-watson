@@ -18,9 +18,16 @@
     :ref "<file>"
     :coerce :string
     :validate validate-file-exists
-    :require :yes ;; Normally would `:require true` but clj-holmes\clj-holmes thinks this is a clojure spec
-                  ;; and raises: "Typo on schema declaration using :require instead of :required."
-    :desc "Path of deps.edn file to scan"}
+    :desc "Path of deps.edn file to scan."
+    :extra-desc {:clojure-tool "This option is mutually exclusive with :classpath"
+                 :cli "This option is mutually exclusive with --classpath"}}
+
+   :classpath
+   {:ref "<classpath>"
+    :desc "The classpath to scan."
+    :extra-desc {:clojure-tool "This option is mutually exclusive with :deps-edn-path"
+                 :cli "This option is mutually exclusive with --deps-edn-path"}
+    :coerce :string}
 
    :output
    {:alias :o
@@ -35,8 +42,10 @@
    {:alias :a
     :coerce [:string] ;; would coerce to keyword here, but would prefer to distinguish '*' as something special
     :desc "Include deps.edn aliases in analysis, specify '*' for all."
-    :extra-desc {:clojure-tool "For multiple, use a vector, ex: '[alias1 alias2]'"
-                 :cli "For multiple, repeat arg, ex: -a alias1 -a alias2"}}
+    :extra-desc {:clojure-tool (str "For multiple, use a vector, ex: '[alias1 alias2]'\n"
+                                    "This option is not compatible with :classpath")
+                 :cli (str "For multiple, repeat arg, ex: -a alias1 -a alias2\n"
+                           "This option is not compatible with --classpath")}}
 
    :database-strategy
    {:alias :t
@@ -51,7 +60,9 @@
    {:alias :s
     :coerce :boolean
     :default false
-    :desc "Include dependency remediation suggestions in vulnurability findings"}
+    :desc "Include dependency remediation suggestions in vulnerability findings."
+    :extra-desc {:clojure-tool "This option is not compatible with :classpath"
+                 :cli "This option is not compatible with --classpath"}}
 
    :fail-on-result
    {:alias :f
@@ -201,7 +212,7 @@
   (println
    (format-opts {:spec spec-scan-args :opts opts
                  :groups [{:heading "OPTIONS:"
-                           :order [:deps-edn-path :output :aliases :database-strategy :suggest-fix :fail-on-result :cvss-fail-threshold :help]}
+                           :order [:deps-edn-path :classpath :output :aliases :database-strategy :suggest-fix :fail-on-result :cvss-fail-threshold :help]}
                           {:heading "OPTIONS valid when database-strategy is dependency-check:"
                            :order [:clj-watson-properties :run-without-nvd-api-key]}]})))
 
@@ -286,7 +297,7 @@
         (cond
            ;; when parsed under the full spec, elements can be interpreted as args, let's catch those cases
            ;; for example maybe someone specified: --boolean-opt yes
-           ;; since yes is not a valid boolean opt, it gets interpreted as an arg 
+           ;; since yes is not a valid boolean opt, it gets interpreted as an arg
           (not= ["scan"] args)
           (do
             (usage-error {:type :clj-watson/cli
@@ -311,6 +322,40 @@
                           :spec spec-scan-args
                           :opts opts})
             usage-error-result)
+
+          (not (or (:deps-edn-path opts) (:classpath opts)))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, specify at least one of: %s"
+                                       (->> [:deps-edn-path :classpath]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", ")))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
+
+          (and (:deps-edn-path opts) (:classpath opts))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, specify only one of: %s"
+                                       (->> [:deps-edn-path :classpath]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", ")))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
+
+          (and (:classpath opts) (or (:aliases opts) (:suggest-fix opts)))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, neither of %s will work with %s"
+                                       (->> [:aliases :suggest-fix]
+                                            (mapv #(styled-long-opt % opts))
+                                            (str/join ", "))
+                                       (styled-long-opt :classpath opts))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
           :else
           (do
             (report-warnings opts)
@@ -321,4 +366,3 @@
        opts->args
        (into ["scan" ":usage-help-style" ":clojure-tool"])
        parse-args))
-
