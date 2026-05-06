@@ -37,11 +37,11 @@ project's `deps.edn` file, or in your user `deps.edn` file
     ```
 
 You can also add a dependency on `org.owasp/dependency-check-core` if you want to use a newer version (recommended -- but it
-introduces a maintenance burden on you to keep it updated!). The current version, as of April 28th, 2026 is `{:mvn/version "12.2.1"}`.
+introduces a maintenance burden on you to keep it updated!). The current version, as of May 3rd, 2026 is `{:mvn/version "12.2.2"}`.
 
 2. [Setup your NVD API key](#nist-nvd-api).
 
-3. Optionally [configure OSS Index](#oss-index-configuration) which is now disabled if credentials are not configured.
+3. Optionally [configure OSS Index / Sonatype Guide](#oss-index-configuration) which is now disabled if an API token is not configured.
 
 4. Run clj-watson like so:
 
@@ -53,7 +53,7 @@ The first time `clj-watson` runs, it downloads the entire vulnerability database
 This can take several minutes. Subsequent runs will be much faster.
 
 > [!NOTE]
-> The database is stored under in your local Maven cache, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0/`.
+> The database is stored under in your local Maven cache, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0/`.
 > If you delete this directory, the database will be automatically re-downloaded.
 
 `clj-watson` can also be installed as a Clojure CLI tool:
@@ -101,7 +101,7 @@ clojure -Tclj-watson scan :classpath '"'$(lein classpath)'"'
 
 [DependencyCheck](https://github.com/dependency-check/DependencyCheck) is the most
 widely used method among Clojure/Java SCA tools. It:
-1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/12.1.6/data/11.0/`).
+1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0/`).
 3. Scans JARs from dependencies specified in your `deps.edn`
 4. Composes a [Common Platform Enumeration (CPE)](https://nvd.nist.gov/products/cpe) based on your dependencies
 5. Returns any matching vulnerabilities
@@ -129,26 +129,25 @@ You can specify your key via:
 
 ### OSS Index Configuration
 
-> [!NOTE]
-> When the OSS Index started requiring authentication, DependencyCheck switched to automatically disabling its usage when credentials are not configured.
-> You can re-enable it, if you so wish, by specifying OSS Index credentials.
-
 [DependencyCheck can also consult the OSS Index](https://dependency-check.github.io/DependencyCheck/analyzers/oss-index-analyzer.html).
 
-To enable the OSS Index, you'll need [OSS Index credentials](https://ossindex.sonatype.org/user/register):
-1. specify `analyzer.ossindex.user`, and `analyzer.ossindex.password` Java system properties on the command line
-2. Or, specify `CLJ_WATSON_ANALYZER_OSSINDEX_USER` and `CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD` environment variables
-3. Or, add `analyzer.ossindex.user` & `analayzer.ossindex.password` entries in your `clj-watson.properties` file
+> [!NOTE]
+> When the OSS Index started requiring authentication, DependencyCheck switched to automatically disabling its usage when credentials are not configured.
+> You can re-enable it, if you so wish, by specifying your Sonatype Guide API token.
 
 As of April 2026, Sonatype OSS Index [migrated to Sonatype Guide](https://help.sonatype.com/en/oss-index-migration-steps.html),
 which means you need to:
-1. override `analyzer.ossindex.url`, setting it to `https://api.guide.sonatype.com`
-2. login to your OSS Index account (or create a new one) at [https://guide.sonatype.com/](https://guide.sonatype.com/)
-3. create a new API token (which will start with `sonatype_pat_`)
-4. update your credentials so the password is that new token, instead of your old OSS Index password
+1. login to your Sonatype Guide account (or create a new one) at [https://guide.sonatype.com/](https://guide.sonatype.com/)
+2. create a new API token (which will start with `sonatype_pat_`)
+3. update your credentials so the password is that new token, instead of your old OSS Index password
+
+To enable the OSS Index, you'll need your [Sonatype Guide API token](https://guide.sonatype.com/user/register):
+1. specify the `analyzer.ossindex.password` Java system property on the command line
+2. Or, specify the `CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD` environment variable
+3. Or, add the `analayzer.ossindex.password` entry in your `clj-watson.properties` file
 
 > [!CAUTION]
-> Keeping your OSS Index credentials secret is your responsibility.
+> Keeping your Sonatype Guide API token secret is your responsibility.
 > You do not want to check them into any version control system.
 
 > [!TIP]
@@ -198,8 +197,7 @@ clojure -J-Dnvd.api.key=<your nvd nist api key here> \
 
 ```shell
 clojure -J-Dnvd.api.key=<your nvd nist api key here> \
-        -J-Danalyzer.ossindex.user=<your ossindex user here> \
-        -J-Danalyzer.ossindex.password=<your ossindex password here> \
+        -J-Danalyzer.ossindex.password=<your sonatype guide api token here> \
   -M:clj-watson scan -p deps.edn
 ```
 </details>
@@ -215,8 +213,7 @@ clojure -J-Dnvd.api.key=<your nvd nist api key here> \
 
 ```shell
 clojure -J-Dnvd.api.key=<your nvd nist api key here> \
-        -J-Danalyzer.ossindex.user=<your ossindex user here> \
-        -J-Danalyzer.ossindex.password=<your ossindex password here> \
+        -J-Danalyzer.ossindex.password=<your sonatype guide api token here> \
   -Tclj-watson scan :p deps.edn
 ```
 </details>
@@ -237,8 +234,7 @@ CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
 
 ```shell
 CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
-  CLJ_WATSON_ANALYZER_OSSINDEX_USER=<your ossindex user here> \
-  CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your ossindex password here> \
+  CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your sonatype guide api token here> \
   clojure -M:clj-watson scan -p deps.edn
 ```
 </details>
@@ -254,8 +250,7 @@ CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
 
 ```shell
 CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
-  CLJ_WATSON_ANALYZER_OSSINDEX_USER=<your ossindex user here> \
-  CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your ossindex password here> \
+  CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your sonatype guide api token here> \
   clojure -Tclj-watson scan :p deps.edn
 ```
 </details>
@@ -264,8 +259,7 @@ CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here> \
 > In Bash, you can also export your environment variables prior to running your command, for example:
 > ```shell
 > export CLJ_WATSON_NVD_API_KEY=<your nvd nist api key here>
-> export CLJ_WATSON_ANALYZER_OSSINDEX_USER=<your ossindex user here>
-> export CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your ossindex password here>
+> export CLJ_WATSON_ANALYZER_OSSINDEX_PASSWORD=<your sonatype guide api token here>
 > clojure -M:clj-watson scan -p deps.edn
 > ```
 
@@ -282,8 +276,7 @@ Or, with OSS Index enabled:
 ```
 # clj-watson.properties file
 nvd.api.key=<your nvd nist api key here>
-analyzer.ossindex.user=<your ossindex user here>
-analyzer.ossindex.password=<your ossindex password here>
+analyzer.ossindex.password=<your sonatype guide api token here>
 ```
 
 `clj-watson` will pick up the `clj-watson.properties` file automatically if it is on the classpath, or you can specify it on the command line via the `-w` / `--clj-watson-properties` option:
