@@ -35,7 +35,8 @@
                     ["cpe.url"          :env-var         #{:env-var :watson-user}] ;; as of 12.2.1, this is not a dc default
                     ;; multiple watson user props to test output value occlusion
                     ["data.password"    :watson-user     #{:watson-user :watson-default :dc-default}]
-                    ["nvd.api.key"      :watson-user     #{:watson-user}] ;; nvd.api.key is not a dc default prop
+                    ;; as of 13.0.0, yes, this is a dc default prop!
+                    ["nvd.api.key"      :watson-user     #{:watson-user                 :dc-default}]
                     ["data.user"        :watson-user     #{:watson-user :watson-default :dc-default}]
                     ["data.version"     :watson-user     #{:watson-user                 :dc-default}]
                     ["data.file_name"   :watson-default  #{:watson-default :dc-default}]
