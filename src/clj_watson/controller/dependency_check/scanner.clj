@@ -146,6 +146,6 @@
        .toPath
        (.relativize (.toPath (io/file (System/getProperty "user.home"))))
        (str "~/"))
-  ;; => "~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0"
+  ;;=> "~/.m2/repository/org/owasp/dependency-check-utils/13.0.0/data/11.0"
 
   :eoc)
