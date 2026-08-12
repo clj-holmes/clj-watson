@@ -37,7 +37,7 @@ project's `deps.edn` file, or in your user `deps.edn` file
     ```
 
 You can also add a dependency on `org.owasp/dependency-check-core` if you want to use a newer version (recommended -- but it
-introduces a maintenance burden on you to keep it updated!). The current version, as of May 3rd, 2026 is `{:mvn/version "12.2.2"}`.
+introduces a maintenance burden on you to keep it updated!). The current version, as of August 11th, 2026 is `{:mvn/version "13.0.0"}`.
 
 2. [Setup your NVD API key](#nist-nvd-api).
 
@@ -53,7 +53,7 @@ The first time `clj-watson` runs, it downloads the entire vulnerability database
 This can take several minutes. Subsequent runs will be much faster.
 
 > [!NOTE]
-> The database is stored under in your local Maven cache, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0/`.
+> The database is stored under in your local Maven cache, under dependency-check-utils `~/.m2/repository/org/owasp/dependency-check-utils/13.0.0/data/11.0/`.
 > If you delete this directory, the database will be automatically re-downloaded.
 
 `clj-watson` can also be installed as a Clojure CLI tool:
@@ -101,7 +101,7 @@ clojure -Tclj-watson scan :classpath '"'$(lein classpath)'"'
 
 [DependencyCheck](https://github.com/dependency-check/DependencyCheck) is the most
 widely used method among Clojure/Java SCA tools. It:
-1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/12.2.2/data/11.0/`).
+1. Downloads a database of known vulnerabilities from [NIST NVD](https://nvd.nist.gov/), storing it locally (inside your local Maven cache, under `~/.m2/repository/org/owasp/dependency-check-utils/13.0.0/data/11.0/`).
 3. Scans JARs from dependencies specified in your `deps.edn`
 4. Composes a [Common Platform Enumeration (CPE)](https://nvd.nist.gov/products/cpe) based on your dependencies
 5. Returns any matching vulnerabilities

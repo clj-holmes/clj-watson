@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* v6.2.0 in progress
+  * Update to DependencyCheck 13.0.0 (NIST NVD Data Feed).
+  * Update all dev/test deps.
+  
 * v6.1.0 be98e4d -- 2026-05-06
   * Check dependencies via classpath (separately from `deps.edn`), inspired by [#152](https://github.com/clj-holmes/clj-watson/issues/152), as a way to use `clj-watson` in contexts where `deps.edn` is not available or not the primary source of dependencies, e.g., Leiningen projects.
   * Docs

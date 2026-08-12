@@ -10,7 +10,7 @@
    :runs    [{:tool
               {:driver {:name           "clj-watson"
                         :informationUri "https://github.com/clj-holmes/clj-watson"
-                        :version        "3.0.2"}}}]})
+                        :version        "6.2.0"}}}]})
 
 (defn ^:private advisory->sarif-rule [dependency dependency-info {{:keys [description summary identifiers cvss]} :advisory}]
   (let [identifier (-> identifiers first :value)
