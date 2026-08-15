@@ -18,3 +18,4 @@ pom.xml
 pom.xml.asc
 profiles.clj
 target/
+outdated.txt

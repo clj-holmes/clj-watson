@@ -34,9 +34,9 @@
 (defmethod scan* :default [opts]
   (scan* (assoc opts :database-strategy :dependency-check)))
 
-(defn do-scan [{:keys [fail-on-result cvss-fail-threshold output deps-edn-path aliases suggest-fix] :as opts}]
+(defn do-scan [{:keys [fail-on-result cvss-fail-threshold output classpath deps-edn-path aliases suggest-fix] :as opts}]
   (logging-config/init)
-  (let [{:keys [deps dependencies]} (controller.deps/parse deps-edn-path aliases)
+  (let [{:keys [deps dependencies]} (controller.deps/parse classpath deps-edn-path aliases)
         repositories (select-keys deps [:mvn/repos])
         {:keys [findings exit] :as result} (scan* (assoc opts
                                                          :dependencies dependencies
@@ -46,7 +46,7 @@
       (let [findings (if suggest-fix
                        (controller.remediate/scan findings deps)
                        findings)]
-        (controller.output/generate findings deps-edn-path output)
+        (controller.output/generate findings (or deps-edn-path classpath) output)
         (-> result summarize/final-summary controller.output/final-summary)
         (cond
           (and fail-on-result (seq findings))

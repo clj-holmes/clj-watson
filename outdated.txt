@@ -1,38 +1,0 @@
-[#-------------------------------------------------] 1/26[###-----------------------------------------------] 2/26[#####---------------------------------------------] 3/26[#######-------------------------------------------] 4/26[#########-----------------------------------------] 5/26[###########---------------------------------------] 6/26[###############-----------------------------------] 8/26[#############-------------------------------------] 7/26[#################---------------------------------] 9/26[###################-------------------------------] 10/26[#####################-----------------------------] 11/26[#######################---------------------------] 12/26[#########################-------------------------] 13/26[##########################------------------------] 14/26[############################----------------------] 15/26[##############################--------------------] 16/26[################################------------------] 17/26[##################################----------------] 18/26[####################################--------------] 19/26[######################################------------] 20/26[########################################----------] 21/26[##########################################--------] 22/26[############################################------] 23/26[##############################################----] 24/26[################################################--] 25/26[##################################################] 26/26
-| :file                               | :name                                         | :current            | :latest             |
-|-------------------------------------|-----------------------------------------------|---------------------|---------------------|
-| .github/workflows/pull-request.yaml | DeLaGuardo/setup-clojure                      | 13.4                | 13.5.3              |
-|                                     | DeLaGuardo/setup-clojure                      | 13.4                | 13.5.3              |
-|                                     | actions/cache                                 | v4                  | v5.0.3              |
-|                                     | actions/cache                                 | v4                  | v5.0.3              |
-| deps.edn                            | babashka/fs                                   | 0.5.27              | 0.5.32              |
-|                                     | babashka/process                              | 0.6.23              | 0.6.25              |
-|                                     | borkdude/edamame                              | 1.4.32              | 1.5.37              |
-|                                     | ch.qos.logback/logback-classic                | 1.5.18              | 1.5.32              |
-|                                     | com.github.clojure-lsp/clojure-lsp-standalone | 2025.08.25-14.21.46 | 2026.02.20-16.08.58 |
-|                                     | io.github.clojure/tools.build                 | 0.10.10             | 0.10.12             |
-|                                     | nrepl/nrepl                                   | 1.4.0               | 1.6.0               |
-|                                     | nubank/matcher-combinators                    | 3.9.2               | 3.10.0              |
-|                                     | org.apache.logging.log4j/log4j-to-slf4j       | 2.25.2              | 2.25.3              |
-|                                     | org.apache.maven/maven-artifact               | 3.9.11              | 3.9.14              |
-|                                     | org.babashka/cli                              | 0.8.66              | 0.8.67              |
-|                                     | org.clojure/clojure                           | 1.12.3              | 1.12.4              |
-|                                     | org.clojure/tools.deps                        | 0.26.1553           | 0.29.1598           |
-|                                     | org.clojure/tools.logging                     | 1.3.0               | 1.3.1               |
-|                                     | org.owasp/dependency-check-core               | 12.1.6              | 12.2.0              |
-|                                     | selmer/selmer                                 | 1.12.62             | 1.13.1              |
-
-Available changes:
-- https://github.com/DeLaGuardo/setup-clojure/compare/13.4...13.5.3
-- https://github.com/actions/cache/compare/v4...v5.0.3
-- https://github.com/babashka/fs/blob/v0.5.32/CHANGELOG.md
-- https://github.com/babashka/process/blob/v0.6.25/CHANGELOG.md
-- https://github.com/borkdude/edamame/blob/v1.5.37/CHANGELOG.md
-- https://github.com/clojure-lsp/clojure-lsp/blob/2026.02.20-16.08.58/CHANGELOG.md
-- https://github.com/clojure/tools.build/blob/v0.10.12/CHANGELOG.md
-- https://github.com/nrepl/nrepl/blob/v1.6.0/CHANGELOG.md
-- https://github.com/nubank/matcher-combinators/blob/3.10.0/CHANGELOG.md
-- https://github.com/babashka/cli/blob/v0.8.67/CHANGELOG.md
-- https://github.com/clojure/clojure/blob/clojure-1.12.4/changes.md
-- https://github.com/clojure/tools.deps/blob/v0.29.1598/CHANGELOG.md
-- https://github.com/clojure/tools.logging/blob/v1.3.1/CHANGELOG.md
