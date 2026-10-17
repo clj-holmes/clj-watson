@@ -633,13 +633,6 @@ clojure -M:clojure-lsp clean-ns
 clojure -M:clojure-lsp diagnostics
 ```
 
-### Security
-
-We use [clj-holmes](https://github.com/clj-holmes/clj-holmes) to check for potentially vulnerable patterns in clj-watson source code:
-```bash
-clj-holmes scan -p .
-```
-
 ## License and Copyright
 
 Copyright © 2021-2024 Matheus Bernardes
