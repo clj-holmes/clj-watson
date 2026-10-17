@@ -80,6 +80,11 @@
                :out-lines (main-usage [#"\* ERROR: Invalid usage, neither of --aliases, --suggest-fix will work with --classpath"])}
               (main-parse-args ["scan" "--classpath" "some/classpath" "--suggest-fix"]))))
 
+(deftest main-classpath-and-github-advisory-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (main-usage [#"\* ERROR: Invalid usage, --classpath can only be used when --database-strategy is dependency-check"])}
+              (main-parse-args ["scan" "--classpath" "some/classpath" "--database-strategy" "github-advisory"]))))
+
 (deftest exec-deps-edn-path-and-classpath-cannot-both-be-specified
   (is (match? {:result {:exit 1 :exit-error "usage error"}
                :out-lines (exec-usage [#"\* ERROR: Invalid usage, specify only one of: :deps-edn-path, :classpath"])}
@@ -94,6 +99,11 @@
   (is (match? {:result {:exit 1 :exit-error "usage error"}
                :out-lines (exec-usage [#"\* ERROR: Invalid usage, neither of :aliases, :suggest-fix will work with :classpath"])}
               (exec-parse-opts {:classpath "some/classpath" :suggest-fix true}))))
+
+(deftest exec-classpath-and-github-advisory-cannot-both-be-specified
+  (is (match? {:result {:exit 1 :exit-error "usage error"}
+               :out-lines (exec-usage [#"\* ERROR: Invalid usage, :classpath can only be used when :database-strategy is dependency-check"])}
+              (exec-parse-opts {:classpath "some/classpath" :database-strategy "github-advisory"}))))
 
 (deftest main-deps-edn-path-must-exist
   (doseq [args
