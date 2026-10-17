@@ -84,18 +84,3 @@ jobs:
           clojure -M:clojure-lsp format --dry
           clojure -M:clojure-lsp clean-ns --dry
           clojure -M:clojure-lsp diagnostics
-
-  security:
-
-    strategy:
-      matrix:
-        operating-system: [ubuntu-latest]
-
-    runs-on: ${{ matrix.operating-system }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: clj-holmes (Clojure)
-        uses: clj-holmes/clj-holmes-action@main

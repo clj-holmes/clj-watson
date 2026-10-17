@@ -11,6 +11,9 @@ As of 6.1.0, `clj-watson` can also check dependencies via an explicitly specifie
 classpath, which is useful for contexts where `deps.edn` is not available or not the
 primary source of dependencies, e.g., Leiningen projects.
 
+> [!NOTE]
+> Checking via the classpath only works with the `dependency-check` database strategy.
+
 `clj-watson` can suggest a remediation for the vulnerabilities found,
 and can check against both the
 [NIST National Vulnerability Database (NVD)](https://nvd.nist.gov/)
@@ -313,6 +316,11 @@ requests per hour/per PAT.
 
 If you create a PAT or use the GitHub Action token, you can set it as an
 environment variable named `GITHUB_TOKEN` and `clj-watson` will be able to use it.
+
+> [!NOTE]
+> This approach requires a `deps.edn` file: the classpath approach cannot be
+> used with the GitHub Advisory Database strategy, because certain required
+> metadata for the dependencies is not available.
 
 #### Allow Listing Known CVE's
 
@@ -623,13 +631,6 @@ We use [clojure-lsp from the command line](https://clojure-lsp.io/api/cli/) to l
 clojure -M:clojure-lsp format
 clojure -M:clojure-lsp clean-ns
 clojure -M:clojure-lsp diagnostics
-```
-
-### Security
-
-We use [clj-holmes](https://github.com/clj-holmes/clj-holmes) to check for potentially vulnerable patterns in clj-watson source code:
-```bash
-clj-holmes scan -p .
 ```
 
 ## License and Copyright

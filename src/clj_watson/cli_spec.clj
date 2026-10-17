@@ -356,6 +356,17 @@
                           :spec spec-scan-args
                           :opts opts})
             usage-error-result)
+
+          (and (:classpath opts) (not= :dependency-check (:database-strategy opts)))
+          (do
+            (usage-error {:type :clj-watson/cli
+                          :msg (format "Invalid usage, %s can only be used when %s is %s"
+                                       (styled-long-opt :classpath opts)
+                                       (styled-long-opt :database-strategy opts)
+                                       (name :dependency-check))
+                          :spec spec-scan-args
+                          :opts opts})
+            usage-error-result)
           :else
           (do
             (report-warnings opts)

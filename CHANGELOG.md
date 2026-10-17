@@ -1,5 +1,9 @@
 # CHANGELOG
 
+* v6.2.next in progress
+  * Address [#154](https://github.com/clj-holmes/clj-watson/issues/154) by disallowing classpath scanning when the database strategy is not `dependency-check`.
+  * Address [#81](https://github.com/clj-holmes/clj-watson/issues/81) by removing dependencies on unmaintained `clj-holmes` projects.
+
 * v6.2.0 c0dcdf3 -- 2026-10-17
   * Update to DependencyCheck 13.0.0 (NIST NVD Data Feed).
   * Update all dev/test deps.
