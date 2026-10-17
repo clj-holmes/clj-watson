@@ -1,6 +1,6 @@
 # CHANGELOG
 
-* v6.2.0 in progress
+* v6.2.0 c0dcdf3 -- 2026-10-17
   * Update to DependencyCheck 13.0.0 (NIST NVD Data Feed).
   * Update all dev/test deps.
   
